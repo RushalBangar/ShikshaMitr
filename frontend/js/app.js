@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Determine backend API URL (Local vs Render Production)
     const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     // Replace the Render URL below after deploying your backend to Render
-    const RENDER_BACKEND_URL = 'https://shikshamitr-backend.onrender.com'; 
+    const RENDER_BACKEND_URL = 'https://shikshamitr.onrender.com'; 
     const BACKEND_BASE_URL = IS_LOCAL ? 'http://localhost:8000' : RENDER_BACKEND_URL;
     const API_URL = `${BACKEND_BASE_URL}/api/health`;
     
