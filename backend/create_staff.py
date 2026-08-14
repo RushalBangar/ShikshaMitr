@@ -3,8 +3,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import bcrypt
 import os
 
-# Uses the same MongoDB URI as main.py
-MONGODB_URI = os.environ.get("MONGODB_URI", "mongodb+srv://rushalbangar19_db_user:W30e1Kd9kThlFnj0@shikshamitr.ooe5ymf.mongodb.net")
+from dotenv import load_dotenv
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI") or os.getenv("MONGODB_URI")
+if not MONGO_URI:
+    raise ValueError("MONGO_URI environment variable is not set. Please set MONGO_URI in your .env file.")
 
 def get_password_hash(password):
     if isinstance(password, str):
@@ -12,7 +17,7 @@ def get_password_hash(password):
     return bcrypt.hashpw(password, bcrypt.gensalt()).decode('utf-8')
 
 async def create_staff(username, password):
-    client = AsyncIOMotorClient(MONGODB_URI)
+    client = AsyncIOMotorClient(MONGO_URI)
     db = client.shikshamitr
     
     # Check if user already exists

@@ -7,7 +7,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://rushalbangar19_db_user:W30e1Kd9kThlFnj0@shikshamitr.ooe5ymf.mongodb.net/?retryWrites=true&w=majority")
+MONGO_URI = os.getenv("MONGO_URI") or os.getenv("MONGODB_URI")
+if not MONGO_URI:
+    raise ValueError("MONGO_URI environment variable is not set. Please set MONGO_URI in your .env file.")
 
 ACCOUNTS = [
     {
