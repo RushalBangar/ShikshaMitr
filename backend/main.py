@@ -11,7 +11,7 @@ from routes import materials, reading, auth, files
 # Load environment variables
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017").strip()
 client = None
 db = None
 db_connected = False
