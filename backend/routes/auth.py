@@ -63,7 +63,15 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=500, detail="Database not connected")
         
     if role == "student":
-        user = await main.db.students.find_one({"username": username})
+        clean_user = username.strip().lstrip('@')
+        user = await main.db.students.find_one({
+            "$or": [
+                {"username": username},
+                {"username": f"@{clean_user}"},
+                {"username": clean_user},
+                {"email": username.lower()}
+            ]
+        })
     else:
         user = await main.db.staff.find_one({
             "$or": [
@@ -85,11 +93,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=500, detail="Database not connected")
         
     identifier = form_data.username.strip()
+    clean_identifier = identifier.lstrip('@')
     
     # 1. Check Faculty/Staff
     user = await main.db.staff.find_one({
         "$or": [
             {"username": identifier},
+            {"username": clean_identifier},
             {"email": identifier.lower()}
         ]
     })
@@ -97,7 +107,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     # 2. Check Students if not staff
     if not user:
-        user = await main.db.students.find_one({"username": identifier})
+        user = await main.db.students.find_one({
+            "$or": [
+                {"username": identifier},
+                {"username": f"@{clean_identifier}"},
+                {"username": clean_identifier},
+                {"email": identifier.lower()}
+            ]
+        })
         role = "student"
         
     if not user or not verify_password(form_data.password, user["password_hash"]):
@@ -124,19 +141,31 @@ async def register_student(data: StudentRegister):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
+    clean_username = data.username.strip().lstrip('@')
+    
     # Check if username exists
-    existing_student = await main.db.students.find_one({"username": data.username})
+    existing_student = await main.db.students.find_one({
+        "$or": [
+            {"username": clean_username},
+            {"username": f"@{clean_username}"}
+        ]
+    })
     if existing_student:
         raise HTTPException(status_code=400, detail="Username already taken")
         
-    existing_staff = await main.db.staff.find_one({"username": data.username})
+    existing_staff = await main.db.staff.find_one({
+        "$or": [
+            {"username": clean_username},
+            {"email": clean_username.lower()}
+        ]
+    })
     if existing_staff:
         raise HTTPException(status_code=400, detail="Username reserved")
         
     student_doc = {
-        "username": data.username,
-        "full_name": data.full_name,
-        "email": data.email,
+        "username": clean_username,
+        "full_name": data.full_name.strip(),
+        "email": data.email.strip().lower() if data.email else None,
         "password_hash": get_password_hash(data.password),
         "created_at": datetime.utcnow()
     }
