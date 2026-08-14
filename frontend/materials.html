@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materials - ShikshaMitr</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html">
+                <img src="images/logo.png" alt="ShikshaMitr Logo" class="header-logo">
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="materials-header">
+            <h2 id="page-title">Study Materials</h2>
+            <div class="filters">
+                <select id="standard-filter">
+                    <option value="">All Standards</option>
+                    <option value="5">5th Standard</option>
+                    <option value="6">6th Standard</option>
+                    <option value="7">7th Standard</option>
+                    <option value="8">8th Standard</option>
+                    <option value="9">9th Standard</option>
+                    <option value="10">10th Standard</option>
+                </select>
+                <select id="subject-filter">
+                    <option value="">All Subjects</option>
+                    <option value="Math">Math</option>
+                    <option value="Science">Science</option>
+                    <option value="English">English</option>
+                    <option value="History">History</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="materials-list" class="materials-list">
+            <p>Loading materials...</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ShikshaMitr. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/materials.js"></script>
+</body>
+</html>

@@ -37,12 +37,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Run health check on load
     checkApiStatus();
 
-    // Add event listeners to buttons
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const feature = e.target.parentElement.querySelector('h3').textContent;
-            alert(`Navigating to ${feature}... (Feature coming soon)`);
-        });
-    });
+    // Event listeners for buttons removed as they are now anchor tags
 });

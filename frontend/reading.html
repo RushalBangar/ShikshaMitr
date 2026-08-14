@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy English Reading - ShikshaMitr</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html">
+                <img src="images/logo.png" alt="ShikshaMitr Logo" class="header-logo">
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="reading-header">
+            <h2>Easy English Reading</h2>
+            <p>Follow the steps to improve your reading skills.</p>
+        </section>
+
+        <section class="reading-workspace">
+            <div class="controls">
+                <label for="level-select">Select Level:</label>
+                <select id="level-select">
+                    <option value="1">Level 1 (Beginner)</option>
+                    <option value="2">Level 2 (Intermediate)</option>
+                    <option value="3">Level 3 (Advanced)</option>
+                </select>
+                <button id="start-lesson-btn" class="btn">Start Lesson</button>
+            </div>
+
+            <div id="lesson-area" class="lesson-area hidden">
+                <div class="progress-bar">
+                    <div class="step active" id="step-word">1. Word</div>
+                    <div class="step" id="step-pronunciation">2. Pronunciation</div>
+                    <div class="step" id="step-reading">3. Simple Reading</div>
+                    <div class="step" id="step-sentence">4. Sentence Reading</div>
+                </div>
+
+                <div class="lesson-content">
+                    <h1 id="display-text" class="display-text">Word</h1>
+                    <div class="action-buttons">
+                        <button id="listen-btn" class="btn secondary-btn">🔊 Listen</button>
+                        <button id="next-step-btn" class="btn">Next Step ➡️</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ShikshaMitr. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/reading.js"></script>
+</body>
+</html>

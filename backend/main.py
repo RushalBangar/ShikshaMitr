@@ -6,6 +6,8 @@ import os
 import certifi
 from dotenv import load_dotenv
 
+from routes import materials, reading
+
 # Load environment variables
 load_dotenv()
 
@@ -44,6 +46,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(materials.router, prefix="/api", tags=["materials"])
+app.include_router(reading.router, prefix="/api", tags=["reading"])
 
 @app.get("/")
 async def root():
