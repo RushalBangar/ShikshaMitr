@@ -60,7 +60,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
-    user = await main.db.staff.find_one({"username": username})
+    user = await main.db.staff.find_one({
+        "$or": [
+            {"username": username},
+            {"email": username.lower()}
+        ]
+    })
     if user is None:
         raise credentials_exception
     return user
@@ -70,11 +75,17 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
-    user = await main.db.staff.find_one({"username": form_data.username})
+    identifier = form_data.username.strip()
+    user = await main.db.staff.find_one({
+        "$or": [
+            {"username": identifier},
+            {"email": identifier.lower()}
+        ]
+    })
     if not user or not verify_password(form_data.password, user["password_hash"]):
         raise HTTPException(
             status_code=401,
-            detail="Incorrect username or password",
+            detail="Incorrect email/username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
         
