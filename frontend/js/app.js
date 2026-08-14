@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("ShikshaMitr App Initialized");
 
-    // Example of how we might check the backend API status
-    // In production, the URL would be dynamic or relative
-    const API_URL = 'http://localhost:8000/api/health';
+    // Determine backend API URL (Local vs Render Production)
+    const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    // Replace the Render URL below after deploying your backend to Render
+    const RENDER_BACKEND_URL = 'https://shikshamitr-backend.onrender.com'; 
+    const BACKEND_BASE_URL = IS_LOCAL ? 'http://localhost:8000' : RENDER_BACKEND_URL;
+    const API_URL = `${BACKEND_BASE_URL}/api/health`;
     
     const checkApiStatus = async () => {
         const statusSection = document.getElementById('api-status-section');
