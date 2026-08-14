@@ -3,6 +3,7 @@
  * - Respects system preference on first visit
  * - Persists user choice in localStorage
  * - Applies before paint to prevent flash
+ * - Supports both top nav and bottom nav toggle buttons
  */
 (function () {
     const STORAGE_KEY = 'shikshamitr-theme';
@@ -13,40 +14,61 @@
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
+    function updateIcons(theme) {
+        const icon = theme === 'dark' ? '☀️' : '🌙';
+        const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+
+        // Top nav toggle
+        const topBtn = document.getElementById('theme-toggle-btn');
+        if (topBtn) {
+            topBtn.textContent = icon;
+            topBtn.setAttribute('aria-label', label);
+        }
+
+        // Bottom nav toggle
+        const bottomBtn = document.getElementById('bottom-theme-toggle');
+        if (bottomBtn) {
+            const iconSpan = bottomBtn.querySelector('.bnav-icon');
+            if (iconSpan) iconSpan.textContent = icon;
+            bottomBtn.setAttribute('aria-label', label);
+        }
+    }
+
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem(STORAGE_KEY, theme);
 
-        // Update toggle button icon if it exists
-        const toggleBtn = document.getElementById('theme-toggle-btn');
-        if (toggleBtn) {
-            toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
-            toggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        // Update theme-color meta tag for mobile browser chrome
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) {
+            metaTheme.content = theme === 'dark' ? '#0F0F1A' : '#F8FAFC';
         }
+
+        updateIcons(theme);
     }
 
     // Apply immediately (before DOM ready) to prevent flash
     applyTheme(getPreferredTheme());
 
-    // Once DOM is ready, wire up the toggle button
+    // Once DOM is ready, wire up both toggle buttons
     document.addEventListener('DOMContentLoaded', () => {
-        const toggleBtn = document.getElementById('theme-toggle-btn');
-        if (!toggleBtn) return;
-
-        // Set initial icon
         const current = document.documentElement.getAttribute('data-theme') || 'light';
-        toggleBtn.textContent = current === 'dark' ? '☀️' : '🌙';
+        updateIcons(current);
 
-        toggleBtn.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme') || 'light';
-            const next = current === 'dark' ? 'light' : 'dark';
-            applyTheme(next);
-        });
+        function toggle() {
+            const curr = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(curr === 'dark' ? 'light' : 'dark');
+        }
+
+        const topBtn = document.getElementById('theme-toggle-btn');
+        if (topBtn) topBtn.addEventListener('click', toggle);
+
+        const bottomBtn = document.getElementById('bottom-theme-toggle');
+        if (bottomBtn) bottomBtn.addEventListener('click', toggle);
     });
 
     // Listen for system preference changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only auto-switch if user hasn't manually chosen
         if (!localStorage.getItem(STORAGE_KEY)) {
             applyTheme(e.matches ? 'dark' : 'light');
         }

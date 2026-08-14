@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Improve your English reading skills step-by-step with ShikshaMitr's interactive reading tool.">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Easy English Reading - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/theme.js"></script>
 </head>
@@ -79,5 +84,29 @@
     </footer>
 
     <script src="js/reading.js"></script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-link">
+            <span class="bnav-icon">🏠</span>
+            Home
+        </a>
+        <a href="materials.html?type=notes" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            Notes
+        </a>
+        <a href="materials.html?type=board_paper" class="bottom-nav-link">
+            <span class="bnav-icon">📝</span>
+            Papers
+        </a>
+        <a href="reading.html" class="bottom-nav-link active">
+            <span class="bnav-icon">🔤</span>
+            Reading
+        </a>
+        <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
+            <span class="bnav-icon">🌙</span>
+            Theme
+        </button>
+    </nav>
 </body>
 </html>
