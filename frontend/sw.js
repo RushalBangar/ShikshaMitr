@@ -38,9 +38,14 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event - Stale-while-revalidate for assets, Network-first for API
 self.addEventListener('fetch', (event) => {
+  // Only handle http and https requests (ignore chrome-extension:// etc.)
+  if (!event.request.url.startsWith('http')) {
+    return;
+  }
+
   const url = new URL(event.request.url);
 
-  // Skip non-GET requests and chrome-extension / analytics requests
+  // Skip non-GET requests and analytics requests
   if (event.request.method !== 'GET' || url.origin.includes('googletagmanager') || url.origin.includes('google-analytics')) {
     return;
   }

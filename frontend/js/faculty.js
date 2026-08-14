@@ -287,18 +287,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 actions.style.display = 'flex';
                 actions.style.gap = '0.5rem';
                 
+                const materialId = mat._id || mat.id;
+                
                 const renameBtn = document.createElement('button');
                 renameBtn.textContent = 'Rename';
                 renameBtn.className = 'btn btn-sm btn-ghost';
                 renameBtn.style.border = '1px solid var(--border-subtle)';
-                renameBtn.onclick = () => promptRename(mat.id, mat.title);
+                renameBtn.onclick = () => promptRename(materialId, mat.title);
                 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = 'Delete';
                 deleteBtn.className = 'btn btn-sm';
                 deleteBtn.style.background = 'var(--status-error-bg)';
                 deleteBtn.style.color = 'var(--status-error-text)';
-                deleteBtn.onclick = () => deleteMaterial(mat.id);
+                deleteBtn.onclick = () => deleteMaterial(materialId);
                 
                 actions.appendChild(renameBtn);
                 actions.appendChild(deleteBtn);
