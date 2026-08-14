@@ -19,6 +19,7 @@
     <title>Materials - ShikshaMitr</title>
     <link rel="icon" type="image/png" href="images/logo-icon.png">
     <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/theme.js"></script>
 </head>
@@ -43,7 +44,8 @@
                     <span>Reading</span>
                 </a>
                 <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
-                <a href="faculty.html" class="btn btn-ghost btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">👨‍🏫</span> Faculty Login</a>
+                <a href="student-login.html" class="btn btn-primary btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">🎓</span> Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">👨‍🏫</span> Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
@@ -101,17 +103,17 @@
             <span class="bnav-icon">📚</span>
             Notes
         </a>
-        <a href="materials.html?type=board_paper" class="bottom-nav-link">
-            <span class="bnav-icon">📝</span>
-            Papers
-        </a>
-        <a href="faculty.html" class="bottom-nav-link">
-            <span class="bnav-icon">👨‍🏫</span>
-            Faculty
+        <a href="student-login.html" class="bottom-nav-link">
+            <span class="bnav-icon">🎓</span>
+            Student
         </a>
         <a href="reading.html" class="bottom-nav-link">
             <span class="bnav-icon">🔤</span>
             Reading
+        </a>
+        <a href="faculty.html" class="bottom-nav-link">
+            <span class="bnav-icon">👨‍🏫</span>
+            Faculty
         </a>
         <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
             <span class="bnav-icon">🌙</span>

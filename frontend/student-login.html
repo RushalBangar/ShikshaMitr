@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2N8TR3HLN2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Student Login & Registration - ShikshaMitr">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Student Portal - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
+    <style>
+        .auth-container {
+            max-width: 460px;
+            margin: 2.5rem auto 4rem;
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-card);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-btn);
+        }
+
+        .auth-nav {
+            display: flex;
+            background: var(--bg-glass);
+            padding: 0.4rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .auth-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            text-align: center;
+        }
+
+        .auth-tab.active {
+            background: var(--bg-card-hover);
+            color: var(--primary);
+            box-shadow: var(--shadow-card);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: var(--bg-card);
+        }
+
+        .alert {
+            padding: 0.9rem 1.2rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .alert.success {
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border-color: var(--status-ok-border);
+            display: block;
+        }
+
+        .alert.error {
+            background: var(--status-error-bg);
+            color: var(--status-error-text);
+            border-color: var(--status-error-border);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
+            </a>
+            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <a href="faculty.html" class="btn btn-ghost btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">👨‍🏫</span> Faculty</a>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="page-header" style="text-align: center; padding: 2.5rem 0 1rem;">
+            <h1>🎓 Student Portal</h1>
+            <p>Sign in or register to track your learning journey, earn badges, and practice.</p>
+        </div>
+
+        <div class="auth-container">
+            <div class="auth-nav">
+                <button class="auth-tab active" id="tab-login-btn">Sign In</button>
+                <button class="auth-tab" id="tab-register-btn">Register</button>
+            </div>
+
+            <div id="auth-alert" class="alert"></div>
+
+            <!-- Login Form -->
+            <form id="student-login-form">
+                <div class="form-group">
+                    <label for="login-username">Username or Email</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="e.g. rahul123" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary" id="login-submit-btn" style="width: 100%; margin-top: 0.5rem;">
+                    Sign In to Learning 🚀
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="student-register-form" style="display: none;">
+                <div class="form-group">
+                    <label for="reg-fullname">Full Name</label>
+                    <input type="text" id="reg-fullname" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-username">Choose a Username</label>
+                    <input type="text" id="reg-username" class="form-control" placeholder="e.g. rahul_learner" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email Address (Optional)</label>
+                    <input type="email" id="reg-email" class="form-control" placeholder="e.g. rahul@gmail.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Create Password</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-accent" id="reg-submit-btn" style="width: 100%; margin-top: 0.5rem;">
+                    Create Free Account ✨
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-link">
+            <span class="bnav-icon">🏠</span>
+            Home
+        </a>
+        <a href="materials.html?type=notes" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            Notes
+        </a>
+        <a href="student-login.html" class="bottom-nav-link active">
+            <span class="bnav-icon">🎓</span>
+            Student
+        </a>
+        <a href="reading.html" class="bottom-nav-link">
+            <span class="bnav-icon">🔤</span>
+            Reading
+        </a>
+        <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
+            <span class="bnav-icon">🌙</span>
+            Theme
+        </button>
+    </nav>
+
+    <script src="js/student.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "ShikshaMitr - Digital Learning Friend",
+  "short_name": "ShikshaMitr",
+  "description": "Access notes, board papers, practice materials and improve English reading.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0F0F1A",
+  "theme_color": "#6366F1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "images/logo-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

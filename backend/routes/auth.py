@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import bcrypt
 from pydantic import BaseModel
+from typing import Optional
 import main
 import os
 
@@ -52,6 +53,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
+        role: str = payload.get("role", "faculty") # Default to faculty for older tokens
         if username is None:
             raise credentials_exception
     except jwt.PyJWTError:
@@ -60,14 +62,21 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
-    user = await main.db.staff.find_one({
-        "$or": [
-            {"username": username},
-            {"email": username.lower()}
-        ]
-    })
+    if role == "student":
+        user = await main.db.students.find_one({"username": username})
+    else:
+        user = await main.db.staff.find_one({
+            "$or": [
+                {"username": username},
+                {"email": username.lower()}
+            ]
+        })
+        
     if user is None:
         raise credentials_exception
+    
+    # Attach role to user object for route handlers
+    user["role"] = role
     return user
 
 @router.post("/login", response_model=Token)
@@ -76,21 +85,61 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=500, detail="Database not connected")
         
     identifier = form_data.username.strip()
+    
+    # 1. Check Faculty/Staff
     user = await main.db.staff.find_one({
         "$or": [
             {"username": identifier},
             {"email": identifier.lower()}
         ]
     })
+    role = "faculty"
+    
+    # 2. Check Students if not staff
+    if not user:
+        user = await main.db.students.find_one({"username": identifier})
+        role = "student"
+        
     if not user or not verify_password(form_data.password, user["password_hash"]):
         raise HTTPException(
             status_code=401,
-            detail="Incorrect email/username or password",
+            detail="Incorrect username/email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
         
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user["username"]}, expires_delta=access_token_expires
+        data={"sub": user["username"], "role": role}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+class StudentRegister(BaseModel):
+    username: str
+    password: str
+    email: Optional[str] = None
+    full_name: str
+
+@router.post("/student-register")
+async def register_student(data: StudentRegister):
+    if not main.db_connected:
+        raise HTTPException(status_code=500, detail="Database not connected")
+        
+    # Check if username exists
+    existing_student = await main.db.students.find_one({"username": data.username})
+    if existing_student:
+        raise HTTPException(status_code=400, detail="Username already taken")
+        
+    existing_staff = await main.db.staff.find_one({"username": data.username})
+    if existing_staff:
+        raise HTTPException(status_code=400, detail="Username reserved")
+        
+    student_doc = {
+        "username": data.username,
+        "full_name": data.full_name,
+        "email": data.email,
+        "password_hash": get_password_hash(data.password),
+        "created_at": datetime.utcnow()
+    }
+    
+    await main.db.students.insert_one(student_doc)
+    return {"message": "Student registered successfully"}
