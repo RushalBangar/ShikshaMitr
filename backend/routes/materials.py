@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from models import MaterialModel
+from routes.auth import get_current_user
 import main # Import main to access db connection
 
 router = APIRouter()
@@ -27,7 +28,7 @@ async def get_materials(type: Optional[str] = None, standard: Optional[int] = No
     return materials
 
 @router.post("/materials", response_model=MaterialModel)
-async def create_material(material: MaterialModel):
+async def create_material(material: MaterialModel, current_user: dict = Depends(get_current_user)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         

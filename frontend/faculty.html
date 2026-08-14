@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Faculty Dashboard for ShikshaMitr.">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Faculty Dashboard - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
+    <style>
+        .dashboard-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .dashboard-tab {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+        }
+        
+        .dashboard-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .alert.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #166534;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            display: block;
+        }
+        
+        html[data-theme='dark'] .alert.success {
+            color: #4ade80;
+        }
+        
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+        
+        html[data-theme='dark'] .alert.error {
+            color: #f87171;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo-icon.png" alt="ShikshaMitr Logo" class="logo-img">
+                <span class="logo-text">ShikshaMitr</span>
+            </a>
+            <div class="header-actions" style="gap: 1rem;">
+                <button id="logout-btn" class="btn btn-secondary" style="display: none;">Logout</button>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-bottom: 100px;">
+        <!-- Login Section -->
+        <section id="login-section" class="dashboard-container">
+            <h1 class="text-center">Faculty Login</h1>
+            <p class="text-center text-muted" style="margin-bottom: 2rem;">Authorized personnel only.</p>
+            
+            <div id="login-alert" class="alert error" style="display: none;"></div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="dashboard-container" style="display: none;">
+            <div class="header-actions" style="margin-bottom: 1rem;">
+                <h2>Faculty Dashboard</h2>
+            </div>
+            
+            <div class="dashboard-nav">
+                <button class="dashboard-tab active" data-target="upload-material">Upload Material</button>
+                <button class="dashboard-tab" data-target="upload-reading">Add Reading Lesson</button>
+            </div>
+            
+            <!-- Upload Material Tab -->
+            <div id="upload-material" class="tab-content active">
+                <div id="material-alert" class="alert"></div>
+                
+                <form id="material-form">
+                    <div class="form-group">
+                        <label for="mat-title">Title</label>
+                        <input type="text" id="mat-title" class="form-control" placeholder="e.g. Science Chapter 1 Notes" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mat-type">Material Type</label>
+                        <select id="mat-type" class="form-control" required>
+                            <option value="notes">Notes</option>
+                            <option value="board_paper">Board Paper</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mat-standard">Standard (Class)</label>
+                        <select id="mat-standard" class="form-control" required>
+                            <option value="5">Class 5</option>
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mat-subject">Subject</label>
+                        <select id="mat-subject" class="form-control" required>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Science">Science</option>
+                            <option value="English">English</option>
+                            <option value="History">History</option>
+                            <option value="Geography">Geography</option>
+                            <option value="Hindi">Hindi</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mat-file">Upload PDF File</label>
+                        <input type="file" id="mat-file" class="form-control" accept=".pdf" required>
+                        <small class="text-muted" style="display:block; margin-top:0.5rem;">File will be securely stored in our cloud database.</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="mat-submit-btn">Upload Material</button>
+                </form>
+            </div>
+            
+            <!-- Upload Reading Lesson Tab -->
+            <div id="upload-reading" class="tab-content">
+                <div id="reading-alert" class="alert"></div>
+                
+                <form id="reading-form">
+                    <div class="form-group">
+                        <label for="read-level">Difficulty Level</label>
+                        <select id="read-level" class="form-control" required>
+                            <option value="1">Level 1 (Beginner)</option>
+                            <option value="2">Level 2 (Intermediate)</option>
+                            <option value="3">Level 3 (Advanced)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="read-word">Vocabulary Word</label>
+                        <input type="text" id="read-word" class="form-control" placeholder="e.g. Enthusiastic" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="read-sentence">Practice Sentence (Include Emojis!)</label>
+                        <input type="text" id="read-sentence" class="form-control" placeholder="e.g. The students were enthusiastic! 🎉" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-accent">Add Reading Lesson</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-link">
+            <span class="bnav-icon">🏠</span>
+            Home
+        </a>
+        <a href="materials.html?type=notes" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            Notes
+        </a>
+        <a href="faculty.html" class="bottom-nav-link active">
+            <span class="bnav-icon">👨‍🏫</span>
+            Faculty
+        </a>
+        <a href="reading.html" class="bottom-nav-link">
+            <span class="bnav-icon">🔤</span>
+            Reading
+        </a>
+        <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
+            <span class="bnav-icon">🌙</span>
+            Theme
+        </button>
+    </nav>
+    
+    <script src="js/faculty.js"></script>
+</body>
+</html>

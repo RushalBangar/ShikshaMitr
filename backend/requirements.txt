@@ -6,3 +6,6 @@ pydantic-settings
 python-dotenv
 dnspython
 certifi
+PyJWT
+bcrypt
+python-multipart

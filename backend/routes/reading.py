@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from models import ReadingLessonModel
+from routes.auth import get_current_user
 import main
 
 router = APIRouter()
@@ -23,7 +24,7 @@ async def get_reading_lessons(level: Optional[int] = None):
     return lessons
 
 @router.post("/reading", response_model=ReadingLessonModel)
-async def create_reading_lesson(lesson: ReadingLessonModel):
+async def create_reading_lesson(lesson: ReadingLessonModel, current_user: dict = Depends(get_current_user)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
