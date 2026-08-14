@@ -23,3 +23,24 @@ class ReadingLessonModel(BaseModel):
     
     class Config:
         populate_by_name = True
+
+class QuizQuestionModel(BaseModel):
+    question: str
+    options: list[str]
+    correct_option: int # Index of correct option (0, 1, 2, 3)
+    explanation: Optional[str] = None
+
+class QuizModel(BaseModel):
+    id: Optional[str] = Field(None, alias="_id")
+    title: str
+    subject: str
+    standard: int
+    questions: list[QuizQuestionModel]
+    
+    class Config:
+        populate_by_name = True
+
+class QuizSubmissionModel(BaseModel):
+    quiz_id: str
+    answers: list[int]
+

@@ -366,4 +366,141 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert(manageAlert, 'Network error. Please try again.', 'error');
         }
     }
+
+    // ==========================================
+    // Faculty Quiz Builder Logic
+    // ==========================================
+    const quizForm = document.getElementById('faculty-quiz-form');
+    const quizAlert = document.getElementById('quiz-alert');
+    const quizQuestionsBuilder = document.getElementById('quiz-questions-builder');
+    const addQuestionBtn = document.getElementById('add-question-btn');
+    const saveQuizBtn = document.getElementById('save-quiz-btn');
+
+    let questionCount = 0;
+
+    function addQuestionBlock() {
+        questionCount++;
+        const qId = questionCount;
+        const card = document.createElement('div');
+        card.className = 'question-builder-card';
+        card.id = `q-card-${qId}`;
+        card.style.cssText = `
+            background: var(--bg-glass);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            position: relative;
+        `;
+
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                <h5 style="margin: 0; font-size: 0.95rem; color: var(--primary);">Question ${qId}</h5>
+                ${qId > 1 ? `<button type="button" style="background: none; border: none; color: var(--status-error-text); cursor: pointer; font-size: 0.85rem;" onclick="document.getElementById('q-card-${qId}').remove()">✕ Remove</button>` : ''}
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <input type="text" class="form-control q-title-input" placeholder="Type question prompt here..." required>
+            </div>
+
+            <p style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary);">Options (Select radio button for the CORRECT answer):</p>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                ${[0, 1, 2, 3].map(i => `
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <input type="radio" name="correct-opt-${qId}" value="${i}" ${i === 0 ? 'checked' : ''} style="cursor: pointer;">
+                        <input type="text" class="form-control q-opt-input" placeholder="Option ${String.fromCharCode(65 + i)}" required style="padding: 0.5rem 0.8rem; font-size: 0.9rem;">
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="form-group" style="margin-top: 0.8rem; margin-bottom: 0;">
+                <input type="text" class="form-control q-exp-input" placeholder="Optional explanation (e.g. formula used)">
+            </div>
+        `;
+
+        quizQuestionsBuilder.appendChild(card);
+    }
+
+    if (addQuestionBtn) {
+        addQuestionBtn.addEventListener('click', addQuestionBlock);
+        // Add initial 2 questions
+        addQuestionBlock();
+        addQuestionBlock();
+    }
+
+    if (quizForm) {
+        quizForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert(quizAlert);
+
+            const title = document.getElementById('quiz-title').value.trim();
+            const standard = parseInt(document.getElementById('quiz-standard').value);
+            const subject = document.getElementById('quiz-subject').value.trim();
+
+            const questionCards = quizQuestionsBuilder.querySelectorAll('.question-builder-card');
+            if (questionCards.length === 0) {
+                showAlert(quizAlert, 'Please add at least one question.', 'error');
+                return;
+            }
+
+            const questions = [];
+            for (const card of questionCards) {
+                const qText = card.querySelector('.q-title-input').value.trim();
+                const optInputs = card.querySelectorAll('.q-opt-input');
+                const options = Array.from(optInputs).map(inp => inp.value.trim());
+                const correctOptRadio = card.querySelector('input[type="radio"]:checked');
+                const correctOption = correctOptRadio ? parseInt(correctOptRadio.value) : 0;
+                const expText = card.querySelector('.q-exp-input').value.trim() || null;
+
+                questions.push({
+                    question: qText,
+                    options: options,
+                    correct_option: correctOption,
+                    explanation: expText
+                });
+            }
+
+            if (saveQuizBtn) {
+                saveQuizBtn.textContent = 'Publishing Quiz...';
+                saveQuizBtn.disabled = true;
+            }
+
+            try {
+                const currentToken = localStorage.getItem('shikshamitr_token');
+                const response = await fetch(`${BACKEND_BASE_URL}/api/quizzes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        standard: standard,
+                        subject: subject,
+                        questions: questions
+                    })
+                });
+
+                if (response.ok) {
+                    showAlert(quizAlert, '🎉 Quiz published successfully & broadcast live to all students!', 'success');
+                    quizForm.reset();
+                    quizQuestionsBuilder.innerHTML = '';
+                    questionCount = 0;
+                    addQuestionBlock();
+                    addQuestionBlock();
+                } else {
+                    if (response.status === 401) { logout(); return; }
+                    const err = await response.json();
+                    showAlert(quizAlert, err.detail || 'Failed to create quiz', 'error');
+                }
+            } catch (err) {
+                showAlert(quizAlert, 'Network error. Please try again.', 'error');
+            } finally {
+                if (saveQuizBtn) {
+                    saveQuizBtn.textContent = 'Publish Quiz (Live Broadcast) 🚀';
+                    saveQuizBtn.disabled = false;
+                }
+            }
+        });
+    }
 });

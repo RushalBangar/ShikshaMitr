@@ -9,3 +9,4 @@ certifi
 PyJWT
 bcrypt
 python-multipart
+websockets

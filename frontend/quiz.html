@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2N8TR3HLN2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Interactive Practice Quizzes - ShikshaMitr">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Practice Quizzes - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/theme.js"></script>
+    <style>
+        .quiz-container {
+            max-width: 720px;
+            margin: 0 auto 3rem;
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-card);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .quiz-card-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-card);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+
+        .quiz-card-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-card);
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.8rem;
+            background: var(--bg-glass);
+            border: 2px solid var(--border-card);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-primary);
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            font-weight: 600;
+        }
+
+        .option-btn.correct {
+            border-color: #10B981;
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+        }
+
+        .option-btn.incorrect {
+            border-color: #EF4444;
+            background: var(--status-error-bg);
+            color: var(--status-error-text);
+        }
+
+        .option-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-surface);
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .quiz-progress-bar {
+            height: 8px;
+            background: var(--bg-surface);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--gradient-btn);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-btn);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem auto;
+            font-weight: 800;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
+            </a>
+            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <a href="student-dashboard.html" class="btn btn-primary btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">🎓</span> Dashboard</a>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- View 1: Quiz List -->
+        <section id="quiz-list-view">
+            <div class="page-header" style="text-align: center; padding: 2.5rem 0 1.5rem;">
+                <a href="index.html" class="back-link">← Back to Home</a>
+                <h1>🎯 Interactive Practice Quizzes</h1>
+                <p>Test your knowledge with multiple-choice questions & get instant explanations.</p>
+                <div class="filters" style="margin-top: 1.5rem;">
+                    <select id="standard-filter" class="filter-select">
+                        <option value="">All Standards</option>
+                        <option value="5">Class 5</option>
+                        <option value="6">Class 6</option>
+                        <option value="7">Class 7</option>
+                        <option value="8">Class 8</option>
+                        <option value="9">Class 9</option>
+                        <option value="10">Class 10</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="quiz-list-container" style="max-width: 720px; margin: 0 auto 3rem;">
+                <p style="text-align: center; color: var(--text-secondary);">Loading available quizzes...</p>
+            </div>
+        </section>
+
+        <!-- View 2: Active Quiz Player -->
+        <section id="quiz-player-view" style="display: none;">
+            <div class="page-header" style="text-align: center; padding: 2rem 0 1rem;">
+                <button id="back-to-list-btn" class="back-link" style="background:none; border:none; cursor:pointer;">← Back to Quizzes</button>
+                <h1 id="active-quiz-title">Quiz Title</h1>
+                <p id="active-quiz-subtitle" style="color: var(--text-secondary);">Class 10 • Mathematics</p>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.25rem; font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);">
+                    <span id="question-number-label">Question 1 of 5</span>
+                    <span id="quiz-timer">⏱️ Live Test</span>
+                </div>
+
+                <h3 id="question-text" style="font-size: 1.3rem; margin-bottom: 1.5rem; line-height: 1.4;">Question goes here?</h3>
+
+                <div id="options-container">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div id="explanation-box" style="display: none; padding: 1rem; border-radius: var(--radius-md); background: var(--bg-surface); margin-top: 1.25rem; border: 1px solid var(--border-subtle);">
+                    <h5 style="margin-bottom: 0.3rem; color: var(--primary);">💡 Explanation:</h5>
+                    <p id="explanation-text" style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;"></p>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+                    <button id="next-question-btn" class="btn btn-primary" style="display: none;">Next Question →</button>
+                    <button id="submit-quiz-btn" class="btn btn-accent" style="display: none;">Finish & See Score 🎉</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View 3: Quiz Results Scorecard -->
+        <section id="quiz-results-view" style="display: none;">
+            <div class="quiz-container" style="text-align: center; max-width: 540px;">
+                <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">🏆</span>
+                <h2>Quiz Completed!</h2>
+                <p style="color: var(--text-secondary);">Great job testing your knowledge.</p>
+
+                <div class="score-circle">
+                    <span id="result-percentage" style="font-size: 2rem;">80%</span>
+                    <span id="result-fraction" style="font-size: 0.85rem; opacity: 0.9;">4/5 Correct</span>
+                </div>
+
+                <p id="result-verdict" style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 1.5rem;">Outstanding Performance! 🌟</p>
+
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="retry-quiz-btn" class="btn btn-ghost">Retry Quiz 🔄</button>
+                    <button id="results-back-btn" class="btn btn-primary">More Quizzes →</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-link">
+            <span class="bnav-icon">🏠</span>
+            Home
+        </a>
+        <a href="materials.html?type=notes" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            Notes
+        </a>
+        <a href="quiz.html" class="bottom-nav-link active">
+            <span class="bnav-icon">🎯</span>
+            Quizzes
+        </a>
+        <a href="student-dashboard.html" class="bottom-nav-link">
+            <span class="bnav-icon">🎓</span>
+            Student
+        </a>
+        <a href="reading.html" class="bottom-nav-link">
+            <span class="bnav-icon">🔤</span>
+            Reading
+        </a>
+        <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
+            <span class="bnav-icon">🌙</span>
+            Theme
+        </button>
+    </nav>
+
+    <script src="js/ws-client.js"></script>
+    <script src="js/quiz.js"></script>
+</body>
+</html>
