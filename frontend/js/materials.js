@@ -11,24 +11,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Get type from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const materialType = urlParams.get('type') || 'notes'; // default to notes
+    const materialType = urlParams.get('type') || 'notes';
 
     // Update page title based on type
-    const typeTitles = {
-        'board_paper': '10th Board Papers',
-        'practice_paper': 'Practice Papers',
-        'notes': 'Study Notes'
+    const typeConfig = {
+        'board_paper': { title: '📝 10th Board Papers', icon: '📝' },
+        'practice_paper': { title: '✍️ Practice Papers', icon: '✍️' },
+        'notes': { title: '📚 Study Notes', icon: '📚' }
     };
-    pageTitle.textContent = typeTitles[materialType] || 'Study Materials';
+    const config = typeConfig[materialType] || typeConfig['notes'];
+    pageTitle.textContent = config.title;
+    document.title = `${config.title.replace(/^[^\s]+ /, '')} - ShikshaMitr`;
+
+    // Highlight correct nav link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.href.includes(`type=${materialType}`)) {
+            link.classList.add('active');
+        }
+    });
 
     // Set standard filter to 10 if it's board papers
     if (materialType === 'board_paper') {
         standardFilter.value = '10';
-        standardFilter.disabled = true; // Lock it
+        standardFilter.disabled = true;
     }
 
     const fetchMaterials = async () => {
-        materialsListEl.innerHTML = '<p>Loading materials...</p>';
+        // Show skeleton loading
+        materialsListEl.innerHTML = `
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        `;
         
         let url = new URL(API_URL);
         url.searchParams.append('type', materialType);
@@ -48,7 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
             renderMaterials(materials);
         } catch (error) {
             console.error('Error fetching materials:', error);
-            materialsListEl.innerHTML = '<p class="error-msg">Failed to load materials. Make sure the backend is running.</p>';
+            materialsListEl.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">📭</span>
+                    <h3>No materials available yet</h3>
+                    <p>Materials will appear here once they are added to the database.</p>
+                </div>
+            `;
         }
     };
 
@@ -56,21 +78,29 @@ document.addEventListener('DOMContentLoaded', () => {
         materialsListEl.innerHTML = '';
         
         if (materials.length === 0) {
-            materialsListEl.innerHTML = '<p>No materials found for the selected filters.</p>';
+            materialsListEl.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">🔍</span>
+                    <h3>No materials found</h3>
+                    <p>Try adjusting your filters or check back later.</p>
+                </div>
+            `;
             return;
         }
 
-        materials.forEach(material => {
+        materials.forEach((material, index) => {
             const card = document.createElement('div');
             card.className = 'material-item-card';
+            card.style.animationDelay = `${index * 0.05}s`;
+            card.style.animation = 'fadeInUp 0.4s ease-out both';
             
             card.innerHTML = `
                 <div class="material-info">
                     <h4>${material.title}</h4>
-                    <span class="badge">Standard: ${material.standard}</span>
-                    <span class="badge badge-subject">Subject: ${material.subject}</span>
+                    <span class="badge badge-standard">Std ${material.standard}</span>
+                    <span class="badge badge-subject">${material.subject}</span>
                 </div>
-                <a href="${material.url}" target="_blank" class="btn btn-sm">View / Download</a>
+                <a href="${material.url}" target="_blank" class="btn btn-sm btn-ghost">View ↗</a>
             `;
             
             materialsListEl.appendChild(card);

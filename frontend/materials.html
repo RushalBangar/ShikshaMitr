@@ -3,24 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse study materials, board papers, and notes on ShikshaMitr.">
     <title>Materials - ShikshaMitr</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="js/theme.js"></script>
 </head>
 <body>
     <header>
         <div class="container header-container">
-            <a href="index.html">
-                <img src="images/logo.png" alt="ShikshaMitr Logo" class="header-logo">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
             </a>
+            <nav class="nav-links">
+                <a href="materials.html?type=notes" class="nav-link active">
+                    <span class="nav-icon">📚</span>
+                    <span>Notes</span>
+                </a>
+                <a href="materials.html?type=board_paper" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Papers</span>
+                </a>
+                <a href="reading.html" class="nav-link">
+                    <span class="nav-icon">🔤</span>
+                    <span>Reading</span>
+                </a>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </nav>
         </div>
     </header>
 
     <main class="container">
-        <section class="materials-header">
-            <h2 id="page-title">Study Materials</h2>
+        <section class="page-header">
+            <a href="index.html" class="back-link">← Back to Home</a>
+            <h1 id="page-title">📚 Study Materials</h1>
+            <p>Find notes, papers, and study resources.</p>
             <div class="filters">
-                <select id="standard-filter">
+                <select id="standard-filter" class="filter-select">
                     <option value="">All Standards</option>
                     <option value="5">5th Standard</option>
                     <option value="6">6th Standard</option>
@@ -29,7 +48,7 @@
                     <option value="9">9th Standard</option>
                     <option value="10">10th Standard</option>
                 </select>
-                <select id="subject-filter">
+                <select id="subject-filter" class="filter-select">
                     <option value="">All Subjects</option>
                     <option value="Math">Math</option>
                     <option value="Science">Science</option>
@@ -40,13 +59,16 @@
         </section>
 
         <section id="materials-list" class="materials-list">
-            <p>Loading materials...</p>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 ShikshaMitr. All rights reserved.</p>
+            <p>&copy; 2026 ShikshaMitr. Built with ❤️ for students.</p>
         </div>
     </footer>
 

@@ -3,49 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Improve your English reading skills step-by-step with ShikshaMitr's interactive reading tool.">
     <title>Easy English Reading - ShikshaMitr</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="js/theme.js"></script>
 </head>
 <body>
     <header>
         <div class="container header-container">
-            <a href="index.html">
-                <img src="images/logo.png" alt="ShikshaMitr Logo" class="header-logo">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
             </a>
+            <nav class="nav-links">
+                <a href="materials.html?type=notes" class="nav-link">
+                    <span class="nav-icon">📚</span>
+                    <span>Notes</span>
+                </a>
+                <a href="materials.html?type=board_paper" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span>Papers</span>
+                </a>
+                <a href="reading.html" class="nav-link active">
+                    <span class="nav-icon">🔤</span>
+                    <span>Reading</span>
+                </a>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </nav>
         </div>
     </header>
 
     <main class="container">
         <section class="reading-header">
-            <h2>Easy English Reading</h2>
+            <a href="index.html" class="back-link">← Back to Home</a>
+            <h1>🔊 Easy English Reading</h1>
             <p>Follow the steps to improve your reading skills.</p>
         </section>
 
         <section class="reading-workspace">
             <div class="controls">
-                <label for="level-select">Select Level:</label>
-                <select id="level-select">
-                    <option value="1">Level 1 (Beginner)</option>
-                    <option value="2">Level 2 (Intermediate)</option>
-                    <option value="3">Level 3 (Advanced)</option>
-                </select>
-                <button id="start-lesson-btn" class="btn">Start Lesson</button>
+                <div>
+                    <label for="level-select">Select Level:</label>
+                    <select id="level-select" class="filter-select">
+                        <option value="1">Level 1 — Beginner</option>
+                        <option value="2">Level 2 — Intermediate</option>
+                        <option value="3">Level 3 — Advanced</option>
+                    </select>
+                </div>
+                <button id="start-lesson-btn" class="btn btn-accent">▶ Start Lesson</button>
             </div>
 
             <div id="lesson-area" class="lesson-area hidden">
                 <div class="progress-bar">
                     <div class="step active" id="step-word">1. Word</div>
-                    <div class="step" id="step-pronunciation">2. Pronunciation</div>
-                    <div class="step" id="step-reading">3. Simple Reading</div>
-                    <div class="step" id="step-sentence">4. Sentence Reading</div>
+                    <div class="step" id="step-pronunciation">2. Listen</div>
+                    <div class="step" id="step-reading">3. Read</div>
+                    <div class="step" id="step-sentence">4. Sentence</div>
                 </div>
 
                 <div class="lesson-content">
-                    <h1 id="display-text" class="display-text">Word</h1>
+                    <div id="display-text" class="display-text">Word</div>
                     <div class="action-buttons">
-                        <button id="listen-btn" class="btn secondary-btn">🔊 Listen</button>
-                        <button id="next-step-btn" class="btn">Next Step ➡️</button>
+                        <button id="listen-btn" class="btn btn-ghost">🔊 Listen</button>
+                        <button id="next-step-btn" class="btn">Next Step →</button>
                     </div>
                 </div>
             </div>
@@ -54,7 +74,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 ShikshaMitr. All rights reserved.</p>
+            <p>&copy; 2026 ShikshaMitr. Built with ❤️ for students.</p>
         </div>
     </footer>
 
