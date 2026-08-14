@@ -12,6 +12,9 @@ class MaterialModel(BaseModel):
     class Config:
         populate_by_name = True
 
+class MaterialUpdateModel(BaseModel):
+    title: str
+
 class ReadingLessonModel(BaseModel):
     id: Optional[str] = Field(None, alias="_id")
     level: int # 1, 2, 3 etc. for difficulty

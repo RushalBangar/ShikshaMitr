@@ -68,8 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Add active to clicked
             tab.classList.add('active');
-            const target = document.getElementById(tab.getAttribute('data-target'));
+            const targetId = tab.getAttribute('data-target');
+            const target = document.getElementById(targetId);
             target.classList.add('active');
+            
+            if (targetId === 'manage-materials') {
+                loadMaterials();
+            }
         });
     });
     
@@ -244,4 +249,119 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = false;
         }
     });
+
+    // Manage Materials Logic
+    const manageAlert = document.getElementById('manage-alert');
+    const materialsListContainer = document.getElementById('materials-list-container');
+
+    async function loadMaterials() {
+        materialsListContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Loading materials...</p>';
+        try {
+            const response = await fetch(`${BACKEND_BASE_URL}/api/materials`);
+            if (!response.ok) throw new Error('Failed to fetch materials');
+            
+            const materials = await response.json();
+            if (materials.length === 0) {
+                materialsListContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No materials found.</p>';
+                return;
+            }
+            
+            materialsListContainer.innerHTML = '';
+            materials.forEach(mat => {
+                const card = document.createElement('div');
+                card.style.background = 'var(--bg-glass)';
+                card.style.padding = '1rem';
+                card.style.borderRadius = 'var(--radius-md)';
+                card.style.border = '1px solid var(--border-subtle)';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'space-between';
+                card.style.alignItems = 'center';
+                
+                const info = document.createElement('div');
+                info.innerHTML = `
+                    <h3 style="margin-bottom: 0.25rem; font-size: 1.1rem; color: var(--text-primary);">${mat.title}</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">${mat.subject} • Class ${mat.standard} • ${mat.type.replace('_', ' ')}</p>
+                `;
+                
+                const actions = document.createElement('div');
+                actions.style.display = 'flex';
+                actions.style.gap = '0.5rem';
+                
+                const renameBtn = document.createElement('button');
+                renameBtn.textContent = 'Rename';
+                renameBtn.className = 'btn btn-sm btn-ghost';
+                renameBtn.style.border = '1px solid var(--border-subtle)';
+                renameBtn.onclick = () => promptRename(mat.id, mat.title);
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.className = 'btn btn-sm';
+                deleteBtn.style.background = 'var(--status-error-bg)';
+                deleteBtn.style.color = 'var(--status-error-text)';
+                deleteBtn.onclick = () => deleteMaterial(mat.id);
+                
+                actions.appendChild(renameBtn);
+                actions.appendChild(deleteBtn);
+                
+                card.appendChild(info);
+                card.appendChild(actions);
+                materialsListContainer.appendChild(card);
+            });
+        } catch (error) {
+            materialsListContainer.innerHTML = '<p style="text-align: center; color: var(--status-error-text);">Failed to load materials.</p>';
+        }
+    }
+
+    async function promptRename(id, oldTitle) {
+        const newTitle = prompt("Enter new title:", oldTitle);
+        if (!newTitle || newTitle === oldTitle) return;
+        
+        try {
+            const currentToken = localStorage.getItem('shikshamitr_token');
+            const response = await fetch(`${BACKEND_BASE_URL}/api/materials/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${currentToken}`
+                },
+                body: JSON.stringify({ title: newTitle })
+            });
+            
+            if (response.ok) {
+                showAlert(manageAlert, 'Material renamed successfully!', 'success');
+                loadMaterials();
+            } else {
+                if (response.status === 401) { logout(); return; }
+                const err = await response.json();
+                showAlert(manageAlert, err.detail || 'Failed to rename material', 'error');
+            }
+        } catch (error) {
+            showAlert(manageAlert, 'Network error. Please try again.', 'error');
+        }
+    }
+
+    async function deleteMaterial(id) {
+        if (!confirm("Are you sure you want to delete this material? This cannot be undone.")) return;
+        
+        try {
+            const currentToken = localStorage.getItem('shikshamitr_token');
+            const response = await fetch(`${BACKEND_BASE_URL}/api/materials/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${currentToken}`
+                }
+            });
+            
+            if (response.ok) {
+                showAlert(manageAlert, 'Material deleted successfully!', 'success');
+                loadMaterials();
+            } else {
+                if (response.status === 401) { logout(); return; }
+                const err = await response.json();
+                showAlert(manageAlert, err.detail || 'Failed to delete material', 'error');
+            }
+        } catch (error) {
+            showAlert(manageAlert, 'Network error. Please try again.', 'error');
+        }
+    }
 });

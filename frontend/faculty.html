@@ -225,6 +225,7 @@
             <div class="dashboard-nav">
                 <button class="dashboard-tab active" data-target="upload-material">Upload Material</button>
                 <button class="dashboard-tab" data-target="upload-reading">Add Reading Lesson</button>
+                <button class="dashboard-tab" data-target="manage-materials">Manage</button>
             </div>
             
             <!-- Upload Material Tab -->
@@ -306,6 +307,15 @@
                     
                     <button type="submit" class="btn btn-accent">Add Reading Lesson</button>
                 </form>
+            </div>
+            
+            <!-- Manage Materials Tab -->
+            <div id="manage-materials" class="tab-content">
+                <div id="manage-alert" class="alert"></div>
+                <div id="materials-list-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Populated by JS -->
+                    <p style="text-align: center; color: var(--text-secondary);">Loading materials...</p>
+                </div>
             </div>
         </section>
     </main>
