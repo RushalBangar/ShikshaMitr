@@ -22,7 +22,7 @@ async def get_materials(type: Optional[str] = None, standard: Optional[int] = No
     materials = []
     cursor = main.db.materials.find(query)
     async for document in cursor:
-        document["id"] = str(document["_id"])
+        document["_id"] = str(document["_id"])
         materials.append(MaterialModel(**document))
         
     return materials
@@ -36,5 +36,5 @@ async def create_material(material: MaterialModel, current_user: dict = Depends(
     result = await main.db.materials.insert_one(material_dict)
     
     created_material = await main.db.materials.find_one({"_id": result.inserted_id})
-    created_material["id"] = str(created_material["_id"])
+    created_material["_id"] = str(created_material["_id"])
     return MaterialModel(**created_material)

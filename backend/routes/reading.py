@@ -18,7 +18,7 @@ async def get_reading_lessons(level: Optional[int] = None):
     lessons = []
     cursor = main.db.reading_lessons.find(query)
     async for document in cursor:
-        document["id"] = str(document["_id"])
+        document["_id"] = str(document["_id"])
         lessons.append(ReadingLessonModel(**document))
         
     return lessons
@@ -32,5 +32,5 @@ async def create_reading_lesson(lesson: ReadingLessonModel, current_user: dict =
     result = await main.db.reading_lessons.insert_one(lesson_dict)
     
     created_lesson = await main.db.reading_lessons.find_one({"_id": result.inserted_id})
-    created_lesson["id"] = str(created_lesson["_id"])
+    created_lesson["_id"] = str(created_lesson["_id"])
     return ReadingLessonModel(**created_lesson)
