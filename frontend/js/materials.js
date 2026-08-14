@@ -56,8 +56,22 @@ document.addEventListener('DOMContentLoaded', () => {
             url.searchParams.append('subject', subjectFilter.value);
         }
 
+        let timeoutId;
+        
         try {
+            // Show cold start message if takes longer than 2.5s
+            timeoutId = setTimeout(() => {
+                if (materialsListEl.querySelector('.skeleton')) {
+                    const messageEl = document.createElement('div');
+                    messageEl.style.cssText = 'grid-column: 1 / -1; text-align: center; color: var(--primary); font-size: 0.9rem; padding: 1rem; background: var(--primary-glow); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); animation: fadeIn 0.3s ease-out;';
+                    messageEl.innerHTML = '☁️ Waking up the server, please wait a few seconds...';
+                    materialsListEl.prepend(messageEl);
+                }
+            }, 2500);
+
             const response = await fetch(url);
+            clearTimeout(timeoutId);
+            
             if (!response.ok) throw new Error('Failed to fetch materials');
             
             const materials = await response.json();
@@ -94,13 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.animationDelay = `${index * 0.05}s`;
             card.style.animation = 'fadeInUp 0.4s ease-out both';
             
+            const fullUrl = material.url.startsWith('http') ? material.url : `${BACKEND_BASE_URL}${material.url}`;
+            
             card.innerHTML = `
                 <div class="material-info">
                     <h4>${material.title}</h4>
                     <span class="badge badge-standard">Std ${material.standard}</span>
                     <span class="badge badge-subject">${material.subject}</span>
                 </div>
-                <a href="${material.url}" target="_blank" class="btn btn-sm btn-ghost">View ↗</a>
+                <a href="${fullUrl}" target="_blank" class="btn btn-sm btn-ghost">View ↗</a>
             `;
             
             materialsListEl.appendChild(card);

@@ -98,8 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const speak = (text) => {
         if ('speechSynthesis' in window) {
-            // Remove emojis from speech
-            const cleanText = text.replace(/[\u1000-\uFFFF]+/g, '');
+            // Remove emojis from speech using modern Unicode property escapes to preserve Indian/non-Latin scripts
+            const cleanText = text.replace(/\p{Extended_Pictographic}|\p{Emoji_Presentation}/gu, '');
             const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'en-US'; // Can be changed based on preference
             utterance.rate = 0.85; // Slightly slower for learning
@@ -114,13 +114,30 @@ document.addEventListener('DOMContentLoaded', () => {
         startBtn.textContent = 'Loading...';
         startBtn.disabled = true;
 
+        let timeoutId;
+        
         try {
+            timeoutId = setTimeout(() => {
+                const messageEl = document.createElement('div');
+                messageEl.id = 'cold-start-msg';
+                messageEl.style.cssText = 'text-align: center; color: var(--primary); font-size: 0.9rem; padding: 1rem; background: var(--primary-glow); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin-bottom: 1rem; animation: fadeIn 0.3s ease-out;';
+                messageEl.innerHTML = '☁️ Waking up the server, please wait a few seconds...';
+                lessonArea.prepend(messageEl);
+            }, 2500);
+
             const response = await fetch(`${API_URL}?level=${level}`);
+            clearTimeout(timeoutId);
+            
+            const msg = document.getElementById('cold-start-msg');
+            if (msg) msg.remove();
+
             if (response.ok) {
                 currentLessons = await response.json();
             }
         } catch (error) {
             console.error('Failed to fetch lessons, using fallbacks', error);
+            const msg = document.getElementById('cold-start-msg');
+            if (msg) msg.remove();
         }
         
         // If DB is empty, use fallbacks for demonstration

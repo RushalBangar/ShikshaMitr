@@ -85,6 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('username', username);
         formData.append('password', password);
         
+        let timeoutId = setTimeout(() => {
+            showAlert(loginAlert, '☁️ Waking up the server, please wait a few seconds...', 'success');
+        }, 2500);
+
         try {
             const response = await fetch(`${BACKEND_BASE_URL}/api/auth/login`, {
                 method: 'POST',
@@ -93,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: formData
             });
+            clearTimeout(timeoutId);
             
             if (response.ok) {
                 const data = await response.json();
@@ -103,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showAlert(loginAlert, error.detail || 'Login failed', 'error');
             }
         } catch (error) {
+            clearTimeout(timeoutId);
             showAlert(loginAlert, 'Network error. Please try again.', 'error');
         }
     });
@@ -125,6 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
         matSubmitBtn.disabled = true;
         
         let fileUrl = '';
+        let uploadTimeoutId = setTimeout(() => {
+            showAlert(materialAlert, '☁️ Waking up the server, please wait a few seconds...', 'success');
+        }, 2500);
+
         try {
             const formData = new FormData();
             formData.append('file', file);
@@ -137,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: formData
             });
+            clearTimeout(uploadTimeoutId);
             
             if (!uploadRes.ok) {
                 if (uploadRes.status === 401) { logout(); return; }
@@ -147,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fileUrl = `${BACKEND_BASE_URL}${uploadData.url}`;
             
         } catch (error) {
+            clearTimeout(uploadTimeoutId);
             showAlert(materialAlert, error.message, 'error');
             matSubmitBtn.textContent = 'Upload Material';
             matSubmitBtn.disabled = false;

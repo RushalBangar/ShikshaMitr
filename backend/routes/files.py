@@ -19,16 +19,25 @@ async def upload_file(
     current_user: dict = Depends(get_current_user),
     fs: AsyncIOMotorGridFSBucket = Depends(get_gridfs)
 ):
-    try:
-        # Read the file content
-        contents = await file.read()
+    if not (file.filename and file.filename.lower().endswith(".pdf")) or file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
         
-        # Upload to GridFS
-        file_id = await fs.upload_from_stream(
+    try:
+        # Open GridFS upload stream
+        grid_in = fs.open_upload_stream(
             file.filename,
-            contents,
             metadata={"content_type": file.content_type, "uploaded_by": current_user["username"]}
         )
+        
+        # Read file in 1MB chunks and write to GridFS to prevent memory exhaustion
+        while True:
+            chunk = await file.read(1024 * 1024)
+            if not chunk:
+                break
+            await grid_in.write(chunk)
+            
+        await grid_in.close()
+        file_id = grid_in._id
         
         # Return the URL that can be used to download the file
         return {
