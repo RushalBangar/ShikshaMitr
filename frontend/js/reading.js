@@ -18,32 +18,57 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentLessons = [];
     let currentLessonIndex = 0;
 
-    // We can fall back to hardcoded lessons if the backend has none yet for testing
-    const fallbackLessons = [
-        { word: 'Apple', sentence: 'An apple a day keeps the doctor away.' },
-        { word: 'Beautiful', sentence: 'The sunset is very beautiful today.' },
-        { word: 'Knowledge', sentence: 'Knowledge is power.' }
-    ];
+    // Dynamic, level-specific lessons with emojis to make it engaging
+    const fallbackLessons = {
+        "1": [
+            { word: 'Cat', sentence: 'The cat is sleeping. 🐱' },
+            { word: 'Sun', sentence: 'The sun is bright today. ☀️' },
+            { word: 'Apple', sentence: 'I like to eat an apple. 🍎' },
+            { word: 'Book', sentence: 'She is reading a book. 📖' },
+            { word: 'Happy', sentence: 'He is very happy. 😊' }
+        ],
+        "2": [
+            { word: 'Beautiful', sentence: 'The sunset is very beautiful today. 🌅' },
+            { word: 'Journey', sentence: 'Life is a journey, not a destination. 🛤️' },
+            { word: 'Friend', sentence: 'A true friend is hard to find. 🤝' },
+            { word: 'Imagine', sentence: 'Imagine a world full of peace. 🌍' },
+            { word: 'Curious', sentence: 'The curious cat explored the garden. 🐈' }
+        ],
+        "3": [
+            { word: 'Fascinating', sentence: 'The space documentary was truly fascinating. 🚀' },
+            { word: 'Perseverance', sentence: 'Through perseverance, she achieved her goals. 💪' },
+            { word: 'Metamorphosis', sentence: 'The caterpillar undergoes metamorphosis. 🦋' },
+            { word: 'Knowledge', sentence: 'Knowledge is power. 🧠' },
+            { word: 'Enthusiastic', sentence: 'The students were enthusiastic about the project. 🎉' }
+        ]
+    };
 
     const updateStepUI = () => {
         steps.forEach((step, index) => {
             const stepEl = document.getElementById(`step-${step}`);
-            if (index === currentStepIndex) {
-                stepEl.classList.add('active');
+            if (index < currentStepIndex) {
+                stepEl.className = 'step completed';
+            } else if (index === currentStepIndex) {
+                stepEl.className = 'step active';
             } else {
-                stepEl.classList.remove('active');
+                stepEl.className = 'step';
             }
         });
     };
 
     const displayCurrentContent = () => {
         updateStepUI();
-        const lesson = currentLessons[currentLessonIndex] || fallbackLessons[currentLessonIndex];
+        const lesson = currentLessons[currentLessonIndex];
         
         if (!lesson) {
-            displayElement.textContent = "Great job! You finished the lesson.";
-            listenBtn.style.display = 'none';
-            nextStepBtn.style.display = 'none';
+            lessonArea.innerHTML = `
+                <div class="lesson-complete animate-pulse">
+                    <span class="complete-icon">🏆</span>
+                    <h2>Great Job!</h2>
+                    <p>You finished all the reading exercises for this level.</p>
+                    <button class="btn btn-accent" style="margin-top: 1rem;" onclick="location.reload()">Start Another Lesson</button>
+                </div>
+            `;
             return;
         }
 
@@ -73,9 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const speak = (text) => {
         if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(text);
+            // Remove emojis from speech
+            const cleanText = text.replace(/[\u1000-\uFFFF]+/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'en-US'; // Can be changed based on preference
-            utterance.rate = 0.9; // Slightly slower for learning
+            utterance.rate = 0.85; // Slightly slower for learning
             window.speechSynthesis.speak(utterance);
         } else {
             alert("Sorry, your browser doesn't support text to speech!");
@@ -98,7 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // If DB is empty, use fallbacks for demonstration
         if (currentLessons.length === 0) {
-            currentLessons = fallbackLessons;
+            currentLessons = [...(fallbackLessons[level] || fallbackLessons["1"])];
+            // Shuffle lessons to make them dynamic and engaging each time
+            currentLessons.sort(() => 0.5 - Math.random());
         }
 
         lessonArea.classList.remove('hidden');
@@ -112,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     listenBtn.addEventListener('click', () => {
-        const lesson = currentLessons[currentLessonIndex] || fallbackLessons[currentLessonIndex];
+        const lesson = currentLessons[currentLessonIndex];
         if (!lesson) return;
         
         const currentStep = steps[currentStepIndex];
