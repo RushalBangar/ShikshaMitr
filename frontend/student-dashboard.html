@@ -259,19 +259,30 @@
                         </div>
                     </a>
 
-                    <a href="materials.html?type=practice_paper" class="action-tile">
-                        <span class="action-icon">✍️</span>
+                    <a href="quiz.html" class="action-tile" style="border-color: var(--primary); background: var(--gradient-card-1);">
+                        <span class="action-icon">🎯</span>
                         <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Practice Tests</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Prepare and test your mastery</p>
+                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem; color: var(--primary);">Live Quizzes</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Take tests published by faculty</p>
                         </div>
                     </a>
                 </div>
 
-                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--gradient-card-1); border-radius: var(--radius-md); border: 1px solid rgba(99, 102, 241, 0.15);">
-                    <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--primary);">💡 Daily Study Tip</h3>
+                <!-- Live Quizzes Feed from Faculty -->
+                <div style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.25rem;">📝 Active Faculty Quizzes</h3>
+                        <a href="quiz.html" class="btn btn-sm btn-ghost" style="font-size: 0.85rem;">View All →</a>
+                    </div>
+                    <div id="dashboard-quizzes-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Checking for available quizzes...</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--gradient-card-2); border-radius: var(--radius-md); border: 1px solid rgba(245, 158, 11, 0.2);">
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--accent-dark);">💡 Daily Study Tip</h3>
                     <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                        Reading aloud for just 10 minutes every day improves pronunciation and vocabulary retention by over 40%!
+                        Solving chapter quizzes right after reading notes increases concept recall by 65%!
                     </p>
                 </div>
             </div>

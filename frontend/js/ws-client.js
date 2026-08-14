@@ -6,7 +6,7 @@
     let socket = null;
     let pingInterval = null;
 
-    function showLiveToast(title, message, icon = '📢') {
+    function showLiveToast(title, message, icon = '📢', link = null, linkText = 'Open →') {
         let toastContainer = document.getElementById('live-toast-container');
         if (!toastContainer) {
             toastContainer = document.createElement('div');
@@ -19,7 +19,7 @@
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
-                max-width: 360px;
+                max-width: 380px;
                 pointer-events: none;
             `;
             document.body.appendChild(toastContainer);
@@ -47,6 +47,7 @@
             <div style="flex: 1;">
                 <h4 style="margin: 0 0 3px 0; font-size: 0.95rem; font-weight: 700;">${title}</h4>
                 <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary, #475569); line-height: 1.4;">${message}</p>
+                ${link ? `<a href="${link}" style="display: inline-block; margin-top: 8px; font-size: 0.8rem; font-weight: 600; color: var(--primary, #6366F1); text-decoration: underline;">${linkText}</a>` : ''}
             </div>
             <button style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-muted, #94a3b8); padding: 0;" aria-label="Close">×</button>
         `;
@@ -58,7 +59,7 @@
 
         toastContainer.appendChild(toast);
 
-        // Auto remove after 6 seconds
+        // Auto remove after 8 seconds
         setTimeout(() => {
             if (toast.parentElement) {
                 toast.style.opacity = '0';
@@ -66,7 +67,7 @@
                 toast.style.transition = 'all 0.3s ease-out';
                 setTimeout(() => toast.remove(), 300);
             }
-        }, 6000);
+        }, 8000);
     }
 
     function connectWebSocket() {
@@ -88,9 +89,9 @@
                 try {
                     const data = JSON.parse(event.data);
                     if (data.type === 'NEW_MATERIAL') {
-                        showLiveToast('New Study Material! 📚', data.message, '📚');
+                        showLiveToast('New Study Material! 📚', data.message, '📚', 'materials.html', 'View Materials →');
                     } else if (data.type === 'NEW_QUIZ') {
-                        showLiveToast('New Quiz Published! 🎯', data.message, '🎯');
+                        showLiveToast('New Quiz Published! 🎯', data.message, '🎯', 'quiz.html', 'Take Quiz Now 🚀');
                     } else if (data.message) {
                         showLiveToast('Live Update 📢', data.message, '✨');
                     }

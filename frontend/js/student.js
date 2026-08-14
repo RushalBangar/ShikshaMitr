@@ -100,6 +100,46 @@ document.addEventListener('DOMContentLoaded', () => {
             streakCountEl.textContent = `${streak} Day${streak > 1 ? 's' : ''} Streak!`;
         }
 
+        // Fetch & display latest faculty quizzes on student dashboard
+        const dashboardQuizzesList = document.getElementById('dashboard-quizzes-list');
+        async function loadDashboardQuizzes() {
+            if (!dashboardQuizzesList) return;
+            try {
+                const res = await fetch(`${BACKEND_BASE_URL}/api/quizzes`);
+                const quizzes = await res.json();
+                if (!quizzes || quizzes.length === 0) {
+                    dashboardQuizzesList.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">No active quizzes yet. Your faculty will publish practice tests soon!</p>';
+                    return;
+                }
+
+                dashboardQuizzesList.innerHTML = '';
+                quizzes.slice(0, 4).forEach(q => {
+                    const item = document.createElement('div');
+                    item.style.cssText = `
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-subtle);
+                        border-radius: var(--radius-md);
+                        padding: 1rem 1.25rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    `;
+                    const qCount = q.questions ? q.questions.length : 0;
+                    item.innerHTML = `
+                        <div>
+                            <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${q.title}</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Class ${q.standard} • ${q.subject} • ${qCount} Questions</p>
+                        </div>
+                        <a href="quiz.html" class="btn btn-sm btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.9rem;">Start Test ▶</a>
+                    `;
+                    dashboardQuizzesList.appendChild(item);
+                });
+            } catch (e) {
+                dashboardQuizzesList.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.9rem;">Could not load quizzes at this time.</p>';
+            }
+        }
+        loadDashboardQuizzes();
+
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 localStorage.removeItem('shikshamitr_student_token');
