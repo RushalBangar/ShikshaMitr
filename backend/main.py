@@ -6,7 +6,7 @@ import os
 import certifi
 from dotenv import load_dotenv
 
-from routes import materials, reading, auth, files, quizzes, ws
+from routes import materials, reading, auth, files, quizzes, ws, student, faculty
 
 # Load environment variables
 load_dotenv()
@@ -52,6 +52,8 @@ app.include_router(files.router, prefix="/api/files", tags=["files"])
 app.include_router(materials.router, prefix="/api", tags=["materials"])
 app.include_router(reading.router, prefix="/api", tags=["reading"])
 app.include_router(quizzes.router, prefix="/api", tags=["quizzes"])
+app.include_router(student.router, prefix="/api", tags=["student"])
+app.include_router(faculty.router, prefix="/api", tags=["faculty"])
 app.include_router(ws.router, tags=["websocket"])
 
 @app.get("/")

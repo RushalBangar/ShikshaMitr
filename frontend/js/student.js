@@ -95,10 +95,43 @@ document.addEventListener('DOMContentLoaded', () => {
             if (studentUsernameEl) studentUsernameEl.textContent = `@${studentInfo.username}`;
         }
 
-        const streak = updateStreak();
-        if (streakCountEl) {
-            streakCountEl.textContent = `${streak} Day${streak > 1 ? 's' : ''} Streak!`;
+        async function loadStudentStats() {
+            try {
+                const res = await fetch(`${BACKEND_BASE_URL}/api/student/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const stats = await res.json();
+                    
+                    // Update Streak
+                    if (streakCountEl) {
+                        streakCountEl.textContent = `${stats.streak} Day${stats.streak !== 1 ? 's' : ''} Streak!`;
+                    }
+                    
+                    // Calculate Level (1 level per 3 quizzes)
+                    const level = Math.floor(stats.total_quizzes / 3) + 1;
+                    const levelLabel = document.getElementById('level-label');
+                    const levelBar = document.getElementById('level-bar');
+                    if (levelLabel) levelLabel.textContent = `Level ${level} Reader`;
+                    
+                    // Calculate progress to next level (percentage)
+                    const progress = ((stats.total_quizzes % 3) / 3) * 100;
+                    if (levelBar) levelBar.style.width = `${progress}%`;
+                    
+                    // Light up badges
+                    const badges = document.querySelectorAll('.badge-card');
+                    if (badges.length >= 3) {
+                        if (stats.total_quizzes >= 1) badges[0].style.border = '2px solid var(--primary)';
+                        if (stats.total_quizzes >= 5) badges[1].style.border = '2px solid var(--primary)';
+                        if (stats.streak >= 3) badges[2].style.border = '2px solid var(--primary)';
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load stats", err);
+            }
         }
+        
+        loadStudentStats();
 
         // Fetch & display latest faculty quizzes on student dashboard
         const dashboardQuizzesList = document.getElementById('dashboard-quizzes-list');
@@ -123,14 +156,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+                        flex-wrap: wrap;
+                        gap: 1rem;
                     `;
                     const qCount = q.questions ? q.questions.length : 0;
                     item.innerHTML = `
-                        <div>
+                        <div style="flex: 1; min-width: 150px;">
                             <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${q.title}</h4>
                             <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Class ${q.standard} • ${q.subject} • ${qCount} Questions</p>
                         </div>
-                        <a href="quiz.html" class="btn btn-sm btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.9rem;">Start Test ▶</a>
+                        <a href="quiz.html" class="btn btn-sm btn-primary" style="font-size: 0.8rem; padding: 0.4rem 0.9rem; white-space: nowrap;">Start Test ▶</a>
                     `;
                     dashboardQuizzesList.appendChild(item);
                 });

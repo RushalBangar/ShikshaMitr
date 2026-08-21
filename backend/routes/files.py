@@ -13,6 +13,10 @@ async def get_gridfs():
         raise HTTPException(status_code=500, detail="Database not connected")
     return AsyncIOMotorGridFSBucket(main.db)
 
+import cloudinary
+import cloudinary.uploader
+import os
+
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...), 
@@ -23,27 +27,31 @@ async def upload_file(
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
         
     try:
-        # Open GridFS upload stream
-        grid_in = fs.open_upload_stream(
-            file.filename,
-            metadata={"content_type": file.content_type, "uploaded_by": current_user["username"]}
+        # Check if CLOUDINARY_URL is set
+        if not os.getenv("CLOUDINARY_URL"):
+            raise HTTPException(status_code=500, detail="Cloudinary is not configured on the server.")
+            
+        # We need to read the file into memory and upload.
+        # For large files, we might need a custom chunked stream, but Cloudinary's upload accepts a file-like object or bytes.
+        file_bytes = await file.read()
+        
+        # Upload to Cloudinary using the bytes
+        # resource_type="raw" is needed for PDFs and non-image files, though "auto" or "image" works for pdfs if we want to generate thumbnails.
+        # Let's use "auto"
+        upload_result = cloudinary.uploader.upload(
+            file_bytes, 
+            resource_type="raw", 
+            public_id=file.filename.split('.')[0] + "_" + current_user["username"],
+            format="pdf"
         )
         
-        # Read file in 1MB chunks and write to GridFS to prevent memory exhaustion
-        while True:
-            chunk = await file.read(1024 * 1024)
-            if not chunk:
-                break
-            await grid_in.write(chunk)
-            
-        await grid_in.close()
-        file_id = grid_in._id
+        secure_url = upload_result.get("secure_url")
         
         # Return the URL that can be used to download the file
         return {
             "filename": file.filename,
-            "file_id": str(file_id),
-            "url": f"/api/files/{str(file_id)}"
+            "file_id": upload_result.get("public_id"), # For legacy sake or reference
+            "url": secure_url
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")

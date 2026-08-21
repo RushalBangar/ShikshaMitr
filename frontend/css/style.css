@@ -1344,13 +1344,33 @@ footer a:hover {
         padding: 0.6rem 0;
     }
 
+    .header-container {
+        gap: 0.3rem;
+    }
+
     .logo-text {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
+        white-space: nowrap;
     }
 
     .header-logo {
-        height: 30px;
-        width: 30px;
+        height: 28px;
+        width: 28px;
+    }
+
+    header .btn {
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.75rem !important;
+        min-height: 32px !important;
+        white-space: nowrap;
+    }
+    header .nav-icon {
+        display: none !important;
+    }
+    header .theme-toggle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
     }
 
     /* Full width containers with comfortable mobile padding */

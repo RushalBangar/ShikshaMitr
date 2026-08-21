@@ -74,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (targetId === 'manage-materials') {
                 loadMaterials();
+            } else if (targetId === 'analytics-dashboard') {
+                loadAnalytics();
             }
         });
     });
@@ -276,8 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.display = 'flex';
                 card.style.justifyContent = 'space-between';
                 card.style.alignItems = 'center';
+                card.style.flexWrap = 'wrap';
+                card.style.gap = '1rem';
                 
                 const info = document.createElement('div');
+                info.style.flex = '1';
+                info.style.minWidth = '150px';
                 info.innerHTML = `
                     <h3 style="margin-bottom: 0.25rem; font-size: 1.1rem; color: var(--text-primary);">${mat.title}</h3>
                     <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">${mat.subject} • Class ${mat.standard} • ${mat.type.replace('_', ' ')}</p>
@@ -502,5 +508,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+    let activityChartInstance = null;
+
+    async function loadAnalytics() {
+        try {
+            const currentToken = localStorage.getItem('shikshamitr_token');
+            const res = await fetch(`${BACKEND_BASE_URL}/api/analytics`, {
+                headers: { 'Authorization': `Bearer ${currentToken}` }
+            });
+            if (!res.ok) {
+                if (res.status === 401) logout();
+                throw new Error("Failed to load analytics");
+            }
+            const data = await res.json();
+            
+            document.getElementById('stat-total-quizzes').textContent = data.total_quizzes_taken;
+            document.getElementById('stat-avg-score').textContent = `${data.average_score}%`;
+            
+            // Render Chart
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            if (activityChartInstance) {
+                activityChartInstance.destroy();
+            }
+            
+            activityChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.trend_data.labels.map(d => {
+                        const date = new Date(d);
+                        return `${date.getDate()}/${date.getMonth() + 1}`;
+                    }),
+                    datasets: [{
+                        label: 'Quizzes Taken',
+                        data: data.trend_data.counts,
+                        backgroundColor: '#6366F1',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+            
+        } catch (err) {
+            console.error("Error loading analytics:", err);
+            const alert = document.getElementById('analytics-alert');
+            if (alert) showAlert(alert, "Failed to load analytics data.", "error");
+        }
     }
 });

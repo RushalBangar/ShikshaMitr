@@ -237,6 +237,7 @@
                 <button class="dashboard-tab" data-target="create-quiz">Create Quiz</button>
                 <button class="dashboard-tab" data-target="upload-reading">Add Reading</button>
                 <button class="dashboard-tab" data-target="manage-materials">Manage</button>
+                <button class="dashboard-tab" data-target="analytics-dashboard">Analytics</button>
             </div>
             
             <!-- Upload Material Tab -->
@@ -367,6 +368,26 @@
                     <p style="text-align: center; color: var(--text-secondary);">Loading materials...</p>
                 </div>
             </div>
+
+            <!-- Analytics Dashboard Tab -->
+            <div id="analytics-dashboard" class="tab-content">
+                <div id="analytics-alert" class="alert"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
+                        <h3 style="color: var(--text-secondary); font-size: 1rem;">Total Quizzes Taken</h3>
+                        <p id="stat-total-quizzes" style="font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--primary);">0</p>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
+                        <h3 style="color: var(--text-secondary); font-size: 1rem;">Average Score</h3>
+                        <p id="stat-avg-score" style="font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--status-ok-text);">0%</p>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem; text-align: center;">Activity Trend (Last 7 Days)</h3>
+                    <canvas id="activityChart" style="width: 100%; height: 300px;"></canvas>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -397,7 +418,7 @@
             Theme
         </button>
     </nav>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/ws-client.js"></script>
     <script src="js/faculty.js"></script>
 </body>

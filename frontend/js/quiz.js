@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const count = quiz.questions ? quiz.questions.length : 0;
 
                 card.innerHTML = `
-                    <div>
+                    <div style="flex: 1; min-width: 200px;">
                         <h3 style="font-size: 1.15rem; margin-bottom: 0.3rem;">${quiz.title}</h3>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <span class="badge badge-standard">Class ${quiz.standard}</span>
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="badge" style="background: var(--bg-surface); color: var(--text-secondary);">${count} Questions</span>
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-primary">Start Quiz ▶</button>
+                    <button class="btn btn-sm btn-primary" style="white-space: nowrap;">Start Quiz ▶</button>
                 `;
 
                 const startBtn = card.querySelector('button');
@@ -179,28 +179,53 @@ document.addEventListener('DOMContentLoaded', () => {
     // Submit Quiz & Show Scorecard
     if (submitQuizBtn) {
         submitQuizBtn.addEventListener('click', async () => {
-            let correct = 0;
-            currentQuiz.questions.forEach((q, idx) => {
-                if (userAnswers[idx] === q.correct_option) {
-                    correct++;
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert("Please log in to submit the quiz and track your progress.");
+                return;
+            }
+            
+            try {
+                submitQuizBtn.disabled = true;
+                submitQuizBtn.textContent = 'Submitting...';
+                
+                const response = await fetch(`${BACKEND_BASE_URL}/api/quizzes/${currentQuiz.id || currentQuiz._id}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        quiz_id: currentQuiz.id || currentQuiz._id,
+                        answers: userAnswers
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to submit quiz');
                 }
-            });
+                
+                const result = await response.json();
+                
+                quizPlayerView.style.display = 'none';
+                quizResultsView.style.display = 'block';
 
-            const total = currentQuiz.questions.length;
-            const percentage = Math.round((correct / total) * 100);
+                resultPercentage.textContent = `${result.score_percentage}%`;
+                resultFraction.textContent = `${result.correct_answers}/${result.total_questions} Correct`;
 
-            quizPlayerView.style.display = 'none';
-            quizResultsView.style.display = 'block';
-
-            resultPercentage.textContent = `${percentage}%`;
-            resultFraction.textContent = `${correct}/${total} Correct`;
-
-            if (percentage >= 80) {
-                resultVerdict.textContent = '🌟 Outstanding Mastery! Keep it up!';
-            } else if (percentage >= 50) {
-                resultVerdict.textContent = '👍 Good Effort! Revise and try again!';
-            } else {
-                resultVerdict.textContent = '📖 Review your notes and try again!';
+                if (result.score_percentage >= 80) {
+                    resultVerdict.textContent = '🌟 Outstanding Mastery! Keep it up!';
+                } else if (result.score_percentage >= 50) {
+                    resultVerdict.textContent = '👍 Good Effort! Revise and try again!';
+                } else {
+                    resultVerdict.textContent = '📚 Needs Practice! Review the notes and try again.';
+                }
+            } catch (err) {
+                alert("An error occurred while submitting. Your score won't be saved.");
+                console.error(err);
+            } finally {
+                submitQuizBtn.disabled = false;
+                submitQuizBtn.textContent = 'Submit Quiz ▶';
             }
         });
     }

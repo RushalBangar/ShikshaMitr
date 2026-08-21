@@ -86,7 +86,7 @@ async def delete_quiz(quiz_id: str, current_user: dict = Depends(get_current_use
     return {"message": "Quiz deleted successfully"}
 
 @router.post("/quizzes/{quiz_id}/submit")
-async def submit_quiz(quiz_id: str, submission: QuizSubmissionModel):
+async def submit_quiz(quiz_id: str, submission: QuizSubmissionModel, current_user: dict = Depends(get_current_user)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
     try:
@@ -117,6 +117,21 @@ async def submit_quiz(quiz_id: str, submission: QuizSubmissionModel):
         })
         
     score_percentage = round((correct_count / total_questions) * 100) if total_questions > 0 else 0
+    
+    if current_user.get("role") == "student":
+        from datetime import datetime
+        activity = {
+            "student_username": current_user["username"],
+            "quiz_id": quiz_id,
+            "quiz_title": quiz.get("title"),
+            "subject": quiz.get("subject"),
+            "standard": quiz.get("standard"),
+            "score_percentage": score_percentage,
+            "correct_answers": correct_count,
+            "total_questions": total_questions,
+            "timestamp": datetime.utcnow()
+        }
+        await main.db.student_activity.insert_one(activity)
     
     return {
         "quiz_id": quiz_id,
