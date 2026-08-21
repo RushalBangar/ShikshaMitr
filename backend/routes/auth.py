@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import bcrypt
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 import main
 import os
@@ -53,7 +53,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        role: str = payload.get("role", "faculty") # Default to faculty for older tokens
+        role: str = payload.get("role", "student") # Default to student for older tokens
         if username is None:
             raise credentials_exception
     except jwt.PyJWTError:
@@ -132,7 +132,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 class StudentRegister(BaseModel):
     username: str
-    password: str
+    password: str = Field(..., min_length=6)
     email: Optional[str] = None
     full_name: str
 
@@ -143,14 +143,20 @@ async def register_student(data: StudentRegister):
         
     clean_username = data.username.strip().lstrip('@')
     
-    # Check if username exists
+    # Check if username or email exists
+    or_conds = [
+        {"username": clean_username},
+        {"username": f"@{clean_username}"}
+    ]
+    if data.email:
+        or_conds.append({"email": data.email.strip().lower()})
+        
     existing_student = await main.db.students.find_one({
-        "$or": [
-            {"username": clean_username},
-            {"username": f"@{clean_username}"}
-        ]
+        "$or": or_conds
     })
     if existing_student:
+        if data.email and existing_student.get("email") == data.email.strip().lower():
+            raise HTTPException(status_code=400, detail="Email already taken")
         raise HTTPException(status_code=400, detail="Username already taken")
         
     existing_staff = await main.db.staff.find_one({
