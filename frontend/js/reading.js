@@ -75,10 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             // Call API to complete lesson and award points
+            const actualToken = localStorage.getItem('token') || localStorage.getItem('shikshamitr_student_token');
             fetch(`${API_URL}/complete`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${actualToken}`
                 }
             }).then(res => res.json()).then(data => {
                 if (data.points_awarded > 0) {
@@ -227,8 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
         saveFlashcardBtn.disabled = true;
         
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
+            const actualToken = localStorage.getItem('token') || localStorage.getItem('shikshamitr_student_token');
+            if (!actualToken) {
                 alert('Please log in to save flashcards.');
                 saveFlashcardBtn.textContent = '🧠 Save to Flashcards';
                 saveFlashcardBtn.disabled = false;
@@ -239,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${actualToken}`
                 },
                 body: JSON.stringify({
                     front: lesson.word,

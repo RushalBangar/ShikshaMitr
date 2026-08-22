@@ -4,9 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_URL = `${BACKEND_BASE_URL}/api`;
     
     const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('role');
+    const actualToken = token || localStorage.getItem('shikshamitr_student_token') || localStorage.getItem('shikshamitr_faculty_token');
+    let userRole = localStorage.getItem('role');
+    if (!userRole) {
+        userRole = localStorage.getItem('shikshamitr_faculty_token') ? 'faculty' : 'student';
+    }
     
-    if (!token) {
+    if (!actualToken) {
         window.location.href = 'student-login.html';
         return;
     }
@@ -111,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${actualToken}`
                 },
                 body: JSON.stringify({ content })
             });
@@ -130,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch(`${API_URL}/forum/posts/${postId}/replies/${replyId}/verify`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${actualToken}` }
             });
             if (res.ok) {
                 await loadReplies(postId);
@@ -153,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${actualToken}`
                 },
                 body: JSON.stringify({ title, subject, content })
             });

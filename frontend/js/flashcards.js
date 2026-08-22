@@ -4,7 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_URL = `${BACKEND_BASE_URL}/api`;
     
     const token = localStorage.getItem('token');
-    const userRole = localStorage.getItem('role') || localStorage.getItem('shikshamitr_faculty_token') ? 'faculty' : (localStorage.getItem('shikshamitr_student_token') ? 'student' : null);
+    let userRole = localStorage.getItem('role');
+    if (!userRole) {
+        userRole = localStorage.getItem('shikshamitr_faculty_token') ? 'faculty' : 'student';
+    }
     const actualToken = token || localStorage.getItem('shikshamitr_student_token') || localStorage.getItem('shikshamitr_faculty_token');
     
     if (!actualToken) {

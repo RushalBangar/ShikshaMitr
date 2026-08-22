@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Submit Quiz & Show Scorecard
     if (submitQuizBtn) {
         submitQuizBtn.addEventListener('click', async () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token') || localStorage.getItem('shikshamitr_student_token');
             if (!token) {
                 alert("Please log in to submit the quiz and track your progress.");
                 return;
