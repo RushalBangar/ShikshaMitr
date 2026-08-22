@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from datetime import datetime
 from models import ForumPostModel, ForumReplyModel
 from routes.auth import get_current_user
+from security import rate_limiter
 import main
 
 router = APIRouter()
@@ -31,7 +32,7 @@ async def get_forum_posts(subject: Optional[str] = None):
         
     return posts
 
-@router.post("/posts")
+@router.post("/posts", dependencies=[Depends(rate_limiter(max_requests=3, window_seconds=60))])
 async def create_forum_post(post: ForumPostModel, current_user: dict = Depends(get_current_user)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
@@ -64,7 +65,7 @@ async def get_forum_replies(post_id: str):
         
     return replies
 
-@router.post("/posts/{post_id}/replies")
+@router.post("/posts/{post_id}/replies", dependencies=[Depends(rate_limiter(max_requests=5, window_seconds=60))])
 async def create_forum_reply(post_id: str, reply: ForumReplyModel, current_user: dict = Depends(get_current_user)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")

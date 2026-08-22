@@ -47,11 +47,20 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="ShikshaMitr API", lifespan=lifespan)
 
 # Setup CORS for frontend communication
+# Security: Restricted origins to prevent unauthorized cross-origin requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:8000",
+        "http://localhost:5500",
+        "http://127.0.0.1",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:5500",
+        "https://shikshamitr.onrender.com"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

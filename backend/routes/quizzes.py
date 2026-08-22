@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from models import QuizModel, QuizSubmissionModel
 from routes.auth import get_current_user
 from routes.ws import manager
+from security import rate_limiter
 import main
 
 router = APIRouter()
@@ -89,7 +90,7 @@ async def delete_quiz(quiz_id: str, current_user: dict = Depends(get_current_use
         raise HTTPException(status_code=404, detail="Quiz not found")
     return {"message": "Quiz deleted successfully"}
 
-@router.post("/quizzes/{quiz_id}/submit")
+@router.post("/quizzes/{quiz_id}/submit", dependencies=[Depends(rate_limiter(max_requests=10, window_seconds=60))])
 async def submit_quiz(quiz_id: str, submission: QuizSubmissionModel, current_user: dict = Depends(get_current_user)):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
