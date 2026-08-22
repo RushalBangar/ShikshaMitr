@@ -24,17 +24,63 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="js/theme.js"></script>
     <style>
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.35;
+            border-radius: 50%;
+            animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ambient-blob.primary {
+            background: var(--primary);
+            width: 40vw;
+            height: 40vw;
+            top: -10vw;
+            right: -10vw;
+        }
+
+        .ambient-blob.accent {
+            background: var(--accent);
+            width: 35vw;
+            height: 35vw;
+            bottom: -5vw;
+            left: -10vw;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 50px) scale(1.1); }
+            100% { transform: translate(40px, -30px) scale(0.9); }
+        }
+
         .auth-container {
             max-width: 460px;
-            margin: 2.5rem auto 4rem;
-            background: var(--bg-card);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
+            margin: 3.5rem auto 5rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            padding: 3rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-card-hover), 0 0 0 1px var(--border-subtle) inset;
             border: 1px solid var(--border-card);
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.5s ease-out;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
         }
 
         .auth-container::before {
@@ -135,6 +181,10 @@
     </style>
 </head>
 <body>
+    <div class="ambient-bg">
+        <div class="ambient-blob primary"></div>
+        <div class="ambient-blob accent"></div>
+    </div>
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo-link">
