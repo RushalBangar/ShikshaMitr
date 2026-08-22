@@ -8,10 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('start-lesson-btn');
     const lessonArea = document.getElementById('lesson-area');
     
-    const steps = ['word', 'pronunciation', 'reading', 'sentence'];
+    const steps = ['word', 'pronunciation', 'reading', 'quiz'];
     let currentStepIndex = 0;
     
-    const displayElement = document.getElementById('display-text');
+    const displayElement = document.getElementById('lesson-main-text') || document.getElementById('display-text');
+    const meaningElement = document.getElementById('lesson-meaning');
+    const quizArea = document.getElementById('quiz-area');
+    const saveFlashcardBtn = document.getElementById('save-flashcard-btn');
     const listenBtn = document.getElementById('listen-btn');
     const nextStepBtn = document.getElementById('next-step-btn');
     
@@ -21,25 +24,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dynamic, level-specific lessons with emojis to make it engaging
     const fallbackLessons = {
         "1": [
-            { word: 'Cat', sentence: 'The cat is sleeping. 🐱' },
-            { word: 'Sun', sentence: 'The sun is bright today. ☀️' },
-            { word: 'Apple', sentence: 'I like to eat an apple. 🍎' },
-            { word: 'Book', sentence: 'She is reading a book. 📖' },
-            { word: 'Happy', sentence: 'He is very happy. 😊' }
+            { word: 'Cat', meaning: 'A small furry animal with whiskers.', sentence: 'The cat is sleeping. 🐱', quizQuestion: 'The ___ is sleeping.', quizOptions: ['Dog', 'Cat', 'Bird'], quizAnswer: 'Cat' },
+            { word: 'Sun', meaning: 'The star around which the earth orbits.', sentence: 'The sun is bright today. ☀️', quizQuestion: 'The ___ is bright today.', quizOptions: ['Moon', 'Star', 'Sun'], quizAnswer: 'Sun' },
+            { word: 'Apple', meaning: 'A round fruit with red or green skin.', sentence: 'I like to eat an apple. 🍎', quizQuestion: 'I like to eat an ___.', quizOptions: ['Apple', 'Banana', 'Orange'], quizAnswer: 'Apple' },
+            { word: 'Book', meaning: 'A written or printed work consisting of pages.', sentence: 'She is reading a book. 📖', quizQuestion: 'She is reading a ___.', quizOptions: ['Paper', 'Book', 'Letter'], quizAnswer: 'Book' },
+            { word: 'Happy', meaning: 'Feeling or showing pleasure or contentment.', sentence: 'He is very happy. 😊', quizQuestion: 'He is very ___.', quizOptions: ['Sad', 'Angry', 'Happy'], quizAnswer: 'Happy' }
         ],
         "2": [
-            { word: 'Beautiful', sentence: 'The sunset is very beautiful today. 🌅' },
-            { word: 'Journey', sentence: 'Life is a journey, not a destination. 🛤️' },
-            { word: 'Friend', sentence: 'A true friend is hard to find. 🤝' },
-            { word: 'Imagine', sentence: 'Imagine a world full of peace. 🌍' },
-            { word: 'Curious', sentence: 'The curious cat explored the garden. 🐈' }
+            { word: 'Beautiful', meaning: 'Pleasing the senses or mind aesthetically.', sentence: 'The sunset is very beautiful today. 🌅', quizQuestion: 'The sunset is very ___ today.', quizOptions: ['Ugly', 'Beautiful', 'Boring'], quizAnswer: 'Beautiful' },
+            { word: 'Journey', meaning: 'An act of traveling from one place to another.', sentence: 'Life is a journey, not a destination. 🛤️', quizQuestion: 'Life is a ___, not a destination.', quizOptions: ['Journey', 'Trip', 'Path'], quizAnswer: 'Journey' },
+            { word: 'Friend', meaning: 'A person whom one knows and with mutual affection.', sentence: 'A true friend is hard to find. 🤝', quizQuestion: 'A true ___ is hard to find.', quizOptions: ['Enemy', 'Friend', 'Stranger'], quizAnswer: 'Friend' },
+            { word: 'Imagine', meaning: 'Form a mental image or concept of.', sentence: 'Imagine a world full of peace. 🌍', quizQuestion: '___ a world full of peace.', quizOptions: ['See', 'Imagine', 'Know'], quizAnswer: 'Imagine' },
+            { word: 'Curious', meaning: 'Eager to know or learn something.', sentence: 'The curious cat explored the garden. 🐈', quizQuestion: 'The ___ cat explored the garden.', quizOptions: ['Lazy', 'Curious', 'Angry'], quizAnswer: 'Curious' }
         ],
         "3": [
-            { word: 'Fascinating', sentence: 'The space documentary was truly fascinating. 🚀' },
-            { word: 'Perseverance', sentence: 'Through perseverance, she achieved her goals. 💪' },
-            { word: 'Metamorphosis', sentence: 'The caterpillar undergoes metamorphosis. 🦋' },
-            { word: 'Knowledge', sentence: 'Knowledge is power. 🧠' },
-            { word: 'Enthusiastic', sentence: 'The students were enthusiastic about the project. 🎉' }
+            { word: 'Fascinating', meaning: 'Extremely interesting.', sentence: 'The space documentary was truly fascinating. 🚀', quizQuestion: 'The space documentary was truly ___.', quizOptions: ['Boring', 'Fascinating', 'Long'], quizAnswer: 'Fascinating' },
+            { word: 'Perseverance', meaning: 'Persistence in doing something despite difficulty.', sentence: 'Through perseverance, she achieved her goals. 💪', quizQuestion: 'Through ___, she achieved her goals.', quizOptions: ['Luck', 'Perseverance', 'Money'], quizAnswer: 'Perseverance' },
+            { word: 'Metamorphosis', meaning: 'A change of the form or nature of a thing.', sentence: 'The caterpillar undergoes metamorphosis. 🦋', quizQuestion: 'The caterpillar undergoes ___.', quizOptions: ['Sleep', 'Metamorphosis', 'Eating'], quizAnswer: 'Metamorphosis' },
+            { word: 'Knowledge', meaning: 'Facts, information, and skills acquired by a person.', sentence: 'Knowledge is power. 🧠', quizQuestion: '___ is power.', quizOptions: ['Money', 'Knowledge', 'Time'], quizAnswer: 'Knowledge' },
+            { word: 'Enthusiastic', meaning: 'Having or showing intense and eager enjoyment.', sentence: 'The students were enthusiastic about the project. 🎉', quizQuestion: 'The students were ___ about the project.', quizOptions: ['Bored', 'Enthusiastic', 'Upset'], quizAnswer: 'Enthusiastic' }
         ]
     };
 
@@ -62,23 +65,45 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!lesson) {
             lessonArea.innerHTML = `
-                <div class="lesson-complete animate-pulse">
-                    <span class="complete-icon">🏆</span>
+                <div class="lesson-complete animate-pulse" style="text-align: center;">
+                    <span class="complete-icon" style="font-size: 3rem;">🏆</span>
                     <h2>Great Job!</h2>
                     <p>You finished all the reading exercises for this level.</p>
+                    <p id="points-reward-msg" style="color: var(--success); font-weight: bold; margin-top: 1rem;"></p>
                     <button class="btn btn-accent" style="margin-top: 1rem;" onclick="location.reload()">Start Another Lesson</button>
                 </div>
             `;
+            
+            // Call API to complete lesson and award points
+            fetch(`${API_URL}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            }).then(res => res.json()).then(data => {
+                if (data.points_awarded > 0) {
+                    document.getElementById('points-reward-msg').textContent = `+${data.points_awarded} Community Points Earned!`;
+                }
+            }).catch(err => console.error("Could not award points:", err));
+            
             return;
         }
 
         listenBtn.style.display = 'inline-block';
+        saveFlashcardBtn.style.display = 'inline-block';
+        if (quizArea) quizArea.style.display = 'none';
+        if (meaningElement) meaningElement.style.display = 'none';
+        nextStepBtn.disabled = false;
         
         const currentStep = steps[currentStepIndex];
         
         switch (currentStep) {
             case 'word':
                 displayElement.textContent = lesson.word;
+                if (meaningElement && lesson.meaning) {
+                    meaningElement.textContent = lesson.meaning;
+                    meaningElement.style.display = 'block';
+                }
                 break;
             case 'pronunciation':
                 displayElement.textContent = `🔊 ${lesson.word}`;
@@ -88,10 +113,47 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'reading':
                 displayElement.textContent = lesson.sentence;
                 break;
-            case 'sentence':
-                displayElement.textContent = lesson.sentence;
-                // Auto play sentence
-                speak(lesson.sentence);
+            case 'quiz':
+                displayElement.textContent = lesson.quizQuestion || lesson.sentence;
+                listenBtn.style.display = 'none';
+                saveFlashcardBtn.style.display = 'none';
+                
+                if (quizArea && lesson.quizOptions) {
+                    quizArea.style.display = 'flex';
+                    quizArea.style.gap = '0.5rem';
+                    quizArea.style.flexWrap = 'wrap';
+                    quizArea.style.justifyContent = 'center';
+                    quizArea.innerHTML = '';
+                    
+                    nextStepBtn.disabled = true; // wait for answer
+                    
+                    lesson.quizOptions.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = 'btn btn-outline';
+                        btn.textContent = opt;
+                        btn.onclick = () => {
+                            if (opt === lesson.quizAnswer) {
+                                btn.classList.add('btn-primary');
+                                btn.classList.remove('btn-outline');
+                                displayElement.textContent = "Correct! 🎉";
+                                nextStepBtn.disabled = false;
+                            } else {
+                                btn.style.backgroundColor = 'var(--danger)';
+                                btn.style.color = 'white';
+                                btn.style.borderColor = 'var(--danger)';
+                                setTimeout(() => {
+                                    btn.style.backgroundColor = '';
+                                    btn.style.color = '';
+                                    btn.style.borderColor = '';
+                                }, 800);
+                            }
+                        };
+                        quizArea.appendChild(btn);
+                    });
+                } else {
+                    // Fallback if no quiz data
+                    speak(lesson.sentence);
+                }
                 break;
         }
     };
@@ -155,6 +217,51 @@ document.addEventListener('DOMContentLoaded', () => {
         
         nextStepBtn.style.display = 'inline-block';
         displayCurrentContent();
+    });
+
+    saveFlashcardBtn.addEventListener('click', async () => {
+        const lesson = currentLessons[currentLessonIndex];
+        if (!lesson) return;
+        
+        saveFlashcardBtn.textContent = 'Saving...';
+        saveFlashcardBtn.disabled = true;
+        
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please log in to save flashcards.');
+                saveFlashcardBtn.textContent = '🧠 Save to Flashcards';
+                saveFlashcardBtn.disabled = false;
+                return;
+            }
+            
+            const response = await fetch(`${BACKEND_BASE_URL}/api/flashcards/my-vocabulary`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    front: lesson.word,
+                    back: `${lesson.meaning || ''} \n\n ${lesson.sentence}`
+                })
+            });
+            
+            if (response.ok) {
+                saveFlashcardBtn.textContent = '✅ Saved!';
+            } else {
+                saveFlashcardBtn.textContent = '❌ Error';
+            }
+        } catch (e) {
+            saveFlashcardBtn.textContent = '❌ Error';
+        }
+        
+        setTimeout(() => {
+            if (saveFlashcardBtn.textContent !== '✅ Saved!') {
+                saveFlashcardBtn.textContent = '🧠 Save to Flashcards';
+                saveFlashcardBtn.disabled = false;
+            }
+        }, 2000);
     });
 
     listenBtn.addEventListener('click', () => {

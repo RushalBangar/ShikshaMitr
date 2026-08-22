@@ -88,12 +88,21 @@
                     <div class="step active" id="step-word">1. Word</div>
                     <div class="step" id="step-pronunciation">2. Listen</div>
                     <div class="step" id="step-reading">3. Read</div>
-                    <div class="step" id="step-sentence">4. Sentence</div>
+                    <div class="step" id="step-quiz">4. Quiz</div>
                 </div>
 
                 <div class="lesson-content">
-                    <div id="display-text" class="display-text">Word</div>
-                    <div class="action-buttons">
+                    <div id="display-text" class="display-text" style="position: relative;">
+                        <span id="lesson-main-text">Word</span>
+                        <div id="lesson-meaning" style="font-size: 1.2rem; color: var(--text-secondary); margin-top: 1rem; display: none;">Meaning</div>
+                    </div>
+                    
+                    <div id="quiz-area" style="display: none; margin-top: 1rem;">
+                        <!-- Options injected by JS -->
+                    </div>
+
+                    <div class="action-buttons" style="margin-top: 2rem;">
+                        <button id="save-flashcard-btn" class="btn btn-ghost" style="display: none;">🧠 Save to Flashcards</button>
                         <button id="listen-btn" class="btn btn-ghost">🔊 Listen</button>
                         <button id="next-step-btn" class="btn">Next Step →</button>
                     </div>

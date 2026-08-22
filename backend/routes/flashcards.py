@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
-from models import FlashcardDeckModel, FlashcardReviewModel
+from models import FlashcardDeckModel, FlashcardReviewModel, FlashcardModel
 from routes.auth import get_current_user
 import main
 
@@ -137,3 +137,32 @@ async def review_flashcard(deck_id: str, card_id: str, review: FlashcardReviewMo
     )
     
     return {"message": "Review recorded", "next_review_date": next_review_date}
+
+@router.post("/my-vocabulary")
+async def add_to_my_vocabulary(card: FlashcardModel, current_user: dict = Depends(get_current_user)):
+    if not main.db_connected:
+        raise HTTPException(status_code=500, detail="Database not connected")
+        
+    username = current_user["username"]
+    
+    # Find or create "My Vocabulary" deck for this student
+    deck = await main.db.flashcard_decks.find_one({"author_username": username, "title": "My Vocabulary"})
+    
+    card_dict = card.dict()
+    card_dict["card_id"] = str(ObjectId())
+    
+    if not deck:
+        new_deck = {
+            "title": "My Vocabulary",
+            "subject": "English Reading",
+            "author_username": username,
+            "cards": [card_dict]
+        }
+        await main.db.flashcard_decks.insert_one(new_deck)
+    else:
+        await main.db.flashcard_decks.update_one(
+            {"_id": deck["_id"]},
+            {"$push": {"cards": card_dict}}
+        )
+        
+    return {"message": "Card added to My Vocabulary"}
