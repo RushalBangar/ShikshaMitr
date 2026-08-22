@@ -8,18 +8,69 @@
     <script src="js/theme.js"></script>
     <style>
         .forum-container { max-width: 800px; margin: 2rem auto; padding: 1rem; }
-        .post-card { background: var(--bg-card); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 6px var(--shadow-color); border: 1px solid var(--border-color); }
+        
+        .forum-compose-card {
+            background: var(--bg-glass);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-card-hover);
+            border: 1px solid var(--border-card);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .forum-compose-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gradient-btn);
+        }
+
+        .post-card {
+            background: var(--bg-glass);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-card);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card-hover);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
         .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .post-title { font-size: 1.25rem; font-weight: bold; color: var(--text-primary); cursor: pointer; }
+        .post-title { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+        .post-title:hover { color: var(--primary); }
         .post-meta { font-size: 0.85rem; color: var(--text-secondary); }
-        .badge { background: var(--primary-color); color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; }
-        .reply-section { margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: none; }
-        .reply-card { background: var(--bg-primary); padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem; border-left: 4px solid var(--text-secondary); }
-        .reply-card.verified { border-left-color: #10B981; background: rgba(16, 185, 129, 0.05); }
-        .verified-badge { color: #10B981; font-weight: bold; font-size: 0.8rem; margin-left: 0.5rem; }
-        .btn-verify { background: #10B981; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-top: 0.5rem; }
-        .reply-input-group { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        .reply-input { flex-grow: 1; padding: 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); }
+        
+        .badge {
+            background: var(--primary-glow);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .reply-section { margin-top: 1.5rem; border-top: 1px solid var(--border-card); padding-top: 1.5rem; display: none; }
+        .reply-card { background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 0.8rem; border: 1px solid var(--border-subtle); border-left: 4px solid var(--text-secondary); }
+        .reply-card.verified { border-left-color: #10B981; background: var(--status-ok-bg); }
+        .verified-badge { color: #10B981; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; margin-top: 0.5rem; }
+        .btn-verify { background: var(--status-ok-bg); color: var(--status-ok-text); border: 1px solid #10B981; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin-top: 0.5rem; transition: all 0.2s; }
+        .btn-verify:hover { background: #10B981; color: white; transform: scale(1.05); }
+        
+        .reply-input-group { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+        .reply-input { flex-grow: 1; }
     </style>
 </head>
 <body>
@@ -43,18 +94,36 @@
         <h2>Peer-to-Peer Doubt Forums</h2>
         <p style="color: var(--text-secondary); margin-bottom: 2rem;">Ask questions, help peers, and earn Community Points!</p>
         
-        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-            <h3>Ask a Question</h3>
-            <form id="new-post-form" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-                <input type="text" id="post-title" placeholder="Question Title" required class="form-input">
-                <select id="post-subject" required class="form-input">
-                    <option value="" disabled selected>Select Subject</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Science">Science</option>
-                    <option value="English">English</option>
-                </select>
-                <textarea id="post-content" placeholder="Describe your doubt..." rows="4" required class="form-input"></textarea>
-                <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Post Question</button>
+        <div class="forum-compose-card">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.8rem;">✍️</span> Ask a Question
+            </h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Get help from peers and faculty instantly.</p>
+            
+            <form id="new-post-form">
+                <div class="form-group">
+                    <label>Question Title</label>
+                    <input type="text" id="post-title" placeholder="e.g. How to solve quadratic equations?" required class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label>Subject</label>
+                    <select id="post-subject" required class="form-control">
+                        <option value="" disabled selected>Select Subject...</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science</option>
+                        <option value="English">English</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Details</label>
+                    <textarea id="post-content" placeholder="Provide more context or where you are stuck..." rows="4" required class="form-control"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem; font-size: 1.05rem;">
+                    Post to Community 🚀
+                </button>
             </form>
         </div>
 
