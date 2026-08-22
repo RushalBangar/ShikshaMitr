@@ -594,6 +594,12 @@ header {
     transform: scale(1.01);
 }
 
+/* Force solid colors for dropdown options to prevent unreadable text on Chrome/Windows */
+option {
+    background-color: var(--select-option-bg, #1E1E2E) !important;
+    color: var(--text-primary) !important;
+}
+
 
 /* --- Utilities --- */
 .hidden {
