@@ -49,6 +49,8 @@ async def get_quiz(quiz_id: str):
 
 @router.post("/quizzes")
 async def create_quiz(quiz: QuizModel, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
@@ -73,6 +75,8 @@ async def create_quiz(quiz: QuizModel, current_user: dict = Depends(get_current_
 
 @router.delete("/quizzes/{quiz_id}")
 async def delete_quiz(quiz_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
     try:
@@ -132,7 +136,24 @@ async def submit_quiz(quiz_id: str, submission: QuizSubmissionModel, current_use
             "timestamp": datetime.utcnow()
         }
         await main.db.student_activity.insert_one(activity)
-    
+        
+        # Gamification: Track perfect scores for 'Quiz Master' badge
+        if score_percentage == 100:
+            student = await main.db.students.find_one({"username": current_user["username"]})
+            if student:
+                perfect_count = student.get("perfect_quizzes", 0) + 1
+                update_data = {"perfect_quizzes": perfect_count}
+                
+                # Award badge if reached 5 perfect quizzes
+                badges = student.get("badges", [])
+                if perfect_count >= 5 and "Quiz Master" not in badges:
+                    badges.append("Quiz Master")
+                    update_data["badges"] = badges
+                    
+                await main.db.students.update_one(
+                    {"username": current_user["username"]},
+                    {"$set": update_data}
+                )
     return {
         "quiz_id": quiz_id,
         "total_questions": total_questions,

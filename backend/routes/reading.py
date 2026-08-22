@@ -27,6 +27,8 @@ async def get_reading_lessons(level: Optional[int] = None):
 
 @router.post("/reading")
 async def create_reading_lesson(lesson: ReadingLessonModel, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         

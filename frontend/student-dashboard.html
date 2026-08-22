@@ -204,28 +204,17 @@
 
                 <div style="margin-top: 1.5rem; text-align: left;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
-                        <span>Level Progress</span>
-                        <span id="level-label">Level 1 Beginner</span>
+                        <span>Community Points</span>
+                        <span id="community-points">0 pts</span>
                     </div>
                     <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="level-bar" style="width: 40%;"></div>
+                        <div class="progress-bar-fill" id="points-bar" style="width: 0%;"></div>
                     </div>
                 </div>
 
                 <h4 style="margin-top: 1.8rem; font-size: 0.95rem; text-align: left;">Earned Badges</h4>
-                <div class="badge-grid">
-                    <div class="badge-card">
-                        <span class="badge-icon">🌟</span>
-                        <span>Welcome</span>
-                    </div>
-                    <div class="badge-card">
-                        <span class="badge-icon">📖</span>
-                        <span>Reader</span>
-                    </div>
-                    <div class="badge-card">
-                        <span class="badge-icon">⚡</span>
-                        <span>Active</span>
-                    </div>
+                <div class="badge-grid" id="badge-grid">
+                    <!-- Badges injected by JS -->
                 </div>
             </div>
 
@@ -248,6 +237,22 @@
                         <div>
                             <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Subject Notes</h4>
                             <p style="color: var(--text-secondary); font-size: 0.85rem;">Class 5 to 10 revision notes</p>
+                        </div>
+                    </a>
+
+                    <a href="forum.html" class="action-tile">
+                        <span class="action-icon">💬</span>
+                        <div>
+                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Peer Forums</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Ask doubts & earn points</p>
+                        </div>
+                    </a>
+
+                    <a href="flashcards.html" class="action-tile">
+                        <span class="action-icon">🧠</span>
+                        <div>
+                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Flashcards</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Interactive SRS study tool</p>
                         </div>
                     </a>
 

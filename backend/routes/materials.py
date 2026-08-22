@@ -34,6 +34,8 @@ from routes.ws import manager
 
 @router.post("/materials")
 async def create_material(material: MaterialModel, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
         
@@ -59,6 +61,8 @@ async def create_material(material: MaterialModel, current_user: dict = Depends(
 
 @router.delete("/materials/{material_id}")
 async def delete_material(material_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
     try:
@@ -74,6 +78,8 @@ async def delete_material(material_id: str, current_user: dict = Depends(get_cur
 
 @router.put("/materials/{material_id}")
 async def update_material(material_id: str, update_data: MaterialUpdateModel, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
     try:

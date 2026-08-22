@@ -97,33 +97,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
         async function loadStudentStats() {
             try {
-                const res = await fetch(`${BACKEND_BASE_URL}/api/student/stats`, {
+                // Fetch profile data (points, streak, badges)
+                const profileRes = await fetch(`${BACKEND_BASE_URL}/api/student/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if (res.ok) {
-                    const stats = await res.json();
+                if (profileRes.ok) {
+                    const profile = await profileRes.json();
                     
-                    // Update Streak
                     if (streakCountEl) {
-                        streakCountEl.textContent = `${stats.streak} Day${stats.streak !== 1 ? 's' : ''} Streak!`;
+                        streakCountEl.textContent = `${profile.current_streak} Day${profile.current_streak !== 1 ? 's' : ''} Streak!`;
                     }
                     
-                    // Calculate Level (1 level per 3 quizzes)
-                    const level = Math.floor(stats.total_quizzes / 3) + 1;
-                    const levelLabel = document.getElementById('level-label');
-                    const levelBar = document.getElementById('level-bar');
-                    if (levelLabel) levelLabel.textContent = `Level ${level} Reader`;
+                    const pointsEl = document.getElementById('community-points');
+                    const pointsBar = document.getElementById('points-bar');
+                    if (pointsEl) pointsEl.textContent = `${profile.community_points} pts`;
                     
-                    // Calculate progress to next level (percentage)
-                    const progress = ((stats.total_quizzes % 3) / 3) * 100;
-                    if (levelBar) levelBar.style.width = `${progress}%`;
+                    // Simple points progress visually (max 1000 for full bar)
+                    if (pointsBar) {
+                        const progress = Math.min((profile.community_points / 1000) * 100, 100);
+                        pointsBar.style.width = `${progress}%`;
+                    }
                     
-                    // Light up badges
-                    const badges = document.querySelectorAll('.badge-card');
-                    if (badges.length >= 3) {
-                        if (stats.total_quizzes >= 1) badges[0].style.border = '2px solid var(--primary)';
-                        if (stats.total_quizzes >= 5) badges[1].style.border = '2px solid var(--primary)';
-                        if (stats.streak >= 3) badges[2].style.border = '2px solid var(--primary)';
+                    // Render badges
+                    const badgeGrid = document.getElementById('badge-grid');
+                    if (badgeGrid && profile.badges) {
+                        badgeGrid.innerHTML = '';
+                        profile.badges.forEach(badge => {
+                            let icon = '🌟';
+                            if (badge === 'Quiz Master') icon = '🎯';
+                            
+                            const badgeCard = document.createElement('div');
+                            badgeCard.className = 'badge-card';
+                            badgeCard.style.border = '2px solid var(--primary)';
+                            badgeCard.innerHTML = `
+                                <span class="badge-icon">${icon}</span>
+                                <span>${badge}</span>
+                            `;
+                            badgeGrid.appendChild(badgeCard);
+                        });
+                        if (profile.badges.length === 0) {
+                            badgeGrid.innerHTML = '<p style="color:var(--text-secondary); grid-column:1/-1; text-align:center;">No badges earned yet.</p>';
+                        }
                     }
                 }
             } catch (err) {

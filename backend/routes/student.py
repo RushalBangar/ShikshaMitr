@@ -64,3 +64,17 @@ async def get_student_stats(current_user: dict = Depends(get_current_user)):
             "date": a.get("timestamp").isoformat()
         } for a in activities[:5]]
     }
+
+@router.get("/student/profile")
+async def get_student_profile(current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "student":
+        raise HTTPException(status_code=403, detail="Only students can view gamification profile")
+        
+    return {
+        "username": current_user.get("username"),
+        "full_name": current_user.get("full_name"),
+        "community_points": current_user.get("community_points", 0),
+        "current_streak": current_user.get("current_streak", 0),
+        "badges": current_user.get("badges", []),
+        "perfect_quizzes": current_user.get("perfect_quizzes", 0)
+    }

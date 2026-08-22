@@ -44,3 +44,22 @@ class QuizSubmissionModel(BaseModel):
     quiz_id: str
     answers: list[int]
 
+class ForumPostModel(BaseModel):
+    title: str
+    content: str
+    subject: str
+
+class ForumReplyModel(BaseModel):
+    content: str
+
+class FlashcardModel(BaseModel):
+    front: str
+    back: str
+
+class FlashcardDeckModel(BaseModel):
+    title: str
+    subject: str
+    cards: list[FlashcardModel]
+
+class FlashcardReviewModel(BaseModel):
+    rating: int # 1 to 5

@@ -124,6 +124,40 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
             headers={"WWW-Authenticate": "Bearer"},
         )
         
+    # Gamification: Update login streak for students
+    if role == "student":
+        now = datetime.utcnow()
+        today = now.date()
+        last_login = user.get("last_login_date")
+        current_streak = user.get("current_streak", 0)
+        
+        if last_login:
+            if isinstance(last_login, str):
+                try:
+                    last_login_date = datetime.fromisoformat(last_login).date()
+                except:
+                    last_login_date = None
+            else:
+                last_login_date = last_login.date()
+                
+            if last_login_date:
+                delta = (today - last_login_date).days
+                if delta == 1:
+                    current_streak += 1
+                elif delta > 1:
+                    current_streak = 1
+        else:
+            current_streak = 1
+            
+        # Update student record
+        await main.db.students.update_one(
+            {"_id": user["_id"]},
+            {"$set": {
+                "last_login_date": now,
+                "current_streak": current_streak
+            }}
+        )
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user["username"], "role": role}, expires_delta=access_token_expires

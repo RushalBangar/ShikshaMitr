@@ -14,6 +14,8 @@ async def upload_file(
     file: UploadFile = File(...), 
     current_user: dict = Depends(get_current_user)
 ):
+    if current_user.get("role") != "faculty":
+        raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not (file.filename and file.filename.lower().endswith(".pdf")) or file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
         
