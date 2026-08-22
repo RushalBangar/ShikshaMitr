@@ -25,7 +25,15 @@ async def lifespan(app: FastAPI):
         await client.admin.command('ping')
         db = client.shikshamitr
         db_connected = True
-        print("Successfully connected to MongoDB Atlas!")
+        
+        # Create Unique Indexes for security (prevent race conditions)
+        await db.students.create_index("username", unique=True)
+        # sparse=True allows multiple students without emails (if email is optional), but unique if provided
+        await db.students.create_index("email", unique=True, sparse=True)
+        await db.staff.create_index("username", unique=True)
+        await db.staff.create_index("email", unique=True, sparse=True)
+        
+        print("Successfully connected to MongoDB Atlas and ensured indexes!")
     except Exception as e:
         db_connected = False
         print(f"Could not connect to MongoDB Atlas: {e}")

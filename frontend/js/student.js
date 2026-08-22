@@ -1,7 +1,35 @@
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const RENDER_BACKEND_URL = 'https://shikshamitr.onrender.com';
+const BACKEND_BASE_URL = IS_LOCAL ? 'http://localhost:8000' : RENDER_BACKEND_URL;
+
+async function handleGoogleLogin(response) {
+    if (!response.credential) return;
+    
+    try {
+        const res = await fetch(`${BACKEND_BASE_URL}/api/auth/google-login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: response.credential })
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+            localStorage.setItem('shikshamitr_student_token', data.access_token);
+            // Will be updated by profile fetch anyway
+            localStorage.setItem('shikshamitr_student_user', JSON.stringify({
+                username: "Google Learner",
+                full_name: "Google Learner"
+            }));
+            window.location.href = 'student-dashboard.html';
+        } else {
+            alert('Google login failed: ' + (data.detail || 'Unknown error'));
+        }
+    } catch (e) {
+        alert('Network error during Google login');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const RENDER_BACKEND_URL = 'https://shikshamitr.onrender.com';
-    const BACKEND_BASE_URL = IS_LOCAL ? 'http://localhost:8000' : RENDER_BACKEND_URL;
 
     // Elements on Student Login / Register page
     const loginForm = document.getElementById('student-login-form');

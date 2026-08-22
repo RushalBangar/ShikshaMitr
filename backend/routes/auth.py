@@ -5,13 +5,19 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import bcrypt
 from pydantic import BaseModel, Field
 from typing import Optional
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 import main
 import os
 
 router = APIRouter()
 
 # Security Config
-SECRET_KEY = os.environ.get("JWT_SECRET", "super-secret-key-shikshamitr")
+JWT_SECRET_ENV = os.environ.get("JWT_SECRET")
+if not JWT_SECRET_ENV:
+    print("WARNING: JWT_SECRET not found in environment. Using insecure fallback!")
+SECRET_KEY = JWT_SECRET_ENV or "super-secret-key-shikshamitr"
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "YOUR_GOOGLE_CLIENT_ID")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 1 week
 
@@ -166,7 +172,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 class StudentRegister(BaseModel):
     username: str
-    password: str = Field(..., min_length=6)
+    password: str = Field(..., min_length=6, max_length=100)
     email: Optional[str] = None
     full_name: str
 
@@ -212,3 +218,89 @@ async def register_student(data: StudentRegister):
     
     await main.db.students.insert_one(student_doc)
     return {"message": "Student registered successfully"}
+
+class GoogleLoginRequest(BaseModel):
+    credential: str
+
+@router.post("/google-login")
+async def google_login(data: GoogleLoginRequest):
+    if not main.db_connected:
+        raise HTTPException(status_code=500, detail="Database not connected")
+        
+    try:
+        # Verify the token with Google
+        idinfo = id_token.verify_oauth2_token(data.credential, google_requests.Request(), GOOGLE_CLIENT_ID)
+        
+        email = idinfo.get('email')
+        name = idinfo.get('name')
+        
+        if not email:
+            raise ValueError("Email not found in Google payload")
+            
+        # Check if student exists by email
+        user = await main.db.students.find_one({"email": email.lower()})
+        
+        if not user:
+            # Auto-register
+            clean_username = email.split('@')[0]
+            
+            # Ensure unique username
+            base_username = clean_username
+            counter = 1
+            while await main.db.students.find_one({"username": clean_username}) or await main.db.staff.find_one({"username": clean_username}):
+                clean_username = f"{base_username}{counter}"
+                counter += 1
+                
+            student_doc = {
+                "username": clean_username,
+                "full_name": name,
+                "email": email.lower(),
+                "password_hash": "GOOGLE_AUTH", # No password
+                "created_at": datetime.utcnow()
+            }
+            result = await main.db.students.insert_one(student_doc)
+            user = await main.db.students.find_one({"_id": result.inserted_id})
+            
+        role = "student"
+        
+        # Gamification: Update login streak for students
+        now = datetime.utcnow()
+        today = now.date()
+        last_login = user.get("last_login_date")
+        current_streak = user.get("current_streak", 0)
+        
+        if last_login:
+            if isinstance(last_login, str):
+                try:
+                    last_login_date = datetime.fromisoformat(last_login).date()
+                except:
+                    last_login_date = None
+            else:
+                last_login_date = last_login.date()
+                
+            if last_login_date:
+                delta = (today - last_login_date).days
+                if delta == 1:
+                    current_streak += 1
+                elif delta > 1:
+                    current_streak = 1
+        else:
+            current_streak = 1
+            
+        # Update student record
+        await main.db.students.update_one(
+            {"_id": user["_id"]},
+            {"$set": {
+                "last_login_date": now,
+                "current_streak": current_streak
+            }}
+        )
+
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user["username"], "role": role}, expires_delta=access_token_expires
+        )
+        return {"access_token": access_token, "token_type": "bearer"}
+        
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid Google token: {str(e)}")
