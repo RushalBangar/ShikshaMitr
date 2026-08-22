@@ -132,18 +132,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (profileRes.ok) {
                     const profile = await profileRes.json();
                     
+                    // Animate number counting for points and streaks
+                    function animateValue(obj, start, end, duration, suffix = '') {
+                        let startTimestamp = null;
+                        const step = (timestamp) => {
+                            if (!startTimestamp) startTimestamp = timestamp;
+                            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                            obj.innerHTML = Math.floor(progress * (end - start) + start) + suffix;
+                            if (progress < 1) {
+                                window.requestAnimationFrame(step);
+                            } else {
+                                obj.innerHTML = end + suffix; // Ensure exact final value
+                            }
+                        };
+                        window.requestAnimationFrame(step);
+                    }
+
                     if (streakCountEl) {
-                        streakCountEl.textContent = `${profile.current_streak} Day${profile.current_streak !== 1 ? 's' : ''} Streak!`;
+                        const suffix = ` Day${profile.current_streak !== 1 ? 's' : ''} Streak!`;
+                        animateValue(streakCountEl, 0, profile.current_streak, 1000, suffix);
                     }
                     
                     const pointsEl = document.getElementById('community-points');
                     const pointsBar = document.getElementById('points-bar');
-                    if (pointsEl) pointsEl.textContent = `${profile.community_points} pts`;
+                    if (pointsEl) {
+                        animateValue(pointsEl, 0, profile.community_points, 1200, ' pts');
+                    }
                     
                     // Simple points progress visually (max 1000 for full bar)
                     if (pointsBar) {
-                        const progress = Math.min((profile.community_points / 1000) * 100, 100);
-                        pointsBar.style.width = `${progress}%`;
+                        setTimeout(() => {
+                            const progress = Math.min((profile.community_points / 1000) * 100, 100);
+                            pointsBar.style.width = `${progress}%`;
+                        }, 100);
                     }
                     
                     // Render badges

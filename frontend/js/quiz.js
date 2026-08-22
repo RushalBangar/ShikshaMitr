@@ -215,6 +215,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.score_percentage >= 80) {
                     resultVerdict.textContent = '🌟 Outstanding Mastery! Keep it up!';
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 },
+                            colors: ['#6366F1', '#F59E0B', '#10B981']
+                        });
+                    }
                 } else if (result.score_percentage >= 50) {
                     resultVerdict.textContent = '👍 Good Effort! Revise and try again!';
                 } else {
