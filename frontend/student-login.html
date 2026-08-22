@@ -38,17 +38,17 @@
 
         .ambient-blob {
             position: absolute;
-            filter: blur(80px);
-            opacity: 0.35;
+            filter: blur(100px);
+            opacity: 0.2;
             border-radius: 50%;
-            animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .ambient-blob.primary {
             background: var(--primary);
-            width: 40vw;
-            height: 40vw;
-            top: -10vw;
+            width: 45vw;
+            height: 45vw;
+            top: -15vw;
             right: -10vw;
         }
 
@@ -56,26 +56,27 @@
             background: var(--accent);
             width: 35vw;
             height: 35vw;
-            bottom: -5vw;
+            bottom: -10vw;
             left: -10vw;
-            animation-delay: -5s;
+            animation-delay: -8s;
         }
 
         @keyframes float {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-30px, 50px) scale(1.1); }
-            100% { transform: translate(40px, -30px) scale(0.9); }
+            33% { transform: translate(-20px, 40px) scale(1.05); }
+            66% { transform: translate(30px, -20px) scale(0.95); }
+            100% { transform: translate(-10px, 20px) scale(1.02); }
         }
 
         .auth-container {
-            max-width: 460px;
-            margin: 3.5rem auto 5rem;
+            max-width: 440px;
+            margin: 2rem auto 5rem;
             background: var(--bg-glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            padding: 3rem;
+            backdrop-filter: blur(24px) saturate(1.5);
+            -webkit-backdrop-filter: blur(24px) saturate(1.5);
+            padding: 2.5rem;
             border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-card-hover), 0 0 0 1px var(--border-subtle) inset;
+            box-shadow: var(--shadow-card-hover);
             border: 1px solid var(--border-card);
             position: relative;
             overflow: hidden;
@@ -89,16 +90,16 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: var(--gradient-btn);
         }
 
         .auth-nav {
             display: flex;
-            background: var(--bg-glass);
-            padding: 0.4rem;
+            background: var(--bg-surface);
+            padding: 0.35rem;
             border-radius: var(--radius-md);
-            margin-bottom: 2rem;
+            margin-bottom: 1.75rem;
             border: 1px solid var(--border-subtle);
         }
 
@@ -108,24 +109,35 @@
             border: none;
             color: var(--text-secondary);
             font-weight: 600;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 1rem;
             cursor: pointer;
             border-radius: var(--radius-sm);
-            transition: var(--transition-fast);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             font-size: 0.95rem;
             font-family: 'Outfit', sans-serif;
             text-align: center;
         }
 
+        .auth-tab:active {
+            transform: scale(0.96);
+        }
+
         .auth-tab.active {
-            background: var(--bg-card-hover);
+            background: var(--bg-card);
             color: var(--primary);
             box-shadow: var(--shadow-card);
+            transform: scale(1);
         }
 
         .form-group {
             margin-bottom: 1.25rem;
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
+
+        .form-group:nth-child(1) { animation-delay: 0.05s; }
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.15s; }
+        .form-group:nth-child(4) { animation-delay: 0.2s; }
 
         .form-group label {
             display: block;
@@ -137,21 +149,22 @@
 
         .form-control {
             width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid var(--border-card);
+            padding: 0.85rem 1rem;
+            border: 1.5px solid var(--border-card);
             border-radius: var(--radius-sm);
             background: var(--bg-glass);
             color: var(--text-primary);
             font-size: 1rem;
             font-family: 'Outfit', sans-serif;
-            transition: var(--transition-fast);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
+            box-shadow: 0 0 0 4px var(--primary-glow);
             background: var(--bg-card);
+            transform: scale(1.01);
         }
 
         .alert {
@@ -162,7 +175,7 @@
             font-weight: 500;
             font-size: 0.9rem;
             border: 1px solid;
-            animation: fadeIn 0.3s ease-out;
+            animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .alert.success {
@@ -177,6 +190,25 @@
             color: var(--status-error-text);
             border-color: var(--status-error-border);
             display: block;
+        }
+
+        /* Google Sign-In Divider */
+        .divider-or {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .divider-or::before,
+        .divider-or::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-subtle);
         }
     </style>
 </head>
@@ -226,9 +258,7 @@
                     Sign In to Learning 🚀
                 </button>
                 
-                <div style="text-align: center; margin: 1.5rem 0; color: var(--text-secondary); font-size: 0.9rem;">
-                    <span>OR</span>
-                </div>
+                <div class="divider-or">or</div>
                 
                 <!-- Google Sign-In Container -->
                 <div id="g_id_onload"
