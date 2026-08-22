@@ -8,6 +8,7 @@
 
 /* --- Light Theme (Default) --- */
 :root {
+    color-scheme: light;
     /* Primary Palette */
     --primary: #6366F1;
     --primary-light: #818CF8;
@@ -94,6 +95,7 @@
 
 /* --- Dark Theme --- */
 [data-theme="dark"] {
+    color-scheme: dark;
     --primary: #818CF8;
     --primary-light: #A5B4FC;
     --primary-dark: #6366F1;
@@ -592,11 +594,6 @@ header {
     transform: scale(1.01);
 }
 
-/* Fix dropdown options on dark mode */
-option {
-    background-color: var(--bg-card);
-    color: var(--text-primary);
-}
 
 /* --- Utilities --- */
 .hidden {
