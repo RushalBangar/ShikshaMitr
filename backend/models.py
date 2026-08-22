@@ -45,21 +45,21 @@ class QuizSubmissionModel(BaseModel):
     answers: list[int]
 
 class ForumPostModel(BaseModel):
-    title: str
-    content: str
-    subject: str
+    title: str = Field(..., max_length=200)
+    content: str = Field(..., max_length=5000)
+    subject: str = Field(..., max_length=50)
 
 class ForumReplyModel(BaseModel):
-    content: str
+    content: str = Field(..., max_length=5000)
 
 class FlashcardModel(BaseModel):
-    front: str
-    back: str
+    front: str = Field(..., max_length=500)
+    back: str = Field(..., max_length=500)
 
 class FlashcardDeckModel(BaseModel):
-    title: str
-    subject: str
-    cards: list[FlashcardModel]
+    title: str = Field(..., max_length=150)
+    subject: str = Field(..., max_length=50)
+    cards: list[FlashcardModel] = Field(..., max_items=200)
 
 class FlashcardReviewModel(BaseModel):
     rating: int # 1 to 5
