@@ -2,57 +2,69 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from fastapi.responses import StreamingResponse
 from routes.auth import get_current_user
 import main
+import os
+import re
+import cloudinary
+import cloudinary.uploader
 
 router = APIRouter()
 
-import cloudinary
-import cloudinary.uploader
-import os
+# ── Force-configure Cloudinary at module load ──────────────────────
+# Priority: individual env vars > CLOUDINARY_URL (parsed manually)
+_cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
+_api_key    = os.getenv("CLOUDINARY_API_KEY")
+_api_secret = os.getenv("CLOUDINARY_API_SECRET")
+
+if not (_cloud_name and _api_key and _api_secret):
+    # Try to parse CLOUDINARY_URL manually (avoids buggy auto-parser)
+    _raw_url = os.getenv("CLOUDINARY_URL", "")
+    # Strip accidental "CLOUDINARY_URL=" prefix if someone pasted the
+    # whole line from Cloudinary dashboard into the env-var value field
+    if _raw_url.startswith("CLOUDINARY_URL="):
+        _raw_url = _raw_url[len("CLOUDINARY_URL="):]
+    _m = re.match(r"cloudinary://([^:]+):([^@]+)@(.+)", _raw_url)
+    if _m:
+        _api_key, _api_secret, _cloud_name = _m.groups()
+
+if _cloud_name and _api_key and _api_secret:
+    cloudinary.config(
+        cloud_name=_cloud_name,
+        api_key=_api_key,
+        api_secret=_api_secret,
+    )
+    print(f"[Cloudinary] Configured for cloud '{_cloud_name}'")
+else:
+    print("[Cloudinary] WARNING: credentials not found – uploads will fail")
+
 
 @router.post("/upload")
 async def upload_file(
-    file: UploadFile = File(...), 
-    current_user: dict = Depends(get_current_user)
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user),
 ):
     if current_user.get("role") != "faculty":
         raise HTTPException(status_code=403, detail="Only faculty can perform this action")
     if not (file.filename and file.filename.lower().endswith(".pdf")) or file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
-        
+
+    # Quick guard – if config was never loaded, fail fast with a clear message
+    cfg = cloudinary.config()
+    if not cfg.api_key:
+        raise HTTPException(status_code=500, detail="Cloudinary is not configured on the server.")
+
     try:
-        # Check if CLOUDINARY_URL is set, OR if separate variables are set
-        cloudinary_url = os.getenv("CLOUDINARY_URL")
-        cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
-        api_key = os.getenv("CLOUDINARY_API_KEY")
-        api_secret = os.getenv("CLOUDINARY_API_SECRET")
-        
-        if not cloudinary_url and not (cloud_name and api_key and api_secret):
-            raise HTTPException(status_code=500, detail="Cloudinary is not configured on the server.")
-            
-        if cloud_name and api_key and api_secret:
-            cloudinary.config(
-                cloud_name=cloud_name,
-                api_key=api_key,
-                api_secret=api_secret
-            )
-            
-        # We can pass the file-like object directly to Cloudinary
-        # resource_type="raw" is needed for PDFs and non-image files.
         upload_result = cloudinary.uploader.upload(
-            file.file, 
-            resource_type="raw", 
-            public_id=file.filename.split('.')[0] + "_" + current_user["username"]
+            file.file,
+            resource_type="raw",
+            public_id=file.filename.split(".")[0] + "_" + current_user["username"],
         )
-        
-        secure_url = upload_result.get("secure_url")
-        
-        # Return the URL that can be used to download the file
+
         return {
             "filename": file.filename,
-            "file_id": upload_result.get("public_id"), # For legacy sake or reference
-            "url": secure_url
+            "file_id": upload_result.get("public_id"),
+            "url": upload_result.get("secure_url"),
         }
     except Exception as e:
         import traceback
-        traceback.print_exc() # Log the full error to Render console
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
