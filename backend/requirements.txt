@@ -10,6 +10,5 @@ PyJWT
 bcrypt
 python-multipart
 websockets
-cloudinary
 google-auth
 requests
