@@ -13,7 +13,7 @@ router = APIRouter()
 async def _get_gridfs():
     """Return a motor GridFS bucket for the current database."""
     from motor.motor_asyncio import AsyncIOMotorGridFSBucket
-    if not main.db:
+    if main.db is None:
         raise HTTPException(status_code=503, detail="Database not connected")
     return AsyncIOMotorGridFSBucket(main.db)
 
