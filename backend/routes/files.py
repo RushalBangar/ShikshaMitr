@@ -20,9 +20,21 @@ async def upload_file(
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
         
     try:
-        # Check if CLOUDINARY_URL is set
-        if not os.getenv("CLOUDINARY_URL"):
+        # Check if CLOUDINARY_URL is set, OR if separate variables are set
+        cloudinary_url = os.getenv("CLOUDINARY_URL")
+        cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME")
+        api_key = os.getenv("CLOUDINARY_API_KEY")
+        api_secret = os.getenv("CLOUDINARY_API_SECRET")
+        
+        if not cloudinary_url and not (cloud_name and api_key and api_secret):
             raise HTTPException(status_code=500, detail="Cloudinary is not configured on the server.")
+            
+        if cloud_name and api_key and api_secret:
+            cloudinary.config(
+                cloud_name=cloud_name,
+                api_key=api_key,
+                api_secret=api_secret
+            )
             
         # We can pass the file-like object directly to Cloudinary
         # resource_type="raw" is needed for PDFs and non-image files.
@@ -41,4 +53,6 @@ async def upload_file(
             "url": secure_url
         }
     except Exception as e:
+        import traceback
+        traceback.print_exc() # Log the full error to Render console
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
