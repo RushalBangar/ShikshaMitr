@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Prevent dark mode flash -->
+    <script src="js/theme.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
     <script>
@@ -21,8 +23,7 @@
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/theme.js"></script>
-    <style>
+        <style>
         .quiz-container {
             max-width: 720px;
             margin: 0 auto 3rem;
@@ -205,7 +206,8 @@
                 <span class="logo-text">ShikshaMitr</span>
             </a>
             <div style="display: flex; align-items: center; gap: 0.8rem;">
-                <a href="student-dashboard.html" class="btn btn-primary btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">🎓</span> Dashboard</a>
+                <a href="student-dashboard.html" class="btn btn-primary btn-sm">
+                    Dashboard</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </div>
         </div>

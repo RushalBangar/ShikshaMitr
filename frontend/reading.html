@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Prevent dark mode flash -->
+    <script src="js/theme.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
     <script>
@@ -21,8 +23,7 @@
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/theme.js"></script>
-</head>
+    </head>
 <body>
     <header>
         <div class="container header-container">
@@ -32,32 +33,28 @@
             </a>
             <nav class="nav-links">
                 <a href="materials.html?type=notes" class="nav-link">
-                    <span class="nav-icon">📚</span>
                     <span>Notes</span>
                 </a>
                 <a href="materials.html?type=board_paper" class="nav-link">
-                    <span class="nav-icon">📝</span>
                     <span>Papers</span>
                 </a>
                 <a href="quiz.html" class="nav-link">
-                    <span class="nav-icon">🎯</span>
                     <span>Quizzes</span>
                 </a>
                 <a href="reading.html" class="nav-link active">
-                    <span class="nav-icon">🔤</span>
                     <span>Reading</span>
                 </a>
                 <a href="forum.html" class="nav-link">
-                    <span class="nav-icon">💬</span>
                     <span>Forum</span>
                 </a>
                 <a href="flashcards.html" class="nav-link">
-                    <span class="nav-icon">🧠</span>
                     <span>Flashcards</span>
                 </a>
                 <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
-                <a href="student-login.html" class="btn btn-primary btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">🎓</span> Student Portal</a>
-                <a href="faculty.html" class="btn btn-ghost btn-sm" style="display: flex; gap: 0.3rem;"><span class="nav-icon">👨‍🏫</span> Faculty</a>
+                <a href="student-login.html" class="btn btn-primary btn-sm">
+                    Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm">
+                    Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
