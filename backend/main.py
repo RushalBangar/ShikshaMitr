@@ -57,7 +57,8 @@ app.add_middleware(
         "http://127.0.0.1",
         "http://127.0.0.1:8000",
         "http://127.0.0.1:5500",
-        "https://shikshamitr.onrender.com"
+        "https://shikshamitr.onrender.com",
+        "https://shiksha-mitr.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
