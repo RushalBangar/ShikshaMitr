@@ -9,6 +9,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import main
 import os
+from security import rate_limiter
 
 router = APIRouter()
 
@@ -93,7 +94,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     user["role"] = role
     return user
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=Token, dependencies=[Depends(rate_limiter(max_requests=5, window_seconds=60))])
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
@@ -176,7 +177,7 @@ class StudentRegister(BaseModel):
     email: Optional[str] = None
     full_name: str
 
-@router.post("/student-register")
+@router.post("/student-register", dependencies=[Depends(rate_limiter(max_requests=3, window_seconds=60))])
 async def register_student(data: StudentRegister):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
@@ -222,7 +223,7 @@ async def register_student(data: StudentRegister):
 class GoogleLoginRequest(BaseModel):
     credential: str
 
-@router.post("/google-login")
+@router.post("/google-login", dependencies=[Depends(rate_limiter(max_requests=5, window_seconds=60))])
 async def google_login(data: GoogleLoginRequest):
     if not main.db_connected:
         raise HTTPException(status_code=500, detail="Database not connected")
