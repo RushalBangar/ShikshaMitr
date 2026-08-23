@@ -48,9 +48,20 @@ async def get_analytics(current_user: dict = Depends(get_current_user)):
     date_counts = {date: 0 for date in last_7_days}
     
     for a in activities:
-        date_str = a["timestamp"].date().isoformat()
-        if date_str in date_counts:
-            date_counts[date_str] += 1
+        ts = a.get("timestamp")
+        if not ts:
+            continue
+            
+        try:
+            if isinstance(ts, str):
+                date_str = datetime.fromisoformat(ts.replace('Z', '+00:00')).date().isoformat()
+            else:
+                date_str = ts.date().isoformat()
+                
+            if date_str in date_counts:
+                date_counts[date_str] += 1
+        except Exception:
+            pass
             
     trend_data = {
         "labels": last_7_days,

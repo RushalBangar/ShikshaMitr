@@ -109,6 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('shikshamitr_token', data.access_token);
+                // Clear student tokens to prevent session cross-pollination
+                localStorage.removeItem('shikshamitr_student_token');
+                localStorage.removeItem('shikshamitr_student_user');
+                
                 showDashboard();
             } else {
                 const error = await response.json();

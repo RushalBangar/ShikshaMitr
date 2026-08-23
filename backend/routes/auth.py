@@ -16,8 +16,13 @@ router = APIRouter()
 # Security Config
 JWT_SECRET_ENV = os.environ.get("JWT_SECRET")
 if not JWT_SECRET_ENV:
-    print("WARNING: JWT_SECRET not found in environment. Using insecure fallback!")
-SECRET_KEY = JWT_SECRET_ENV or "super-secret-key-shikshamitr"
+    # Only allow empty JWT for local development testing, but strictly fail in production
+    if os.environ.get("RENDER"):
+        raise ValueError("CRITICAL ERROR: JWT_SECRET environment variable is required in production.")
+    else:
+        print("WARNING: JWT_SECRET not found in environment. Using insecure local testing key!")
+        
+SECRET_KEY = JWT_SECRET_ENV or "local-development-secret-key-only"
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "YOUR_GOOGLE_CLIENT_ID")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 1 week
@@ -301,7 +306,12 @@ async def google_login(data: GoogleLoginRequest):
         access_token = create_access_token(
             data={"sub": user["username"], "role": role}, expires_delta=access_token_expires
         )
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer",
+            "username": user["username"],
+            "full_name": user.get("full_name", user["username"])
+        }
         
     except ValueError as e:
         raise HTTPException(status_code=401, detail=f"Invalid Google token: {str(e)}")

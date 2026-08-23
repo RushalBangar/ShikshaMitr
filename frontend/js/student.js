@@ -15,10 +15,12 @@ async function handleGoogleLogin(response) {
         const data = await res.json();
         if (res.ok) {
             localStorage.setItem('shikshamitr_student_token', data.access_token);
-            // Will be updated by profile fetch anyway
+            // Clear faculty token to prevent session cross-pollination
+            localStorage.removeItem('shikshamitr_token');
+            
             localStorage.setItem('shikshamitr_student_user', JSON.stringify({
-                username: "Google Learner",
-                full_name: "Google Learner"
+                username: data.username || "Student",
+                full_name: data.full_name || "Student"
             }));
             window.location.href = 'student-dashboard.html';
         } else {
@@ -294,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (loginRes.ok) {
                             const loginData = await loginRes.json();
                             localStorage.setItem('shikshamitr_student_token', loginData.access_token);
+                            localStorage.removeItem('shikshamitr_token'); // Clear faculty token
                             localStorage.setItem('shikshamitr_student_user', JSON.stringify({
                                 username: username,
                                 full_name: fullName
@@ -347,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     localStorage.setItem('shikshamitr_student_token', data.access_token);
+                    localStorage.removeItem('shikshamitr_token'); // Clear faculty token
                     localStorage.setItem('shikshamitr_student_user', JSON.stringify({
                         username: identifier,
                         full_name: identifier
