@@ -24,14 +24,10 @@ async def upload_file(
         if not os.getenv("CLOUDINARY_URL"):
             raise HTTPException(status_code=500, detail="Cloudinary is not configured on the server.")
             
-        # We need to read the file into memory and upload.
-        # For large files, we might need a custom chunked stream, but Cloudinary's upload accepts a file-like object or bytes.
-        file_bytes = await file.read()
-        
-        # Upload to Cloudinary using the bytes
+        # We can pass the file-like object directly to Cloudinary
         # resource_type="raw" is needed for PDFs and non-image files.
         upload_result = cloudinary.uploader.upload(
-            file_bytes, 
+            file.file, 
             resource_type="raw", 
             public_id=file.filename.split('.')[0] + "_" + current_user["username"]
         )
