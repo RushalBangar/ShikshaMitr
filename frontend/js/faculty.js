@@ -540,8 +540,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 type: 'bar',
                 data: {
                     labels: data.trend_data.labels.map(d => {
-                        const date = new Date(d);
-                        return `${date.getDate()}/${date.getMonth() + 1}`;
+                        // Safe date parsing splitting YYYY-MM-DD
+                        if (!d) return '';
+                        const parts = d.split('-');
+                        if (parts.length === 3) {
+                            return `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}`;
+                        }
+                        return d;
                     }),
                     datasets: [{
                         label: 'Quizzes Taken',
@@ -553,10 +558,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { stepSize: 1 }
+                            ticks: { stepSize: 1, color: '#64748b' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            ticks: { color: '#64748b', maxRotation: 0, autoSkip: false },
+                            grid: { display: false }
                         }
                     }
                 }
