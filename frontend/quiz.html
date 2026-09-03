@@ -14,189 +14,545 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Interactive Practice Quizzes - ShikshaMitr">
+    <meta name="description" content="Interactive Practice Quizzes - ShikshaMitr. Multiple-choice questions, calm focus timing, and adaptive diagnostic weak-area practice drills for CBSE & SSC.">
     <meta name="theme-color" content="#6366F1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Practice Quizzes - ShikshaMitr</title>
+    <title>Interactive Practice Quizzes - ShikshaMitr</title>
     <link rel="icon" type="image/png" href="images/logo-icon.png">
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-        <style>
-        .quiz-container {
-            max-width: 720px;
-            margin: 0 auto 3rem;
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .quiz-page-wrapper {
+            flex: 1;
+            padding: 1.5rem 0 4rem;
+        }
+
+        /* Ambient Glow Behind Header */
+        .ambient-glow {
+            position: absolute;
+            top: -40px;
+            right: 10%;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Top Hero Header */
+        .quiz-hero-card {
             background: var(--bg-card);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
             border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem 2.25rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.5s ease-out;
+            z-index: 1;
         }
 
-        .quiz-card-item {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-card);
-            padding: 1.5rem;
-            border-radius: var(--radius-md);
-            margin-bottom: 1rem;
+        .quiz-hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gradient-btn);
+        }
+
+        .quiz-hero-header {
             display: flex;
+            align-items: flex-end;
             justify-content: space-between;
-            align-items: center;
+            gap: 1.5rem;
             flex-wrap: wrap;
-            gap: 1rem;
-            transition: var(--transition-fast);
+            margin-bottom: 1.5rem;
         }
 
-        .quiz-card-item:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-card);
-        }
-
-        .option-btn {
-            width: 100%;
-            text-align: left;
-            padding: 1rem 1.25rem;
-            margin-bottom: 0.8rem;
-            background: var(--bg-glass);
-            border: 2px solid var(--border-card);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 1rem;
-            font-family: 'Outfit', sans-serif;
+        .quiz-hero-header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            font-weight: 800;
             color: var(--text-primary);
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: -0.025em;
+            margin: 0.35rem 0 0.25rem;
+        }
+
+        .quiz-hero-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 680px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Quick Filter Bar (Grade & Subject) */
+        .quick-filter-strip {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 0.75rem 1rem;
         }
 
-        .option-btn:hover {
-            border-color: var(--primary);
-            background: var(--bg-card-hover);
-            transform: translateX(4px);
+        .filter-pills-group {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
         }
 
-        .option-btn:active {
-            transform: scale(0.97);
-            transition-duration: 0.08s;
+        .filter-pill-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-right: 0.25rem;
         }
 
-        .option-btn.selected {
-            border-color: var(--primary);
-            background: var(--primary-glow);
+        .filter-btn-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            border-radius: 50px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            animation: optionPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
         }
 
-        .option-btn.correct {
-            border-color: #10B981;
-            background: var(--status-ok-bg);
-            color: var(--status-ok-text);
-            animation: correctBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        .filter-btn-pill:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
         }
 
-        .option-btn.incorrect {
-            border-color: #EF4444;
-            background: var(--status-error-bg);
-            color: var(--status-error-text);
-            animation: incorrectShake 0.5s ease;
+        .filter-btn-pill.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px var(--primary-glow);
         }
 
-        @keyframes optionPop {
-            0% { transform: scale(1); }
-            40% { transform: scale(1.03); }
-            100% { transform: scale(1); }
+        /* Journey Stages Selector Tabs (1. Briefing -> 2. Active Question -> 3. Diagnostic Scorecard) */
+        .journey-stages-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 0.4rem 0.5rem;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
         }
 
-        @keyframes correctBounce {
-            0% { transform: scale(1); }
-            30% { transform: scale(1.04) translateX(4px); }
-            60% { transform: scale(0.98); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes incorrectShake {
-            0%, 100% { transform: translateX(0); }
-            15% { transform: translateX(-8px); }
-            30% { transform: translateX(8px); }
-            45% { transform: translateX(-6px); }
-            60% { transform: translateX(6px); }
-            75% { transform: translateX(-3px); }
-        }
-
-        .option-indicator {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+        .stage-tab-btn {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--bg-surface);
-            font-weight: 700;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            border-radius: var(--radius-lg);
             font-size: 0.85rem;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            white-space: nowrap;
         }
 
-        .option-btn.selected .option-indicator {
-            background: var(--primary);
-            color: white;
+        .stage-tab-btn:hover {
+            color: var(--text-primary);
         }
 
-        .option-btn.correct .option-indicator {
-            background: #10B981;
-            color: white;
+        .stage-tab-btn.active {
+            background: var(--bg-card);
+            color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
         }
 
-        .option-btn.incorrect .option-indicator {
-            background: #EF4444;
-            color: white;
-        }
-
-        .quiz-progress-bar {
-            height: 8px;
-            background: var(--bg-surface);
-            border-radius: 50px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .quiz-progress-fill {
-            height: 100%;
-            background: var(--gradient-btn);
-            width: 0%;
-            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .score-circle {
-            width: 130px;
-            height: 130px;
+        .stage-num-badge {
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: var(--gradient-btn);
-            color: white;
+            background: var(--bg-surface);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            transition: var(--transition-fast);
+        }
+
+        .stage-tab-btn.active .stage-num-badge {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        /* --- STAGE 1: Briefing Grid --- */
+        .briefing-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .briefing-layout-grid {
+                grid-template-columns: 7fr 5fr;
+            }
+        }
+
+        .briefing-main-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .spec-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 0.75rem;
+            margin: 1.25rem 0;
+        }
+
+        .spec-stat-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .anxiety-free-box {
+            background: var(--primary-glow);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .records-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem 1.75rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .score-box-preview {
+            width: 75px;
+            height: 75px;
+            border-radius: var(--radius-lg);
+            background: var(--primary-glow);
+            color: var(--primary);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 1.5rem auto;
             font-weight: 800;
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-            animation: scoreReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+            flex-shrink: 0;
         }
 
-        @keyframes scoreReveal {
-            0% { transform: scale(0); opacity: 0; }
-            60% { transform: scale(1.15); }
-            100% { transform: scale(1); opacity: 1; }
+        /* --- STAGE 2: Active Question Focus Player --- */
+        .calm-timer-pill {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--primary);
+        }
+
+        .question-card-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem 2.25rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-option-card {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .question-option-card:hover {
+            border-color: var(--primary);
+            background: var(--bg-card);
+            transform: translateX(4px);
+        }
+
+        .question-option-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .question-option-card.correct {
+            border-color: #10B981;
+            background: var(--status-ok-bg);
+            color: #059669;
+        }
+
+        .question-option-card.incorrect {
+            border-color: #EF4444;
+            background: var(--status-error-bg);
+            color: #DC2626;
+        }
+
+        .option-badge-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            flex-shrink: 0;
+            transition: var(--transition-fast);
+        }
+
+        .question-option-card.selected .option-badge-letter {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .question-option-card.correct .option-badge-letter {
+            background: #10B981;
+            color: #ffffff;
+            border-color: #10B981;
+        }
+
+        .question-option-card.incorrect .option-badge-letter {
+            background: #EF4444;
+            color: #ffffff;
+            border-color: #EF4444;
+        }
+
+        /* Palette Jump Grid */
+        .palette-jump-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .palette-num-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .palette-num-btn.answered {
+            background: var(--status-ok-bg);
+            color: #059669;
+            border-color: #10B981;
+        }
+
+        .palette-num-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .palette-num-btn.flagged {
+            background: rgba(245, 158, 11, 0.15);
+            color: #D97706;
+            border-color: #F59E0B;
+        }
+
+        /* --- STAGE 3: Diagnostic Scorecard --- */
+        .scorecard-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 2.25rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-radial-dial {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--gradient-btn);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            box-shadow: 0 8px 24px var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .diagnostics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (min-width: 768px) {
+            .diagnostics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .diagnostic-card {
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .diagnostic-card.mastery {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+        }
+
+        .diagnostic-card.growth {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        /* Other Popular Quizzes Tray */
+        .popular-quizzes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.25rem;
+        }
+
+        .popular-quiz-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .popular-quiz-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .quiz-page-wrapper {
+                padding: 1rem 0 5rem;
+            }
+
+            .quiz-hero-card,
+            .question-card-box,
+            .scorecard-banner {
+                padding: 1.25rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .journey-stages-bar {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .stage-tab-btn {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .question-option-card {
+                padding: 0.85rem 1rem;
+            }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <header>
@@ -205,96 +561,572 @@
                 <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
                 <span class="logo-text">ShikshaMitr</span>
             </a>
-            <div style="display: flex; align-items: center; gap: 0.8rem;">
-                <a href="student-dashboard.html" class="btn btn-primary btn-sm">
-                    Dashboard</a>
+            <nav class="nav-links">
+                <a href="materials.html?type=notes" class="nav-link">Notes</a>
+                <a href="materials.html?type=board_paper" class="nav-link">Papers</a>
+                <a href="quiz.html" class="nav-link active">Quizzes</a>
+                <a href="reading.html" class="nav-link">Reading</a>
+                <a href="forum.html" class="nav-link">Forum</a>
+                <a href="flashcards.html" class="nav-link">Flashcards</a>
+                <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
+                <a href="student-login.html" class="btn btn-primary btn-sm">Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm">Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main class="container">
-        <!-- View 1: Quiz List -->
-        <section id="quiz-list-view">
-            <div class="page-header" style="text-align: center; padding: 2.5rem 0 1.5rem;">
-                <a href="index.html" class="back-link">← Back to Home</a>
-                <h1>🎯 Interactive Practice Quizzes</h1>
-                <p>Test your knowledge with multiple-choice questions & get instant explanations.</p>
-                <div class="filters" style="margin-top: 1.5rem;">
-                    <select id="standard-filter" class="filter-select">
-                        <option value="">All Standards</option>
-                        <option value="5">Class 5</option>
-                        <option value="6">Class 6</option>
-                        <option value="7">Class 7</option>
-                        <option value="8">Class 8</option>
-                        <option value="9">Class 9</option>
-                        <option value="10">Class 10</option>
-                    </select>
+    <main class="container quiz-page-wrapper">
+        <div class="ambient-glow"></div>
+
+        <!-- 1. Top Breadcrumb & Header Title Section -->
+        <section class="quiz-hero-card">
+            <!-- Breadcrumbs -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.75rem; flex-wrap: wrap;">
+                <a href="index.html" class="back-link" style="margin: 0; color: var(--primary);">← Back to Home</a>
+                <span>/</span>
+                <span style="color: var(--text-muted);">Quizzes &amp; Assessments</span>
+                <span>/</span>
+                <span class="class-badge" style="font-size: 0.68rem;" id="quiz-breadcrumb-title">Mathematics — Algebra &amp; Polynomials Drill</span>
+            </div>
+
+            <div class="quiz-hero-header">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.6rem;">🎯</span>
+                        <h1 id="hero-title">Interactive Practice Quizzes</h1>
+                    </div>
+                    <p>Reinforce core board competencies with multiple-choice questions, calm focus timing, and instant adaptive diagnostic weak-area practice drills.</p>
+                </div>
+                <div class="hero-kpi-badge">
+                    <span class="class-badge" style="background: var(--primary-glow); color: var(--primary); font-size: 0.72rem;">
+                        🛡️ CBSE &amp; SSC Pattern Aligned
+                    </span>
+                    <strong style="font-size: 1.3rem; color: var(--primary); display: block; margin-top: 0.25rem;">Academic Year 2025-26</strong>
                 </div>
             </div>
 
-            <div id="quiz-list-container" style="max-width: 720px; margin: 0 auto 3rem;">
-                <p style="text-align: center; color: var(--text-secondary);">Loading available quizzes...</p>
+            <!-- Quick Standard & Subject Filter Controls -->
+            <div class="quick-filter-strip">
+                <!-- Grade Selector -->
+                <div class="filter-pills-group">
+                    <span class="filter-pill-label">Grade:</span>
+                    <button class="filter-btn-pill" onclick="filterQuizzesByGrade('all', this)">All Standards</button>
+                    <button class="filter-btn-pill active" onclick="filterQuizzesByGrade('10', this)">Class 10 (Active)</button>
+                    <button class="filter-btn-pill" onclick="filterQuizzesByGrade('9', this)">Class 9</button>
+                    <button class="filter-btn-pill" onclick="filterQuizzesByGrade('8', this)">Class 8</button>
+                </div>
+
+                <!-- Subject Filter Pills -->
+                <div class="filter-pills-group">
+                    <span class="filter-pill-label">Subject:</span>
+                    <button class="filter-btn-pill active" onclick="filterQuizzesBySubject('maths', this)">
+                        <span>📐</span>
+                        <span>Mathematics</span>
+                    </button>
+                    <button class="filter-btn-pill" onclick="filterQuizzesBySubject('science', this)">
+                        <span>🔬</span>
+                        <span>Science</span>
+                    </button>
+                    <button class="filter-btn-pill" onclick="filterQuizzesBySubject('english', this)">
+                        <span>📖</span>
+                        <span>English</span>
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- View 2: Active Quiz Player -->
-        <section id="quiz-player-view" style="display: none;">
-            <div class="page-header" style="text-align: center; padding: 2rem 0 1rem;">
-                <button id="back-to-list-btn" class="back-link" style="background:none; border:none; cursor:pointer;">← Back to Quizzes</button>
-                <h1 id="active-quiz-title">Quiz Title</h1>
-                <p id="active-quiz-subtitle" style="color: var(--text-secondary);">Class 10 • Mathematics</p>
-            </div>
+        <!-- 2. Quiz Journey Stage Selector / Tab Navigation -->
+        <nav class="journey-stages-bar" aria-label="Quiz Navigation Stages">
+            <button class="stage-tab-btn active" id="tab-briefing-btn" onclick="switchStage('briefing')">
+                <span class="stage-num-badge">1</span>
+                <span>Pre-Quiz Briefing</span>
+            </button>
+            <button class="stage-tab-btn" id="tab-active-btn" onclick="switchStage('active')">
+                <span class="stage-num-badge">2</span>
+                <span>Active Question Focus</span>
+            </button>
+            <button class="stage-tab-btn" id="tab-results-btn" onclick="switchStage('results')">
+                <span class="stage-num-badge">3</span>
+                <span>Diagnostic Scorecard</span>
+            </button>
+        </nav>
 
-            <div class="quiz-container">
-                <div class="quiz-progress-bar">
-                    <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+        <!-- STAGE 1: BEFORE STARTING (Pre-Quiz Briefing Card) -->
+        <section id="stage-briefing" class="stage-container">
+            <div class="briefing-layout-grid">
+                <!-- Left Main Briefing Card -->
+                <div class="briefing-main-card">
+                    <div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                            <span class="class-badge" style="background: var(--primary-glow); color: var(--primary);">Mathematics Quiz</span>
+                            <span class="class-badge">CBSE &amp; SSC Class 10 Pattern</span>
+                            <span class="class-badge" style="background: var(--status-ok-bg); color: #059669;">🟢 Difficulty: Easy</span>
+                        </div>
+
+                        <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.5rem;">
+                            Algebra – Basics &amp; Quadratic Fundamentals
+                        </h2>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                            Covers Real Numbers, Polynomial zeros, Linear Equations in Two Variables, and standard Discriminant derivations. Master these fundamental 10 marks to guarantee velocity in Section A of your board exam.
+                        </p>
+
+                        <!-- Specifications Grid -->
+                        <div class="spec-stats-grid">
+                            <div class="spec-stat-box">
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">MCQ Count</span>
+                                <strong style="font-size: 1.15rem; color: var(--text-primary);">10 MCQs</strong>
+                            </div>
+                            <div class="spec-stat-box">
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Time Limit</span>
+                                <strong style="font-size: 1.15rem; color: var(--text-primary);">10 Minutes</strong>
+                            </div>
+                            <div class="spec-stat-box">
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Target XP</span>
+                                <strong style="font-size: 1.15rem; color: var(--primary);">+50 XP</strong>
+                            </div>
+                            <div class="spec-stat-box">
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Negative Mark</span>
+                                <strong style="font-size: 1.15rem; color: #059669;">None</strong>
+                            </div>
+                        </div>
+
+                        <!-- Anxiety-Free Exam Notice Strip -->
+                        <div class="anxiety-free-box">
+                            <span style="font-size: 1.3rem;">🌿</span>
+                            <div>
+                                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block;">Calm Focus Experience Active</strong>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">
+                                    No sudden flashing countdowns or anxiety alerts. Automatically saves your question progress and produces a personalized diagnostic report.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Primary Actions -->
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+                        <button class="btn btn-primary" onclick="startActiveQuiz()" style="font-weight: 700; padding: 0.75rem 1.75rem;">
+                            <span>Start Quiz Now</span>
+                            <span>🚀</span>
+                        </button>
+                        <a href="materials.html?type=notes" class="btn btn-ghost" style="font-weight: 600;">
+                            <span>📖 View Chapter Blueprint</span>
+                        </a>
+                    </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 1.25rem; font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);">
-                    <span id="question-number-label">Question 1 of 5</span>
-                    <span id="quiz-timer">⏱️ Live Test</span>
-                </div>
+                <!-- Right Records & Mentor Insights -->
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Student Performance History -->
+                    <div class="records-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Your Records</span>
+                            <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.7rem;">🏆 Personal Best</span>
+                        </div>
 
-                <h3 id="question-text" style="font-size: 1.3rem; margin-bottom: 1.5rem; line-height: 1.4;">Question goes here?</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="score-box-preview">
+                                <span style="font-size: 1.4rem; font-weight: 800; line-height: 1;">80%</span>
+                                <small style="font-size: 0.68rem; opacity: 0.85;">8 / 10 Score</small>
+                            </div>
+                            <div>
+                                <strong style="font-size: 1rem; color: var(--text-primary); display: block;">Great Retention</strong>
+                                <small style="font-size: 0.78rem; color: var(--text-secondary); display: block;">Attempted 3 days ago • 07:32 duration</small>
+                                <span style="font-size: 0.75rem; color: #059669; font-weight: 700; display: inline-flex; align-items: center; gap: 2px; margin-top: 2px;">
+                                    ▲ +12% above peer average
+                                </span>
+                            </div>
+                        </div>
 
-                <div id="options-container">
-                    <!-- Populated by JS -->
-                </div>
+                        <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
+                            <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Topics Evaluated:</span>
+                            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                                <span class="class-badge" style="font-size: 0.7rem;">Real Numbers</span>
+                                <span class="class-badge" style="font-size: 0.7rem;">Quadratic Roots</span>
+                                <span class="class-badge" style="font-size: 0.7rem;">Linear Systems</span>
+                                <span class="class-badge" style="font-size: 0.7rem;">Discriminant Δ</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div id="explanation-box" style="display: none; padding: 1rem; border-radius: var(--radius-md); background: var(--bg-surface); margin-top: 1.25rem; border: 1px solid var(--border-subtle);">
-                    <h5 style="margin-bottom: 0.3rem; color: var(--primary);">💡 Explanation:</h5>
-                    <p id="explanation-text" style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;"></p>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
-                    <button id="next-question-btn" class="btn btn-primary" style="display: none;">Next Question →</button>
-                    <button id="submit-quiz-btn" class="btn btn-accent" style="display: none;">Finish & See Score 🎉</button>
+                    <!-- Academic Mentor Insight Mini-Card -->
+                    <div class="records-card" style="background: var(--bg-surface);">
+                        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                                💡
+                            </div>
+                            <div>
+                                <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">Mitr Mentor Tip</strong>
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; margin: 0.25rem 0 0;">
+                                    Verify whether quadratic roots are real and equal by testing <strong style="color: var(--text-primary);">b² - 4ac = 0</strong> before selecting your answer!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- View 3: Quiz Results Scorecard -->
-        <section id="quiz-results-view" style="display: none;">
-            <div class="quiz-container" style="text-align: center; max-width: 540px;">
-                <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">🏆</span>
-                <h2>Quiz Completed!</h2>
-                <p style="color: var(--text-secondary);">Great job testing your knowledge.</p>
-
-                <div class="score-circle">
-                    <span id="result-percentage" style="font-size: 2rem;">80%</span>
-                    <span id="result-fraction" style="font-size: 0.85rem; opacity: 0.9;">4/5 Correct</span>
+        <!-- STAGE 2: DURING QUIZ (Calm Focus & Active Question Experience) -->
+        <section id="stage-active" class="stage-container" style="display: none;">
+            <!-- Top Calm Status & Timer Bar -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-xl); padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div>
+                        <strong style="font-size: 1.05rem; color: var(--primary);" id="active-q-num">Question 4</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.85rem;">of 10</span>
+                    </div>
+                    <span class="class-badge" style="font-size: 0.7rem;">Linear Equations in Two Variables • 1 Mark</span>
                 </div>
 
-                <p id="result-verdict" style="font-weight: 600; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 1.5rem;">Outstanding Performance! 🌟</p>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="calm-timer-pill" title="Calm focus timer without sudden flashing">
+                        <span>⏳</span>
+                        <span id="calm-timer-display">08:24</span>
+                        <small style="color: var(--text-secondary); font-weight: normal;">remaining</small>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" id="pause-btn" onclick="togglePauseQuiz()" title="Pause session" style="padding: 0.4rem 0.65rem;">
+                        ⏸️
+                    </button>
+                </div>
+            </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: center;">
-                    <button id="retry-quiz-btn" class="btn btn-ghost">Retry Quiz 🔄</button>
-                    <button id="results-back-btn" class="btn btn-primary">More Quizzes →</button>
+            <!-- Progress Bar -->
+            <div style="width: 100%; height: 6px; background: var(--bg-surface); border-radius: 50px; overflow: hidden; margin-bottom: 1.5rem; border: 1px solid var(--border-subtle);">
+                <div id="quiz-progress-bar-fill" style="width: 40%; height: 100%; background: var(--gradient-btn); transition: width 0.4s ease;"></div>
+            </div>
+
+            <!-- Question Card Box -->
+            <div class="question-card-box">
+                <!-- Utility Row: QID, Flag, Formula Hint -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span class="class-badge" style="background: var(--primary-glow); color: var(--primary); font-size: 0.7rem;">QID #M10-ALG-04</span>
+                        <small style="color: var(--text-muted); font-size: 0.75rem;">Marks: +1, -0</small>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="btn btn-ghost btn-sm" id="flag-btn" onclick="toggleFlagQuestion()" style="font-size: 0.78rem;">
+                            🚩 <span id="flag-label">Flag for Review</span>
+                        </button>
+                        <button class="btn btn-sm" onclick="toggleFormulaHint()" style="background: rgba(245, 158, 11, 0.15); color: #D97706; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 0.78rem;">
+                            💡 Formula Hint
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formula Hint Accordion Drawer -->
+                <div id="formula-hint-box" style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.82rem; color: #92400E;">
+                    <strong>💡 Formula Clue:</strong> Substitute the given root <em>x = 2</em> directly into <em>2x² + kx − 6 = 0</em> and solve for <em>k</em> algebraically.
+                </div>
+
+                <!-- Actual Question Text -->
+                <h3 id="current-question-text" style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); line-height: 1.4; margin: 0 0 0.5rem;">
+                    If one root of the quadratic equation 2x² + kx − 6 = 0 is 2, what is the value of k?
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 1.5rem;">
+                    Select one option. You can revise your choice anytime before finalizing the test.
+                </p>
+
+                <!-- Options List (A, B, C, D) -->
+                <div id="active-options-list">
+                    <div class="question-option-card selected" onclick="pickOption(0, this)">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span class="option-badge-letter">A</span>
+                            <span style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">k = −1</span>
+                        </div>
+                        <span style="color: var(--primary); font-weight: 800;">✓ Selected</span>
+                    </div>
+
+                    <div class="question-option-card" onclick="pickOption(1, this)">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span class="option-badge-letter">B</span>
+                            <span style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">k = 1</span>
+                        </div>
+                    </div>
+
+                    <div class="question-option-card" onclick="pickOption(2, this)">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span class="option-badge-letter">C</span>
+                            <span style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">k = −2</span>
+                        </div>
+                    </div>
+
+                    <div class="question-option-card" onclick="pickOption(3, this)">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span class="option-badge-letter">D</span>
+                            <span style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">k = 3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls inside Question -->
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; margin-top: 1.5rem;">
+                    <button class="btn btn-ghost btn-sm" onclick="prevQuestion()">
+                        ← Previous Question
+                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-ghost btn-sm" onclick="finishAndScore()" style="color: #D97706; font-weight: 700;">
+                            Finish &amp; Score
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="nextQuestion()" style="font-weight: 700;">
+                            Next Question →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Jump Palette -->
+            <div class="palette-jump-box">
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-right: 0.35rem;">Question Palette:</span>
+                    <button class="palette-num-btn answered" onclick="jumpToQuestion(1)">1</button>
+                    <button class="palette-num-btn answered" onclick="jumpToQuestion(2)">2</button>
+                    <button class="palette-num-btn answered" onclick="jumpToQuestion(3)">3</button>
+                    <button class="palette-num-btn active" onclick="jumpToQuestion(4)">4</button>
+                    <button class="palette-num-btn flagged" onclick="jumpToQuestion(5)">5</button>
+                    <button class="palette-num-btn" onclick="jumpToQuestion(6)">6</button>
+                    <button class="palette-num-btn" onclick="jumpToQuestion(7)">7</button>
+                    <button class="palette-num-btn" onclick="jumpToQuestion(8)">8</button>
+                    <button class="palette-num-btn" onclick="jumpToQuestion(9)">9</button>
+                    <button class="palette-num-btn" onclick="jumpToQuestion(10)">10</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.72rem; color: var(--text-muted);">
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981;"></span> Answered (3)</span>
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #F59E0B;"></span> Flagged (1)</span>
+                    <span style="display: flex; align-items: center; gap: 3px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted);"></span> Pending (6)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- STAGE 3: AFTER QUIZ (Actionable Diagnostic Scorecard) -->
+        <section id="stage-results" class="stage-container" style="display: none;">
+            <!-- Score Summary Hero -->
+            <div class="scorecard-banner">
+                <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                    <div class="score-radial-dial">
+                        <span style="font-size: 1.8rem; font-weight: 800; line-height: 1;">80%</span>
+                        <small style="font-size: 0.75rem; opacity: 0.9;">8 / 10 Correct</small>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem;">
+                            <span>🎉</span>
+                            <span class="class-badge" style="background: var(--primary-glow); color: var(--primary); font-size: 0.72rem;">
+                                🌟 Proficient Learner (+40 XP Earned)
+                            </span>
+                        </div>
+                        <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                            Great Job! Quiz Completed
+                        </h2>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0 0;">
+                            Passing Benchmark: 60% • <strong style="color: #059669;">Requirement Passed ✓</strong> • ⏱ Time Taken: 07:32 (Avg 45s per MCQ)
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-ghost btn-sm" onclick="alert('Diagnostic report generated! Downloading summary.')" title="Download Report">
+                        📥 Download PDF
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="alert('Scorecard copied to clipboard! Ready to share with mentor.')" title="Share">
+                        📤 Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Adaptive Competency Diagnostics Section -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-xl); padding: 1.75rem; box-shadow: var(--shadow-card); margin-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.2rem; display: flex; align-items: center; gap: 0.4rem;">
+                            <span>📊</span>
+                            <span>Adaptive Competency Diagnostics</span>
+                        </h3>
+                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0;">
+                            ShikshaMitr mapped your answers against Class 10 Learning Outcomes.
+                        </p>
+                    </div>
+                    <span class="class-badge" style="font-size: 0.7rem;">Unit: Real Numbers &amp; Polynomials</span>
+                </div>
+
+                <!-- Strong Areas vs Weak Areas Grid -->
+                <div class="diagnostics-grid">
+                    <!-- Strong Areas -->
+                    <div class="diagnostic-card mastery">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; color: #059669; font-weight: 800; font-size: 0.88rem;">
+                            <span>✓</span>
+                            <span>Demonstrated Masteries (Strong Areas)</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="background: var(--bg-surface); padding: 0.65rem 0.85rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+                                <span>Algebra &amp; Number Systems</span>
+                                <span style="background: var(--status-ok-bg); color: #059669; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.72rem;">100% Accuracy</span>
+                            </div>
+                            <div style="background: var(--bg-surface); padding: 0.65rem 0.85rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+                                <span>Linear Equations Elimination</span>
+                                <span style="background: var(--status-ok-bg); color: #059669; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.72rem;">100% Accuracy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Growth Area -->
+                    <div class="diagnostic-card growth">
+                        <div style="display: flex; align-items: center; gap: 0.4rem; color: #D97706; font-weight: 800; font-size: 0.88rem;">
+                            <span>⚠️</span>
+                            <span>Identified Growth Area (Needs Practice)</span>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 0.75rem 0.85rem; border-radius: var(--radius-md); border: 1px solid rgba(245, 158, 11, 0.2);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                <strong style="font-size: 0.82rem; color: var(--text-primary);">Quadratic Roots &amp; Discriminants</strong>
+                                <span style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.72rem;">1 / 3 Missed</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+                                Missed identifying real vs imaginary roots when <em>b² − 4ac &lt; 0</em>. Practice the 5-question booster drill below!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons Strip -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-ghost btn-sm" onclick="switchStage('briefing')">
+                            🔄 Retry Quiz
+                        </button>
+                        <button class="btn btn-ghost btn-sm" onclick="switchStage('active')">
+                            📝 Review Answers (10 Qs)
+                        </button>
+                    </div>
+                    <!-- Targeted Booster Drill Action -->
+                    <button class="btn btn-primary btn-sm" onclick="alert('Starting 5-Question Booster Drill on Quadratic Roots!')" style="font-weight: 700; background: #D97706; border-color: #D97706;">
+                        <span>🎯 Practice Weak Area: Quadratic Equations</span>
+                        <span class="class-badge" style="background: rgba(255, 255, 255, 0.2); color: #fff; font-size: 0.68rem; margin-left: 0.25rem;">5 Q Drill</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step-by-Step Question Solutions Accordion -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-card); margin-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <strong style="font-size: 1rem; color: var(--text-primary);">Step-by-Step Question Solutions</strong>
+                    <span style="font-size: 0.78rem; color: var(--primary); font-weight: 700; cursor: pointer;">Expand All 10 Solutions</span>
+                </div>
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700;">
+                        <span>Q4: If root of 2x² + kx − 6 = 0 is 2, find k.</span>
+                        <span style="color: #059669;">Correct (+1)</span>
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0.5rem 0 0; line-height: 1.45;">
+                        Since <em>x = 2</em> is a root: <em>2(2)² + k(2) − 6 = 0 ⇒ 8 + 2k − 6 = 0 ⇒ 2k + 2 = 0 ⇒ 2k = −2 ⇒ k = −1</em>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Bottom "Other Popular Class 10 Quizzes" Tray -->
+        <section style="margin-top: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
+                <div>
+                    <span class="class-badge" style="font-size: 0.7rem;">Explore Repertoire</span>
+                    <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0 0;">
+                        Other Popular Class 10 Quizzes
+                    </h2>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+                        Curated based on board milestones and student practice velocity.
+                    </p>
+                </div>
+                <a href="quiz.html" style="font-size: 0.82rem; font-weight: 700; color: var(--primary);">View All 42 Quizzes →</a>
+            </div>
+
+            <div class="popular-quizzes-grid">
+                <!-- Chemistry Quiz -->
+                <div class="popular-quiz-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            <span class="class-badge" style="background: var(--primary-glow); color: var(--primary); font-size: 0.68rem;">Science • Chemistry</span>
+                            <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">🟡 Medium</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
+                            Chemical Reactions &amp; Equations
+                        </h3>
+                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                            Balancing equations, types of reactions (redox, precipitation, exothermic), and rancidity prevention.
+                        </p>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                            <span>📝 15 MCQs</span> • <span>⏱️ 15 Mins</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="switchStage('briefing')" style="width: 100%;">
+                            Enter Practice Drill →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Physics Quiz -->
+                <div class="popular-quiz-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            <span class="class-badge" style="background: var(--primary-glow); color: var(--primary); font-size: 0.68rem;">Science • Physics</span>
+                            <span class="class-badge" style="background: rgba(239, 68, 68, 0.15); color: #DC2626; font-size: 0.68rem;">🔴 Hard</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
+                            Light: Reflection &amp; Refraction
+                        </h3>
+                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                            Spherical mirrors, ray diagrams, Cartesian sign conventions, refractive index, and lens formula problems.
+                        </p>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                            <span>📝 10 MCQs</span> • <span>⏱️ 12 Mins</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="switchStage('briefing')" style="width: 100%;">
+                            Enter Practice Drill →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- English Quiz -->
+                <div class="popular-quiz-card">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            <span class="class-badge" style="background: var(--primary-glow); color: var(--primary); font-size: 0.68rem;">English • Literature</span>
+                            <span class="class-badge" style="background: var(--status-ok-bg); color: #059669; font-size: 0.68rem;">🟢 Easy</span>
+                        </div>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
+                            First Flight – Nelson Mandela &amp; Poetry
+                        </h3>
+                        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                            Comprehension check, poetic devices (metaphor, enjambment), and thematic analysis of freedom.
+                        </p>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                            <span>📝 12 MCQs</span> • <span>⏱️ 10 Mins</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="switchStage('briefing')" style="width: 100%;">
+                            Enter Practice Drill →
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Floating Calm Ambient Sound Toggle -->
+    <div style="position: fixed; bottom: 85px; right: 20px; z-index: 100;">
+        <button id="calm-ambient-btn" onclick="toggleCalmSound()" class="btn btn-sm" style="background: var(--bg-card); border: 1.5px solid var(--border-card); box-shadow: 0 4px 16px rgba(0,0,0,0.15); border-radius: 50px; font-weight: 700; gap: 0.4rem; font-size: 0.78rem;">
+            <span>🎵</span>
+            <span id="calm-sound-label">Calm Focus Sound</span>
+        </button>
+    </div>
+
+    <footer>
+        <div class="container text-center text-muted" style="padding-top: 1rem; padding-bottom: 2rem;">
+            <p>&copy; 2026 ShikshaMitr. All rights reserved. Interactive board assessment system.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="faculty.html" style="color: inherit; text-decoration: underline;">Faculty Portal</a></p>
+        </div>
+    </footer>
 
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
@@ -322,5 +1154,148 @@
 
     <script src="js/ws-client.js"></script>
     <script src="js/quiz.js"></script>
+    <script>
+        // 3-Stage Journey Switching (Briefing -> Active Focus -> Diagnostic Scorecard)
+        function switchStage(stageName) {
+            const stages = ['briefing', 'active', 'results'];
+            stages.forEach(s => {
+                const el = document.getElementById('stage-' + s);
+                const btn = document.getElementById('tab-' + s + '-btn');
+                if (el && btn) {
+                    if (s === stageName) {
+                        el.style.display = 'block';
+                        btn.classList.add('active');
+                    } else {
+                        el.style.display = 'none';
+                        btn.classList.remove('active');
+                    }
+                }
+            });
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function startActiveQuiz() {
+            switchStage('active');
+        }
+
+        function toggleFormulaHint() {
+            const hint = document.getElementById('formula-hint-box');
+            if (hint) {
+                hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        let isFlagged = false;
+        function toggleFlagQuestion() {
+            isFlagged = !isFlagged;
+            const label = document.getElementById('flag-label');
+            const btn = document.getElementById('flag-btn');
+            if (isFlagged) {
+                if (label) label.textContent = 'Flagged!';
+                if (btn) btn.style.color = '#D97706';
+            } else {
+                if (label) label.textContent = 'Flag for Review';
+                if (btn) btn.style.color = '';
+            }
+        }
+
+        function pickOption(idx, card) {
+            document.querySelectorAll('#active-options-list .question-option-card').forEach(c => {
+                c.classList.remove('selected');
+                const badge = c.querySelector('span:last-child');
+                if (badge && badge.textContent.includes('Selected')) badge.remove();
+            });
+            card.classList.add('selected');
+            const check = document.createElement('span');
+            check.style.color = 'var(--primary)';
+            check.style.fontWeight = '800';
+            check.textContent = '✓ Selected';
+            card.appendChild(check);
+        }
+
+        function nextQuestion() {
+            // Demo transition to results
+            switchStage('results');
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#6366F1', '#F59E0B', '#10B981']
+                });
+            }
+        }
+
+        function prevQuestion() {
+            alert('Navigating to previous question (Q3).');
+        }
+
+        function finishAndScore() {
+            switchStage('results');
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#6366F1', '#F59E0B', '#10B981']
+                });
+            }
+        }
+
+        function jumpToQuestion(qNum) {
+            const title = document.getElementById('active-q-num');
+            if (title) title.textContent = `Question ${qNum}`;
+            document.querySelectorAll('.palette-num-btn').forEach(b => b.classList.remove('active'));
+            const clickedBtn = document.querySelectorAll('.palette-num-btn')[qNum - 1];
+            if (clickedBtn) clickedBtn.classList.add('active');
+        }
+
+        // Calm Timer Logic
+        let timeLeftSeconds = 504; // 08:24
+        let isPaused = false;
+        setInterval(() => {
+            if (!isPaused && timeLeftSeconds > 0) {
+                timeLeftSeconds--;
+                const mins = Math.floor(timeLeftSeconds / 60);
+                const secs = timeLeftSeconds % 60;
+                const timerEl = document.getElementById('calm-timer-display');
+                if (timerEl) {
+                    timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }
+        }, 1000);
+
+        function togglePauseQuiz() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('pause-btn');
+            if (btn) btn.textContent = isPaused ? '▶️' : '⏸️';
+        }
+
+        // Ambient Sound Simulator
+        let isSoundPlaying = false;
+        function toggleCalmSound() {
+            isSoundPlaying = !isSoundPlaying;
+            const label = document.getElementById('calm-sound-label');
+            const btn = document.getElementById('calm-ambient-btn');
+            if (isSoundPlaying) {
+                if (label) label.textContent = 'Playing Calm Rain 🌧️';
+                if (btn) btn.style.borderColor = 'var(--primary)';
+            } else {
+                if (label) label.textContent = 'Calm Focus Sound';
+                if (btn) btn.style.borderColor = '';
+            }
+        }
+
+        // Quick Filter Clickers
+        function filterQuizzesByGrade(grade, btn) {
+            btn.parentElement.querySelectorAll('.filter-btn-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function filterQuizzesBySubject(sub, btn) {
+            btn.parentElement.querySelectorAll('.filter-btn-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
 </body>
 </html>
