@@ -282,25 +282,6 @@
             color: var(--text-muted);
         }
 
-        /* Status Pill */
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            background: var(--status-ok-bg);
-            color: var(--status-ok-text);
-            border: 1px solid var(--status-ok-border);
-        }
-
-        .status-pill .sep {
-            opacity: 0.5;
-        }
-
         /* Dark mode input focus override */
         [data-theme="dark"] .form-control:focus {
             border-color: #818CF8;
@@ -383,12 +364,6 @@
             <p class="restricted-note">Restricted system. Authorized teaching staff and administrators only.</p>
         </div>
 
-        <!-- Status Pill -->
-        <div class="status-pill">
-            <span>Backend Online</span>
-            <span class="sep">|</span>
-            <span>✓ MongoDB Connected</span>
-        </div>
     </main>
 
     <!-- Bottom Navigation (Mobile) -->

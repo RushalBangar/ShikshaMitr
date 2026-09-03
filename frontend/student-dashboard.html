@@ -577,21 +577,6 @@
             margin: 0.65rem 0;
             font-style: italic;
         }
-
-        /* Status Pill */
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.45rem 1.15rem;
-            border-radius: 50px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            background: var(--status-ok-bg);
-            color: var(--status-ok-text);
-            border: 1px solid var(--status-ok-border);
-        }
-
         /* Mobile Adjustments */
         @media (max-width: 768px) {
             .dashboard-wrapper {
@@ -659,7 +644,7 @@
                     <div>
                         <div class="student-name-row">
                             <h1 id="student-name">Student</h1>
-                            <span class="class-badge">Class 10th CBSE</span>
+                            <span class="class-badge">Class 10th</span>
                         </div>
                         <p class="student-bio-text">
                             <span id="student-username">@student</span> • Welcome back to your learning desk! Ready for today's revision?
@@ -1028,16 +1013,6 @@
                         Earn karma points by completing chapter quizzes and helping peers on forums!
                     </p>
                 </div>
-            </div>
-        </div>
-
-        <!-- System Status Indicator -->
-        <div style="text-align: center; margin-top: 3rem;">
-            <div class="status-pill">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
-                <span>Backend Online</span>
-                <span style="opacity: 0.4;">|</span>
-                <span>✓ MongoDB Connected</span>
             </div>
         </div>
     </main>

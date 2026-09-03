@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkApiStatus = async () => {
         const statusSection = document.getElementById('api-status-section');
         const messageEl = document.getElementById('api-message');
+        if (!statusSection || !messageEl) return;
         
         try {
             const response = await fetch(API_URL);
@@ -25,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('API returned an error');
             }
         } catch (error) {
-            // Keep status hidden on error to avoid cluttering the UI for end users
             statusSection.classList.remove('hidden');
             statusSection.classList.add('status-error');
             statusSection.classList.remove('status-ok');
@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Run health check on load
-    checkApiStatus();
+    // Run health check on load if status section is present
+    if (document.getElementById('api-status-section')) {
+        checkApiStatus();
+    }
 });
