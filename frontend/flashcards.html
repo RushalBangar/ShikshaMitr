@@ -3,100 +3,1081 @@
 <head>
     <!-- Prevent dark mode flash -->
     <script src="js/theme.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2N8TR3HLN2');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Master Class 10th concepts, formulas, and vocabulary with ShikshaMitr's intelligent Spaced Repetition (SRS) Flashcards.">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Interactive Flashcards - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-        <style>
-        .flashcard-container { max-width: 800px; margin: 2rem auto; padding: 1rem; text-align: center; }
-        .deck-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-top: 2rem; }
-        .deck-card { background: var(--bg-card); border-radius: 8px; padding: 1.5rem; border: 1px solid var(--border-color); cursor: pointer; transition: transform 0.2s; box-shadow: var(--shadow-card); }
-        .deck-card:hover { transform: translateY(-5px); border-color: var(--primary-color); }
-        .flashcard-view { display: none; margin-top: 2rem; perspective: 1000px; }
-        .flashcard { width: 100%; max-width: 500px; height: 300px; margin: 0 auto; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
-        .flashcard.flipped { transform: rotateY(180deg); }
-        .flashcard-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 12px; box-shadow: 0 8px 16px var(--shadow-color); border: 2px solid var(--border-color); padding: 2rem; text-align: center; font-size: 1.2rem; }
-        .flashcard-back { transform: rotateY(180deg); background: var(--bg-primary); border-color: var(--primary-color); }
-        .controls { margin-top: 2rem; display: none; gap: 0.5rem; justify-content: center; }
-        .btn-rating { flex: 1; padding: 0.8rem; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; }
-        .rating-1 { background: #EF4444; } .rating-2 { background: #F59E0B; } .rating-3 { background: #10B981; } .rating-4 { background: #3B82F6; } .rating-5 { background: #8B5CF6; }
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .flashcards-page-wrapper {
+            flex: 1;
+            padding: 1.5rem 0 4rem;
+        }
+
+        .marathi-text {
+            font-family: 'Noto Sans Devanagari', 'Outfit', sans-serif;
+        }
+
+        /* Top Breadcrumb & Mode Bar */
+        .mode-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .mode-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-glow);
+            color: var(--primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            border: 1px solid rgba(99, 102, 241, 0.25);
+        }
+
+        .mode-tag .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        /* Top Stats Banner */
+        .stats-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem 1.75rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .stat-metric-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .metric-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .metric-streak-icon {
+            background: var(--gradient-card-2);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .metric-due-icon {
+            background: var(--primary-glow);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+        }
+
+        .metric-mastered-icon {
+            background: var(--status-ok-bg);
+            border: 1px solid var(--status-ok-border);
+        }
+
+        .metric-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0.15rem 0 0;
+            line-height: 1.2;
+        }
+
+        /* Session Progress Bar Item */
+        .session-progress-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-surface);
+            border-radius: 50px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-btn);
+            border-radius: 50px;
+            width: 60%;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Interactive Study Area */
+        .study-session-container {
+            max-width: 720px;
+            margin: 0 auto 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+            width: 100%;
+        }
+
+        .study-meta-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .study-meta-header h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0.2rem 0 0;
+            letter-spacing: -0.015em;
+        }
+
+        /* Keyboard Helper Strip */
+        .shortcuts-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .shortcuts-strip kbd {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 0.1rem 0.4rem;
+            font-family: monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* The 3D Interactive Flashcard */
+        .flashcard-wrapper {
+            width: 100%;
+            perspective: 1200px;
+        }
+
+        .flashcard-card {
+            position: relative;
+            width: 100%;
+            min-height: 420px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-card);
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            user-select: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .flashcard-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .flashcard-ambient {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .flashcard-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-actions-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon-btn-round {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+        }
+
+        .icon-btn-round:hover {
+            background: var(--primary-glow);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .icon-btn-round.bookmarked {
+            color: #F59E0B;
+            background: rgba(245, 158, 11, 0.15);
+            border-color: #F59E0B;
+        }
+
+        /* Card Front Content */
+        .card-content-front {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 2;
+            gap: 1.25rem;
+        }
+
+        .prompt-subtitle {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+
+        .prompt-question {
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.35;
+            margin: 0;
+            max-width: 600px;
+        }
+
+        .hint-container {
+            margin-top: 0.5rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .hint-text-box {
+            display: none;
+            margin-top: 0.75rem;
+            padding: 0.85rem 1rem;
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            text-align: left;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Card Back Content */
+        .card-content-back {
+            display: none;
+            flex-direction: column;
+            gap: 1.25rem;
+            padding: 1rem 0;
+            position: relative;
+            z-index: 2;
+            text-align: left;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .answer-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--status-ok-text);
+        }
+
+        .solution-step-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.15rem 1.25rem;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .vernacular-key-box {
+            background: var(--gradient-card-2);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .card-bottom-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 2;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* SRS Rating Feedback Controls */
+        .srs-rating-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .srs-ratings-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            width: 100%;
+        }
+
+        .rating-btn {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 0.85rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-card);
+        }
+
+        .rating-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .rating-btn:active {
+            transform: scale(0.97);
+        }
+
+        .rating-btn kbd {
+            font-family: monospace;
+            font-size: 0.7rem;
+            background: var(--bg-surface);
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            margin-bottom: 0.2rem;
+        }
+
+        .rating-btn-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .rating-interval {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        /* Specific Rating Button Styles */
+        .rating-again {
+            color: #DC2626;
+        }
+        .rating-again:hover {
+            border-color: #DC2626;
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .rating-hard {
+            color: #D97706;
+        }
+        .rating-hard:hover {
+            border-color: #D97706;
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .rating-good {
+            color: var(--primary);
+        }
+        .rating-good:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .rating-easy {
+            color: #059669;
+        }
+        .rating-easy:hover {
+            border-color: #059669;
+            background: var(--status-ok-bg);
+        }
+
+        /* Navigation Buttons */
+        .card-nav-bar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        /* Available Decks Browser Section */
+        .decks-section {
+            margin-top: 2.5rem;
+        }
+
+        .decks-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .deck-filter-tabs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-surface);
+            padding: 0.3rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .deck-filter-btn {
+            background: transparent;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .deck-filter-btn.active {
+            background: var(--bg-card);
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .decks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .deck-showcase-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.25rem;
+            transition: var(--transition-fast);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deck-showcase-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .deck-showcase-card.active-deck {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+
+        .deck-icon-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: var(--primary-glow);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .deck-meta-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .deck-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Toast Message */
+        .toast-notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 100;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-card);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+            padding: 0.85rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transform: translateY(-120%);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .flashcards-page-wrapper {
+                padding: 1rem 0 5rem;
+            }
+
+            .stats-banner {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                padding: 1.25rem 1rem;
+            }
+
+            .flashcard-card {
+                padding: 1.25rem 1rem;
+                min-height: 380px;
+                border-radius: var(--radius-lg);
+            }
+
+            .prompt-question {
+                font-size: 1.35rem;
+            }
+
+            .shortcuts-strip {
+                display: none;
+            }
+
+            .srs-ratings-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .rating-btn {
+                padding: 0.75rem 0.5rem;
+                min-height: 48px;
+            }
+
+            .decks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-nav-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .card-nav-bar button {
+                width: 100%;
+                min-height: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-banner {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo-link">
-                <h1>ShikshaMitr</h1>
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
             </a>
             <nav class="nav-links">
-                <a href="student-dashboard.html">Dashboard</a>
-                <a href="materials.html">Materials</a>
-                <a href="quiz.html">Quizzes</a>
-                <a href="forum.html">Forum</a>
-                <a href="flashcards.html" class="active">Flashcards</a>
+                <a href="materials.html?type=notes" class="nav-link">Notes</a>
+                <a href="materials.html?type=board_paper" class="nav-link">Papers</a>
+                <a href="quiz.html" class="nav-link">Quizzes</a>
+                <a href="reading.html" class="nav-link">Reading</a>
+                <a href="forum.html" class="nav-link">Forum</a>
+                <a href="flashcards.html" class="nav-link active">Flashcards</a>
+                <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
+                <a href="student-login.html" class="btn btn-primary btn-sm">Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm">Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
     </header>
 
-    <main class="container flashcard-container">
-        <h2>Interactive Flashcards</h2>
-        <p style="color: var(--text-secondary);">Master concepts using Spaced Repetition (SRS).</p>
-
-        <div id="deck-view">
-            <h3 style="text-align: left; margin-top: 2rem;">Available Decks</h3>
-            <div id="deck-list" class="deck-list">
-                <!-- Decks injected by JS -->
+    <main class="container flashcards-page-wrapper">
+        <!-- Breadcrumb & Mode Bar -->
+        <div class="mode-bar">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="index.html" class="back-link" style="margin-bottom: 0;">← Back to Home</a>
+                <span style="color: var(--text-muted);">•</span>
+                <div class="mode-tag">
+                    <span class="pulse-dot"></span>
+                    <span id="active-study-mode-label">Study Mode: Mathematics — Class 10th Algebra</span>
+                </div>
             </div>
-            
-            <!-- Faculty only: create deck form -->
-            <div id="faculty-create-deck" style="display: none; margin-top: 3rem; text-align: left; background: var(--bg-card); padding: 1.5rem; border-radius: 8px;">
-                <h3>Create New Deck (Faculty Only)</h3>
-                <form id="create-deck-form" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-                    <input type="text" id="deck-title" placeholder="Deck Title" required class="form-input">
-                    <input type="text" id="deck-subject" placeholder="Subject" required class="form-input">
-                    <div id="cards-container" style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div class="card-input" style="display: flex; gap: 1rem;">
-                            <input type="text" placeholder="Front (Question)" class="form-input" style="flex:1" required>
-                            <input type="text" placeholder="Back (Answer)" class="form-input" style="flex:1" required>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span class="class-badge" style="font-size: 0.72rem;">SuperMemo-2 SRS Algorithm</span>
+            </div>
+        </div>
+
+        <!-- Section 1: Top Stats Banner / Daily SRS Workout -->
+        <section class="stats-banner" aria-label="Daily Spaced Repetition Stats">
+            <!-- Metric 1: Streak -->
+            <div class="stat-metric-item">
+                <div class="metric-icon-box metric-streak-icon">🔥</div>
+                <div>
+                    <span class="metric-label">Daily SRS Streak</span>
+                    <h3 class="metric-value">5-Day Streak</h3>
+                </div>
+            </div>
+
+            <!-- Metric 2: Due Cards -->
+            <div class="stat-metric-item">
+                <div class="metric-icon-box metric-due-icon">⏱️</div>
+                <div>
+                    <span class="metric-label">Due Today</span>
+                    <h3 class="metric-value" id="stat-due-count">18 Cards Due</h3>
+                </div>
+            </div>
+
+            <!-- Metric 3: Total Mastered -->
+            <div class="stat-metric-item">
+                <div class="metric-icon-box metric-mastered-icon">✓</div>
+                <div>
+                    <span class="metric-label">Total Mastered</span>
+                    <h3 class="metric-value" id="stat-mastered-count">148 Cards</h3>
+                </div>
+            </div>
+
+            <!-- Metric 4: Session Target Progress -->
+            <div class="session-progress-box">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700;">
+                    <span style="color: var(--text-secondary);">Session Progress</span>
+                    <span id="session-progress-text" style="color: var(--primary);">12 / 20 (60%)</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="session-progress-bar" style="width: 60%;"></div>
+                </div>
+                <small style="color: var(--text-muted); font-size: 0.72rem;">8 more cards to hit your daily target</small>
+            </div>
+        </section>
+
+        <!-- Section 2: Interactive Flashcard Study Centerpiece -->
+        <section class="study-session-container" id="study-view">
+            <!-- Card Meta Header -->
+            <div class="study-meta-header">
+                <div>
+                    <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Class 10 CBSE / NCERT Standard</span>
+                    <h2 id="study-deck-title">Mathematics • Quadratic Equations &amp; Roots</h2>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span class="badge badge-standard" id="study-progress">Card 8 of 24</span>
+                    <span class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text);">Level 3 Mastery</span>
+                </div>
+            </div>
+
+            <!-- Keyboard Shortcuts Helper Strip -->
+            <div class="shortcuts-strip">
+                <span><kbd>Space</kbd> Flip</span>
+                <span style="opacity: 0.4;">•</span>
+                <span><kbd>1</kbd> Again</span>
+                <span style="opacity: 0.4;">•</span>
+                <span><kbd>2</kbd> Hard</span>
+                <span style="opacity: 0.4;">•</span>
+                <span><kbd>3</kbd> Good</span>
+                <span style="opacity: 0.4;">•</span>
+                <span><kbd>4</kbd> Easy</span>
+                <span style="opacity: 0.4;">•</span>
+                <span><kbd>← →</kbd> Prev/Next</span>
+            </div>
+
+            <!-- The Flashcard Component -->
+            <div class="flashcard-wrapper">
+                <div class="flashcard-card" id="flashcard" onclick="flipCard()">
+                    <div class="flashcard-ambient"></div>
+
+                    <!-- Top Bar: Tags & Audio Tools -->
+                    <div class="flashcard-top-bar">
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                            <span class="badge badge-standard" id="card-topic-tag">Algebraic Identities &amp; Roots</span>
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706;" id="card-difficulty-tag">Medium Difficulty</span>
+                        </div>
+                        <div class="card-actions-right">
+                            <button class="icon-btn-round" id="card-audio-btn" title="Read Prompt Aloud" onclick="event.stopPropagation(); playCardAudio()" type="button">🔊</button>
+                            <button class="icon-btn-round" id="card-bookmark-btn" title="Bookmark Card" onclick="event.stopPropagation(); toggleBookmark(this)" type="button">🔖</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-secondary" onclick="addCardInput()">+ Add Another Card</button>
+
+                    <!-- Card Front (Prompt / Question State) -->
+                    <div class="card-content-front" id="card-front">
+                        <span class="prompt-subtitle" id="card-prompt-num">Prompt #10.8</span>
+                        <h3 class="prompt-question" id="card-question-text">
+                            What is <span style="color: var(--primary); font-family: monospace;">√144</span>, and what are the roots of <span style="color: var(--primary); font-family: monospace;">x² − 144 = 0</span>?
+                        </h3>
+
+                        <!-- Expandable Clue / Hint Button -->
+                        <div class="hint-container">
+                            <button class="btn btn-sm btn-ghost" style="border: 1px dashed var(--border-subtle); font-size: 0.78rem;" onclick="event.stopPropagation(); toggleHint()" type="button">
+                                💡 <span id="hint-btn-label">Need a Clue? Show Hint</span>
+                            </button>
+                            <div class="hint-text-box" id="hint-content">
+                                <em>Hint: Recall integer squares: 10² = 100, 11² = 121, 12² = ... and remember quadratics can yield both positive and negative real solutions.</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Back (Answer State - Revealed upon click/flip) -->
+                    <div class="card-content-back" id="card-back">
+                        <div class="answer-heading">
+                            <span>✓</span>
+                            <span id="card-answer-title">Answer: ±12</span>
+                        </div>
+
+                        <!-- Step-by-Step Proof -->
+                        <div class="solution-step-box" id="card-solution-box">
+                            <strong style="color: var(--primary); font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 0.4rem;">Step-by-Step Proof</strong>
+                            <p style="margin: 0 0 0.4rem;">The principal square root is positive: <span style="font-family: monospace; font-weight: 700; color: var(--primary);">√144 = 12</span> (since 12 × 12 = 144).</p>
+                            <p style="margin: 0;">For the equation: <span style="font-family: monospace; background: var(--bg-card); padding: 0.1rem 0.4rem; border-radius: 4px;">x² − 144 = 0 ⇒ x² = 144 ⇒ x = ±√144</span>. Therefore, the two distinct roots are <strong style="color: var(--status-ok-text);">x = +12</strong> and <strong style="color: var(--status-ok-text);">x = −12</strong>.</p>
+                        </div>
+
+                        <!-- Marathi / Vernacular Key -->
+                        <div class="vernacular-key-box marathi-text" id="card-vernacular-box">
+                            <strong style="color: var(--text-primary); font-size: 0.82rem; display: block; margin-bottom: 0.25rem;">🇮🇳 मराठी स्पष्टीकरण (Vernacular Key):</strong>
+                            <p style="margin: 0; color: var(--text-secondary);" id="card-vernacular-text">
+                                144 चे मुख्य वर्गमूळ 12 आहे. वर्गसमीकरण x² − 144 = 0 सोडवताना x ची दोन मुळे मिळतात: <strong>x = +12</strong> आणि <strong>x = −12</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card Bottom Status Indicator -->
+                    <div class="card-bottom-info">
+                        <span id="flip-status-text">👆 Click anywhere or press Space to reveal answer</span>
+                        <span style="font-weight: 700; color: var(--primary);">Subject: CBSE Math X</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spaced Repetition Rating Feedback Controls -->
+            <div class="srs-rating-section" id="study-controls">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); padding: 0 0.25rem;">
+                    <span>Spaced Repetition Feedback</span>
+                    <span style="text-transform: none; font-weight: 500;">Calculates next review interval automatically</span>
+                </div>
+                <div class="srs-ratings-grid">
+                    <!-- Rating 1: Again -->
+                    <button class="rating-btn rating-again" onclick="submitRating(1)" type="button">
+                        <kbd>1</kbd>
+                        <span class="rating-btn-title">Again</span>
+                        <span class="rating-interval">&lt; 1 min</span>
+                    </button>
+
+                    <!-- Rating 2: Hard -->
+                    <button class="rating-btn rating-hard" onclick="submitRating(2)" type="button">
+                        <kbd>2</kbd>
+                        <span class="rating-btn-title">Hard</span>
+                        <span class="rating-interval">12 Hours</span>
+                    </button>
+
+                    <!-- Rating 3: Good -->
+                    <button class="rating-btn rating-good" onclick="submitRating(3)" type="button">
+                        <kbd>3</kbd>
+                        <span class="rating-btn-title">Good</span>
+                        <span class="rating-interval">2 Days</span>
+                    </button>
+
+                    <!-- Rating 4: Easy -->
+                    <button class="rating-btn rating-easy" onclick="submitRating(4)" type="button">
+                        <kbd>4</kbd>
+                        <span class="rating-btn-title">Easy</span>
+                        <span class="rating-interval">4 Days</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Navigation Controls -->
+            <div class="card-nav-bar">
+                <button class="btn btn-ghost btn-sm" onclick="navigateCard('prev')" type="button">← Previous Card</button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="icon-btn-round" title="Shuffle Deck" onclick="shuffleCurrentDeck()" type="button">🔀</button>
+                    <button class="icon-btn-round" title="Flip Card" onclick="flipCard()" type="button">🔄</button>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="navigateCard('next')" type="button">Skip / Next →</button>
+            </div>
+        </section>
+
+        <!-- Section 3: Available Revision Decks Browser -->
+        <section class="decks-section" id="deck-view">
+            <div class="decks-section-header">
+                <div>
+                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary);">Curated Repositories</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">📚 My Study Decks</h3>
+                </div>
+                <div class="deck-filter-tabs">
+                    <button class="deck-filter-btn active" onclick="filterDecks('all', this)" type="button">All (4)</button>
+                    <button class="deck-filter-btn" onclick="filterDecks('due', this)" type="button">Due Now (3)</button>
+                    <button class="deck-filter-btn" onclick="filterDecks('mastered', this)" type="button">High Mastery</button>
+                </div>
+            </div>
+
+            <!-- Decks Grid -->
+            <div class="decks-grid" id="deck-list">
+                <!-- Deck 1: Mathematics Algebra -->
+                <div class="deck-showcase-card active-deck" onclick="selectDeck('deck-math')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="deck-icon-badge">📐</div>
+                        <span class="class-badge" style="font-size: 0.7rem;">Active Study</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">CBSE Class 10 Math</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0.2rem 0 0.5rem;">Mathematics — Algebra</h4>
+                        <div class="deck-meta-stats">
+                            <div class="deck-meta-row">
+                                <span>Cards Count:</span>
+                                <strong>42 Cards</strong>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Mastery Level:</span>
+                                <span style="color: var(--status-ok-text); font-weight: 700;">🔥 12 Mastered</span>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Due Today:</span>
+                                <span style="color: #D97706; font-weight: 700;">8 Due</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" style="width: 100%;">Study Deck ▶</button>
+                </div>
+
+                <!-- Deck 2: Chemistry -->
+                <div class="deck-showcase-card" onclick="selectDeck('deck-science')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="deck-icon-badge" style="background: rgba(16, 185, 129, 0.15); color: #059669;">🧪</div>
+                        <span class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text); font-size: 0.7rem;">Chemistry</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">CBSE Class 10 Science</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0.2rem 0 0.5rem;">Chemical Reactions &amp; Equations</h4>
+                        <div class="deck-meta-stats">
+                            <div class="deck-meta-row">
+                                <span>Cards Count:</span>
+                                <strong>35 Cards</strong>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Mastery Level:</span>
+                                <span style="color: var(--status-ok-text); font-weight: 700;">🔥 24 Mastered</span>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Due Today:</span>
+                                <span style="color: #D97706; font-weight: 700;">4 Due</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" style="width: 100%;">Study Deck ▶</button>
+                </div>
+
+                <!-- Deck 3: English Vocabulary -->
+                <div class="deck-showcase-card" onclick="selectDeck('deck-english')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="deck-icon-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706;">📖</div>
+                        <span class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text); font-size: 0.7rem;">High Retention</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Grammar &amp; Lexicon</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0.2rem 0 0.5rem;">100 Essential Vocabulary Words</h4>
+                        <div class="deck-meta-stats">
+                            <div class="deck-meta-row">
+                                <span>Cards Count:</span>
+                                <strong>50 Cards</strong>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Mastery Level:</span>
+                                <span style="color: var(--status-ok-text); font-weight: 700;">🔥 38 Mastered</span>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Due Today:</span>
+                                <span style="color: #D97706; font-weight: 700;">6 Due</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" style="width: 100%;">Study Deck ▶</button>
+                </div>
+
+                <!-- Deck 4: Social Science -->
+                <div class="deck-showcase-card" onclick="selectDeck('deck-history')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="deck-icon-badge" style="background: rgba(239, 68, 68, 0.15); color: #DC2626;">🏛️</div>
+                        <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.7rem;">Needs Review</span>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">CBSE Class 10 History</span>
+                        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0.2rem 0 0.5rem;">Indian National Movement</h4>
+                        <div class="deck-meta-stats">
+                            <div class="deck-meta-row">
+                                <span>Cards Count:</span>
+                                <strong>28 Cards</strong>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Mastery Level:</span>
+                                <span style="color: var(--text-secondary); font-weight: 700;">🔥 10 Mastered</span>
+                            </div>
+                            <div class="deck-meta-row">
+                                <span>Due Today:</span>
+                                <span style="color: #DC2626; font-weight: 700;">12 Due</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" style="width: 100%;">Study Deck ▶</button>
+                </div>
+            </div>
+
+            <!-- Faculty / Custom Deck Creator Section -->
+            <div id="faculty-create-deck" style="display: none; margin-top: 2.5rem; background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-card);">
+                <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Create New Deck (Faculty Only)</h3>
+                <form id="create-deck-form" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                    <input type="text" id="deck-title" placeholder="Deck Title (e.g. Science Chapter 1 Formulas)" required class="form-control" style="font-size: 16px;">
+                    <input type="text" id="deck-subject" placeholder="Subject (e.g. Science)" required class="form-control" style="font-size: 16px;">
+                    <div id="cards-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="card-input" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <input type="text" placeholder="Front (Question / Formula)" class="form-control" style="flex: 1; min-width: 180px; font-size: 16px;" required>
+                            <input type="text" placeholder="Back (Answer / Proof)" class="form-control" style="flex: 1; min-width: 180px; font-size: 16px;" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="addCardInput()">+ Add Another Card</button>
                     <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Save Deck</button>
                 </form>
             </div>
-        </div>
-
-        <div id="study-view" class="flashcard-view">
-            <button class="btn btn-secondary" onclick="closeStudyView()" style="margin-bottom: 2rem;">&larr; Back to Decks</button>
-            <h3 id="study-deck-title">Deck Title</h3>
-            <p id="study-progress">Cards Due: 0</p>
-            
-            <div class="flashcard" id="flashcard" onclick="flipCard()">
-                <div class="flashcard-face flashcard-front" id="card-front">
-                    <!-- Front content -->
-                </div>
-                <div class="flashcard-face flashcard-back" id="card-back">
-                    <!-- Back content -->
-                </div>
-            </div>
-
-            <div class="controls" id="study-controls">
-                <button class="btn-rating rating-1" onclick="submitRating(1)">1 - Again</button>
-                <button class="btn-rating rating-2" onclick="submitRating(2)">2 - Hard</button>
-                <button class="btn-rating rating-3" onclick="submitRating(3)">3 - Good</button>
-                <button class="btn-rating rating-4" onclick="submitRating(4)">4 - Easy</button>
-                <button class="btn-rating rating-5" onclick="submitRating(5)">5 - Perfect</button>
-            </div>
-            <p id="flip-hint" style="margin-top: 1rem; color: var(--text-secondary);">Click the card to flip!</p>
-        </div>
+        </section>
     </main>
+
+    <!-- Toast Notification Popup -->
+    <div class="toast-notification" id="toast">
+        <span id="toast-icon">✓</span>
+        <span id="toast-msg">Spaced Repetition feedback recorded!</span>
+    </div>
+
+    <footer>
+        <div class="container text-center text-muted" style="padding-top: 1rem; padding-bottom: 2rem;">
+            <p>&copy; 2026 ShikshaMitr. All rights reserved. Designed for student academic excellence.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="faculty.html" style="color: inherit; text-decoration: underline;">Faculty Portal</a></p>
+        </div>
+    </footer>
 
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
         <a href="index.html" class="bottom-nav-link">
             <span class="bnav-icon">🏠</span>
             Home
+        </a>
+        <a href="materials.html?type=notes" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            Notes
         </a>
         <a href="student-dashboard.html" class="bottom-nav-link">
             <span class="bnav-icon">🎓</span>
@@ -116,7 +1097,7 @@
         </button>
     </nav>
 
-    <script src="js/app.js"></script>
+    <script src="js/ws-client.js"></script>
     <script src="js/flashcards.js"></script>
 </body>
 </html>

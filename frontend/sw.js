@@ -1,9 +1,10 @@
-const CACHE_NAME = 'shikshamitr-v5';
+const CACHE_NAME = 'shikshamitr-v6';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/materials.html',
   '/reading.html',
+  '/flashcards.html',
   '/faculty.html',
   '/faculty-dashboard.html',
   '/student-login.html',
@@ -13,6 +14,7 @@ const STATIC_ASSETS = [
   '/js/app.js',
   '/js/materials.js',
   '/js/reading.js',
+  '/js/flashcards.js',
   '/js/faculty.js',
   '/js/student.js',
   '/images/logo-icon.png',
