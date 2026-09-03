@@ -14,11 +14,11 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Study Materials & Board Papers Hub - ShikshaMitr. Instant access to chapter revision notes, 10-yr previous board papers, and model answers verified for Class 10 & 9 CBSE and SSC.">
+    <meta name="description" content="Board Papers & Exam Preparation Platform - ShikshaMitr. 10-year official question papers with verified step-by-step model solutions for CBSE and Maharashtra SSC in English and Marathi medium.">
     <meta name="theme-color" content="#6366F1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Study Materials &amp; Board Papers - ShikshaMitr</title>
+    <title>Board Papers &amp; Exam Prep Platform - ShikshaMitr</title>
     <link rel="icon" type="image/png" href="images/logo-icon.png">
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
@@ -36,7 +36,7 @@
             padding: 1.5rem 0 4rem;
         }
 
-        /* Top Hero Banner */
+        /* Top Hero Banner - Exam Platform */
         .materials-hero {
             background: var(--bg-card);
             border: 1px solid var(--border-card);
@@ -59,7 +59,7 @@
         .hero-ambient-glow {
             position: absolute;
             top: -40px; right: -40px;
-            width: 220px; height: 220px;
+            width: 240px; height: 240px;
             background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
             pointer-events: none;
         }
@@ -84,7 +84,7 @@
         .hero-title-group p {
             color: var(--text-secondary);
             font-size: 0.95rem;
-            max-width: 650px;
+            max-width: 680px;
             margin: 0;
             line-height: 1.5;
         }
@@ -192,6 +192,69 @@
             border-color: var(--primary);
         }
 
+        /* --- "Most Practiced Papers" Strip --- */
+        .most-practiced-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.85rem;
+        }
+
+        .section-header-badge h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .practiced-cards-scroll {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        .practiced-card-mini {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.15rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .practiced-card-mini:hover {
+            transform: translateY(-3px);
+            border-color: #F59E0B;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12);
+        }
+
+        .social-proof-pill {
+            background: rgba(245, 158, 11, 0.12);
+            color: #D97706;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            width: fit-content;
+        }
+
         /* Filter Controls Section */
         .filter-controls-card {
             background: var(--bg-card);
@@ -207,7 +270,7 @@
 
         .filter-pickers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 0.75rem;
         }
 
@@ -353,10 +416,10 @@
             font-weight: 700;
         }
 
-        /* Material Cards Grid */
+        /* --- Exam Paper Cards Grid --- */
         .materials-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
             gap: 1.5rem;
             margin-bottom: 3rem;
             transition: all 0.3s ease;
@@ -366,7 +429,8 @@
             grid-template-columns: 1fr;
         }
 
-        .study-material-card {
+        /* Recommended Card Layout: Year + Subject + Solution */
+        .exam-paper-card {
             background: var(--bg-card);
             border: 1px solid var(--border-card);
             border-radius: var(--radius-xl);
@@ -375,13 +439,13 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1.25rem;
+            gap: 1.15rem;
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .study-material-card::before {
+        .exam-paper-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -389,7 +453,7 @@
             background: var(--gradient-btn);
         }
 
-        .study-material-card:hover {
+        .exam-paper-card:hover {
             transform: translateY(-4px);
             border-color: var(--primary);
             box-shadow: var(--shadow-card-hover);
@@ -402,79 +466,101 @@
             gap: 0.75rem;
         }
 
-        .subject-badge-box {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-        }
-
-        .subject-icon-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: var(--radius-md);
-            background: var(--primary-glow);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .paper-year-subject-title {
             font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        .bookmark-btn {
-            background: transparent;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: transform 0.15s ease, color 0.15s ease;
-            padding: 4px;
-        }
-
-        .bookmark-btn:hover {
-            transform: scale(1.15);
-        }
-
-        .bookmark-btn.bookmarked {
-            color: #DC2626;
-        }
-
-        .card-title {
-            font-size: 1.15rem;
             font-weight: 800;
             color: var(--text-primary);
-            margin: 0.65rem 0 0.35rem;
-            line-height: 1.4;
-            cursor: pointer;
+            margin: 0.2rem 0 0.4rem;
+            line-height: 1.35;
+            letter-spacing: -0.015em;
         }
 
-        .card-title:hover {
+        .board-medium-tags {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.65rem;
+        }
+
+        .tag-board {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+
+        .tag-medium {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            background: var(--primary-glow);
             color: var(--primary);
         }
 
-        .card-description {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin: 0 0 1rem;
+        .tag-marathi {
+            background: rgba(245, 158, 11, 0.15);
+            color: #D97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
-        .meta-specs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
+        /* Included Documents Checklist */
+        .paper-contents-box {
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 0.75rem 0.85rem;
-            font-size: 0.78rem;
-            color: var(--text-secondary);
+            padding: 0.75rem 0.95rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            font-size: 0.82rem;
         }
 
-        .meta-spec-item {
+        .content-item {
             display: flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .content-item.highlight-sol {
+            color: var(--status-ok-text, #059669);
+        }
+
+        .paper-specs-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            border-top: 1px dashed var(--border-subtle);
+            padding-top: 0.65rem;
+            margin-top: 0.25rem;
+        }
+
+        .difficulty-badge {
+            font-weight: 700;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.72rem;
+        }
+
+        .diff-easy { background: rgba(16, 185, 129, 0.12); color: #059669; }
+        .diff-medium { background: rgba(245, 158, 11, 0.15); color: #D97706; }
+        .diff-hard { background: rgba(239, 68, 68, 0.12); color: #DC2626; }
+
+        .card-social-proof {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
         }
 
         .card-action-footer {
@@ -483,6 +569,15 @@
             gap: 0.5rem;
             padding-top: 0.85rem;
             border-top: 1px solid var(--border-subtle);
+        }
+
+        .card-action-footer .btn-view {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            font-weight: 700;
         }
 
         /* Priority Faculty Support & Board Seal Banner */
@@ -516,6 +611,32 @@
                 flex-direction: row;
                 align-items: center;
             }
+        }
+
+        /* Paper Preview Modal */
+        .exam-modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .exam-modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 760px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            padding: 1.75rem;
+            position: relative;
         }
 
         /* Mobile Adjustments */
@@ -552,7 +673,8 @@
                 font-size: 16px !important; /* Prevents auto-zoom on iOS */
             }
 
-            .card-action-footer a {
+            .card-action-footer a,
+            .card-action-footer button {
                 flex: 1;
                 text-align: center;
                 min-height: 44px;
@@ -574,8 +696,8 @@
                 <span class="logo-text">ShikshaMitr</span>
             </a>
             <nav class="nav-links">
-                <a href="materials.html?type=notes" class="nav-link active">Notes</a>
-                <a href="materials.html?type=board_paper" class="nav-link">Papers</a>
+                <a href="materials.html?type=notes" class="nav-link">Notes</a>
+                <a href="materials.html?type=board_paper" class="nav-link active">Papers</a>
                 <a href="quiz.html" class="nav-link">Quizzes</a>
                 <a href="reading.html" class="nav-link">Reading</a>
                 <a href="forum.html" class="nav-link">Forum</a>
@@ -597,21 +719,21 @@
             <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1rem; flex-wrap: wrap;">
                 <a href="index.html" class="back-link" style="margin: 0; color: var(--primary);">← Back to Home</a>
                 <span>/</span>
-                <span style="color: var(--text-muted);">Curriculum Hub</span>
+                <span style="color: var(--text-muted);">Exam Preparation Hub</span>
                 <span>/</span>
-                <span class="class-badge" style="font-size: 0.68rem;" id="page-breadcrumb-badge">Board Papers &amp; Notes</span>
+                <span class="class-badge" style="font-size: 0.68rem;" id="page-breadcrumb-badge">Board Papers &amp; Solutions</span>
             </div>
 
             <div class="hero-top-row">
                 <div class="hero-title-group">
-                    <span class="class-badge">CBSE &amp; SSC AY 2025-26 Curated Syllabi</span>
-                    <h1 id="page-title">📚 Study Materials &amp; Board Papers</h1>
-                    <p>Instant access to chapter revision notes, previous years board papers, model solutions, and formula sheets verified for Class 10 &amp; 9 CBSE and SSC State Boards.</p>
+                    <span class="class-badge" style="background: var(--primary-glow); color: var(--primary);">🎯 Exam Preparation Platform • 10-Year Archive</span>
+                    <h1 id="page-title">📝 Board Papers &amp; Solutions Platform</h1>
+                    <p>Authentic previous board question papers paired with official step-wise model answers and examiner rubrics. Curated for Maharashtra SSC &amp; CBSE in English and Marathi medium.</p>
                 </div>
                 <div class="hero-kpi-badge">
-                    <span style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Indexed Database</span>
-                    <strong style="font-size: 1.4rem; color: var(--primary); display: block;">128+ Files</strong>
-                    <small style="color: var(--status-ok-text); font-weight: 600;">✓ 100% Board-Aligned</small>
+                    <span style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Exam Archive</span>
+                    <strong style="font-size: 1.4rem; color: var(--primary); display: block;">2015 – 2025</strong>
+                    <small style="color: var(--status-ok-text, #059669); font-weight: 600;">✓ 100% Solved Papers</small>
                 </div>
             </div>
 
@@ -619,7 +741,7 @@
             <div class="search-container-box">
                 <div class="search-input-wrapper">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="global-search-input" class="global-search-input" placeholder="Search notes, subjects, chapters, or topics (e.g. Quadratic Equations, Ohm's Law, First Flight)..." oninput="filterMaterials()">
+                    <input type="text" id="global-search-input" class="global-search-input" placeholder="Search by Year, Subject, or Topic (e.g. 2025 SSC Mathematics, 2024 Science Part 1, English Medium)..." oninput="filterMaterials()">
                     <div class="search-shortcut-badge">
                         <span>Ctrl</span>
                         <span>+</span>
@@ -631,69 +753,141 @@
                 <!-- Auto-complete suggestion pill bar -->
                 <div class="popular-searches-row">
                     <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-                        <span style="color: var(--text-muted); font-weight: 700; font-size: 0.72rem; text-transform: uppercase;">Popular:</span>
-                        <button class="search-pill-btn" onclick="applyQuickSearch('Algebra')">#Algebra</button>
-                        <button class="search-pill-btn" onclick="applyQuickSearch('CBSE2025')">#CBSE2025</button>
-                        <button class="search-pill-btn" onclick="applyQuickSearch('Electric Current')">#ElectricCurrent</button>
-                        <button class="search-pill-btn" onclick="applyQuickSearch('Life Processes')">#LifeProcesses</button>
-                        <button class="search-pill-btn" onclick="applyQuickSearch('First Flight')">#FirstFlight</button>
+                        <span style="color: var(--text-muted); font-weight: 700; font-size: 0.72rem; text-transform: uppercase;">Trending:</span>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('2025 Mathematics')">#2025 Mathematics</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('SSC Science')">#SSC Science</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('Marathi Medium')">#मराठी माध्यम</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('2024')">#2024 Papers</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('English Kumarbharati')">#English Kumarbharati</button>
                     </div>
                     <span style="color: var(--text-muted); font-size: 0.72rem; font-style: italic;">⚡ Instant filter as you type</span>
                 </div>
             </div>
         </section>
 
-        <!-- 2. Smart Filter Controls -->
+        <!-- 2. "🔥 Most Practiced Papers" Section (Social Proof) -->
+        <section class="most-practiced-section">
+            <div class="section-header-badge">
+                <h2><span>🔥</span> Most Practiced Papers</h2>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Real student attempt stats</span>
+            </div>
+            
+            <div class="practiced-cards-scroll">
+                <!-- Most Practiced 1 -->
+                <div class="practiced-card-mini" onclick="filterByPractice('2025', 'Mathematics', 'SSC')">
+                    <div>
+                        <div class="social-proof-pill">🔥 Attempted 1,480 times</div>
+                        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin: 0.4rem 0 0.2rem;">2025 SSC Mathematics</h4>
+                        <small style="color: var(--text-secondary); display: block; font-size: 0.75rem;">Maharashtra Board • English &amp; मराठी</small>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                        <span style="color: var(--status-ok-text, #059669); font-weight: 600;">📖 Solution Ready</span>
+                        <span style="color: var(--primary); font-weight: 700;">Practice →</span>
+                    </div>
+                </div>
+
+                <!-- Most Practiced 2 -->
+                <div class="practiced-card-mini" onclick="filterByPractice('2025', 'Science', 'CBSE')">
+                    <div>
+                        <div class="social-proof-pill">🔥 Attempted 1,240 times</div>
+                        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin: 0.4rem 0 0.2rem;">2025 CBSE Science</h4>
+                        <small style="color: var(--text-secondary); display: block; font-size: 0.75rem;">Class 10 CBSE • Theory &amp; Practical</small>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                        <span style="color: var(--status-ok-text, #059669); font-weight: 600;">📖 Solution Ready</span>
+                        <span style="color: var(--primary); font-weight: 700;">Practice →</span>
+                    </div>
+                </div>
+
+                <!-- Most Practiced 3 -->
+                <div class="practiced-card-mini" onclick="filterByPractice('2024', 'Science', 'SSC')">
+                    <div>
+                        <div class="social-proof-pill">🔥 Attempted 1,120 times</div>
+                        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin: 0.4rem 0 0.2rem;">2024 SSC Science &amp; Tech</h4>
+                        <small style="color: var(--text-secondary); display: block; font-size: 0.75rem;">Maharashtra Board • मराठी माध्यम</small>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                        <span style="color: var(--status-ok-text, #059669); font-weight: 600;">📖 Solution Ready</span>
+                        <span style="color: var(--primary); font-weight: 700;">Practice →</span>
+                    </div>
+                </div>
+
+                <!-- Most Practiced 4 -->
+                <div class="practiced-card-mini" onclick="filterByPractice('2024', 'English', 'SSC')">
+                    <div>
+                        <div class="social-proof-pill">🔥 Attempted 980 times</div>
+                        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin: 0.4rem 0 0.2rem;">2024 SSC English</h4>
+                        <small style="color: var(--text-secondary); display: block; font-size: 0.75rem;">Maharashtra Board • Kumarbharati</small>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                        <span style="color: var(--status-ok-text, #059669); font-weight: 600;">📖 Solution Ready</span>
+                        <span style="color: var(--primary); font-weight: 700;">Practice →</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Smart Filter Controls (Board, Year, Class, Subject, Medium) -->
         <section class="filter-controls-card">
-            <!-- Dropdown pickers row -->
+            <!-- Dropdown pickers row: Board, Year, Class, Subject, Medium -->
             <div class="filter-pickers-grid">
-                <!-- Standard / Class Filter -->
+                <!-- 1. Board Filter -->
                 <div class="picker-group">
-                    <label class="picker-label" for="standard-filter">Class / Standard</label>
-                    <select id="standard-filter" class="filter-select" onchange="filterMaterials()">
-                        <option value="">All Standards</option>
-                        <option value="10" selected>Class 10 (Target 2026)</option>
-                        <option value="9">Class 9 (Foundations)</option>
-                        <option value="8">Class 8</option>
-                        <option value="7">Class 7</option>
-                        <option value="6">Class 6</option>
-                        <option value="5">Class 5</option>
-                    </select>
-                </div>
-
-                <!-- Curriculum Board -->
-                <div class="picker-group">
-                    <label class="picker-label" for="board-filter">Curriculum Board</label>
+                    <label class="picker-label" for="board-filter">Board</label>
                     <select id="board-filter" class="filter-select" onchange="filterMaterials()">
-                        <option value="">CBSE / SSC Board</option>
-                        <option value="CBSE">CBSE Central</option>
-                        <option value="SSC">SSC State Board</option>
-                        <option value="ICSE">ICSE Council</option>
+                        <option value="">All Boards</option>
+                        <option value="SSC" selected>Maharashtra SSC Board</option>
+                        <option value="CBSE">CBSE Central Board</option>
+                        <option value="ICSE">ICSE Board</option>
                     </select>
                 </div>
 
-                <!-- Subject -->
+                <!-- 2. Year Filter -->
+                <div class="picker-group">
+                    <label class="picker-label" for="year-filter">Year</label>
+                    <select id="year-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">All Years</option>
+                        <option value="2025" selected>2025 (Latest)</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                    </select>
+                </div>
+
+                <!-- 3. Class Filter -->
+                <div class="picker-group">
+                    <label class="picker-label" for="standard-filter">Class</label>
+                    <select id="standard-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">All Classes</option>
+                        <option value="10" selected>Class 10 (Board)</option>
+                        <option value="12">Class 12 (HSC)</option>
+                        <option value="9">Class 9 (Foundations)</option>
+                    </select>
+                </div>
+
+                <!-- 4. Subject Filter -->
                 <div class="picker-group">
                     <label class="picker-label" for="subject-filter">Subject</label>
                     <select id="subject-filter" class="filter-select" onchange="filterMaterials()">
                         <option value="">All Subjects</option>
-                        <option value="Mathematics">📐 Mathematics</option>
-                        <option value="Science">🧪 Science &amp; Technology</option>
-                        <option value="English">📖 English &amp; Literature</option>
-                        <option value="Social Science">🏛️ Social Sciences</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science &amp; Technology</option>
+                        <option value="English">English</option>
+                        <option value="Social Science">Social Science</option>
+                        <option value="Marathi">Marathi (मराठी)</option>
                     </select>
                 </div>
 
-                <!-- Chapter / Topic -->
+                <!-- 5. Medium Filter (English / Marathi Medium for Maharashtra) -->
                 <div class="picker-group">
-                    <label class="picker-label" for="chapter-filter">Chapter / Topic</label>
-                    <select id="chapter-filter" class="filter-select" onchange="filterMaterials()">
-                        <option value="">All Chapters</option>
-                        <option value="Quadratic">Quadratic Equations</option>
-                        <option value="Light">Light &amp; Ray Optics</option>
-                        <option value="Reactions">Chemical Reactions</option>
-                        <option value="First Flight">First Flight Prose</option>
-                        <option value="Circuits">Electricity &amp; Circuits</option>
+                    <label class="picker-label" for="medium-filter">Medium</label>
+                    <select id="medium-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">All Mediums</option>
+                        <option value="English">English Medium</option>
+                        <option value="Marathi">Marathi Medium (मराठी)</option>
+                        <option value="Semi-English">Semi-English</option>
                     </select>
                 </div>
             </div>
@@ -701,17 +895,17 @@
             <!-- Material Type Segmented Tabs + Sorter & Views -->
             <div class="tabs-view-bar">
                 <div class="type-tabs-group" id="material-type-tabs">
-                    <a href="materials.html?type=all" class="type-tab-btn" data-type="all">All Materials (128)</a>
-                    <a href="materials.html?type=notes" class="type-tab-btn active" data-type="notes">📚 Notes (64)</a>
-                    <a href="materials.html?type=board_paper" class="type-tab-btn" data-type="board_paper">📝 Previous Board Papers (38)</a>
-                    <a href="materials.html?type=model_solutions" class="type-tab-btn" data-type="model_solutions">💡 Model Solutions &amp; Marking (26)</a>
+                    <a href="materials.html?type=board_paper" class="type-tab-btn active" data-type="board_paper">📝 Board Papers (38)</a>
+                    <a href="materials.html?type=model_solutions" class="type-tab-btn" data-type="model_solutions">📖 Solutions &amp; Marking (26)</a>
+                    <a href="materials.html?type=notes" class="type-tab-btn" data-type="notes">📚 Revision Notes (64)</a>
+                    <a href="materials.html?type=all" class="type-tab-btn" data-type="all">All Resources (128)</a>
                 </div>
 
                 <div class="view-switchers-group">
                     <select id="sort-filter" class="filter-select" style="font-size: 0.78rem; padding: 0.3rem 1.6rem 0.3rem 0.6rem;" onchange="sortMaterials()">
-                        <option value="popular">⭐ Most Popular</option>
-                        <option value="recent">🕒 Most Recent</option>
-                        <option value="recommended">🎯 Recommended</option>
+                        <option value="popular">🔥 Most Practiced</option>
+                        <option value="recent">🕒 Latest Year</option>
+                        <option value="difficulty">📊 Difficulty</option>
                     </select>
                     <button class="view-toggle-btn active" id="view-grid-btn" onclick="switchView('grid')" title="Grid View">⊞</button>
                     <button class="view-toggle-btn" id="view-list-btn" onclick="switchView('list')" title="List View">☰</button>
@@ -719,235 +913,409 @@
             </div>
         </section>
 
-        <!-- 3. Discovery Feeds Quick Pills -->
+        <!-- 4. Discovery Feeds Quick Pills -->
         <div class="discovery-pills-row">
             <div class="discovery-pills-group">
-                <button class="discovery-pill active" onclick="applyDiscoveryFilter('all', this)">All</button>
-                <button class="discovery-pill" onclick="applyDiscoveryFilter('popular', this)">⭐ Popular</button>
-                <button class="discovery-pill" onclick="applyDiscoveryFilter('recent', this)">🕒 Recent</button>
-                <button class="discovery-pill" onclick="applyDiscoveryFilter('recommended', this)">🎯 Recommended For You</button>
-                <button class="discovery-pill" onclick="applyDiscoveryFilter('bookmarked', this)">❤️ My Bookmarked (<span id="bookmark-count">0</span>)</button>
+                <button class="discovery-pill active" onclick="applyDiscoveryFilter('all', this)">All Papers</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('marathi', this)">🚩 मराठी माध्यम Papers</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('solved', this)">✓ With Model Solutions</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('bookmarked', this)">❤️ Saved (<span id="bookmark-count">0</span>)</button>
             </div>
             <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);" id="results-counter">
-                Showing 6 verified curriculum resources
+                Showing 8 board question papers with solutions
             </div>
         </div>
 
-        <!-- 4. Study Material Cards Grid (Pre-populated NCERT Syllabi + Live Backend Materials) -->
+        <!-- 5. Exam Paper Cards Grid (Emphasizing Year + Subject + Solution) -->
         <div class="materials-grid" id="materials-card-grid">
-            <!-- Card 1: Mathematics Quadratic Equations & AP Series -->
-            <div class="study-material-card" data-subject="Mathematics" data-standard="10" data-type="notes" data-tag="popular">
+
+            <!-- Card 1: 2025 SSC Mathematics (Algebra) -->
+            <div class="exam-paper-card" data-year="2025" data-board="SSC" data-standard="10" data-subject="Mathematics" data-medium="English,Semi-English,Marathi" data-difficulty="Medium" data-has-solution="true" data-attempts="1480">
                 <div>
                     <div class="card-top-header">
-                        <div class="subject-badge-box">
-                            <div class="subject-icon-avatar">📐</div>
-                            <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">📘 Mathematics</span>
-                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • SSC &amp; CBSE</small>
-                            </div>
+                        <div class="board-medium-tags">
+                            <span class="tag-board">Maharashtra SSC</span>
+                            <span class="tag-medium">English Medium</span>
+                            <span class="tag-medium tag-marathi">मराठी माध्यम</span>
                         </div>
-                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'math-quadratic')" title="Bookmark">🤍</button>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2025-ssc-maths')" title="Save Paper">🤍</button>
                     </div>
-                    <div style="margin-top: 0.6rem;">
-                        <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">⭐ Popular • High Exam Weightage</span>
+
+                    <!-- Year + Subject Emphasis -->
+                    <h3 class="paper-year-subject-title">2025 SSC Mathematics</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">Algebra (Part 1) &amp; Geometry (Part 2) • Standard 10</p>
+
+                    <!-- Documents Included Checklist -->
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (Official Board Exam)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (Step-wise Marking)</span>
+                        </div>
                     </div>
-                    <h3 class="card-title" onclick="openResource('math-quadratic')">Algebra — Quadratic Equations &amp; AP Series</h3>
-                    <p class="card-description">Comprehensive formula cheatsheet, step-by-step discriminant derivations, and 25 solved board questions.</p>
-                    
-                    <div class="meta-specs-grid">
-                        <div class="meta-spec-item"><span>📄</span><span>18 Pages</span></div>
-                        <div class="meta-spec-item"><span>💾</span><span>3.4 MB (PDF)</span></div>
-                        <div class="meta-spec-item"><span>🕒</span><span>Updated 2 days ago</span></div>
-                        <div class="meta-spec-item"><span>👁️</span><span>4,820 views</span></div>
+
+                    <!-- Specs Row -->
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-medium">Medium</span></div>
+                        <div>Pages: <strong>12</strong></div>
+                        <div>Duration: <strong>2 Hours</strong></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        <span>✓ 1,240 downloads</span>
-                        <span class="class-badge" style="font-size: 0.65rem;">Formula Cheatsheet</span>
+
+                    <!-- Social Proof -->
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 1,480 times</span>
+                        <span>94% Solved Accuracy</span>
                     </div>
                 </div>
+
                 <div class="card-action-footer">
-                    <a href="materials.html?id=math-quadratic" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
-                    <a href="materials.html?download=math-quadratic" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2025 SSC Mathematics', 'Maharashtra SSC', 'English / Marathi', '12', 'Medium', 'Algebra & Geometry official board paper with model answers.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2025-ssc-maths" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Card 2: Science Physics Ray Diagrams -->
-            <div class="study-material-card" data-subject="Science" data-standard="10" data-type="notes" data-tag="recommended">
+            <!-- Card 2: 2025 CBSE Science -->
+            <div class="exam-paper-card" data-year="2025" data-board="CBSE" data-standard="10" data-subject="Science" data-medium="English" data-difficulty="Medium" data-has-solution="true" data-attempts="1240">
                 <div>
                     <div class="card-top-header">
-                        <div class="subject-badge-box">
-                            <div class="subject-icon-avatar" style="background: var(--status-ok-bg); color: #059669;">🔬</div>
-                            <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #059669;">🔬 Science (Physics)</span>
-                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • CBSE</small>
-                            </div>
+                        <div class="board-medium-tags">
+                            <span class="tag-board">CBSE Central</span>
+                            <span class="tag-medium">English Medium</span>
                         </div>
-                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'physics-light')" title="Bookmark">🤍</button>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2025-cbse-science')" title="Save Paper">🤍</button>
                     </div>
-                    <div style="margin-top: 0.6rem;">
-                        <span class="class-badge" style="font-size: 0.68rem;">🎯 Recommended (Based on Quiz)</span>
+
+                    <h3 class="paper-year-subject-title">2025 CBSE Science</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">Physics, Chemistry &amp; Biology (Set 1, 2 &amp; 3) • Class 10</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (All 3 Sets)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (Official Marking Key)</span>
+                        </div>
                     </div>
-                    <h3 class="card-title" onclick="openResource('physics-light')">Light: Reflection, Refraction &amp; Ray Diagrams</h3>
-                    <p class="card-description">Complete optical ray diagrams with sign convention rules and mirror/lens formula numericals.</p>
-                    
-                    <div class="meta-specs-grid">
-                        <div class="meta-spec-item"><span>📄</span><span>24 Pages</span></div>
-                        <div class="meta-spec-item"><span>💾</span><span>4.8 MB (PDF)</span></div>
-                        <div class="meta-spec-item"><span>🕒</span><span>Updated yesterday</span></div>
-                        <div class="meta-spec-item"><span>👁️</span><span>3,910 views</span></div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-medium">Medium</span></div>
+                        <div>Pages: <strong>16</strong></div>
+                        <div>Duration: <strong>3 Hours</strong></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        <span>✓ 980 downloads</span>
-                        <span class="class-badge" style="font-size: 0.65rem;">Vector Diagrams</span>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 1,240 times</span>
+                        <span>91% Solved Accuracy</span>
                     </div>
                 </div>
+
                 <div class="card-action-footer">
-                    <a href="materials.html?id=physics-light" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
-                    <a href="materials.html?download=physics-light" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2025 CBSE Science', 'CBSE Board', 'English', '16', 'Medium', 'Complete 3-set theory and diagram marking breakdown.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2025-cbse-science" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Card 3: Board Papers 10-Year Solved Papers -->
-            <div class="study-material-card" data-subject="Mathematics" data-standard="10" data-type="board_paper" data-tag="popular">
+            <!-- Card 3: 2024 SSC Science & Technology -->
+            <div class="exam-paper-card" data-year="2024" data-board="SSC" data-standard="10" data-subject="Science" data-medium="Marathi,English" data-difficulty="Easy" data-has-solution="true" data-attempts="1120">
                 <div>
                     <div class="card-top-header">
-                        <div class="subject-badge-box">
-                            <div class="subject-icon-avatar" style="background: rgba(245, 158, 11, 0.15); color: #D97706;">📝</div>
-                            <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #D97706;">📝 Board Papers</span>
-                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • CBSE 2024-2019</small>
-                            </div>
+                        <div class="board-medium-tags">
+                            <span class="tag-board">Maharashtra SSC</span>
+                            <span class="tag-medium tag-marathi">मराठी माध्यम</span>
+                            <span class="tag-medium">English Medium</span>
                         </div>
-                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'math-board-papers')" title="Bookmark">🤍</button>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2024-ssc-science')" title="Save Paper">🤍</button>
                     </div>
-                    <div style="margin-top: 0.6rem;">
-                        <span class="class-badge" style="background: rgba(239, 68, 68, 0.15); color: #DC2626; font-size: 0.68rem;">🔥 Trending Now</span>
+
+                    <h3 class="paper-year-subject-title">2024 SSC Science &amp; Technology</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">विज्ञान आणि तंत्रज्ञान भाग १ व २ • इयत्ता १० वी</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (Part 1 &amp; Part 2)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (सविस्तर उत्तरे)</span>
+                        </div>
                     </div>
-                    <h3 class="card-title" onclick="openResource('math-board-papers')">Mathematics Standard 10-Year Solved Papers</h3>
-                    <p class="card-description">Authentic previous years question papers with official CBSE step-wise marking schemes.</p>
-                    
-                    <div class="meta-specs-grid">
-                        <div class="meta-spec-item"><span>📄</span><span>56 Pages</span></div>
-                        <div class="meta-spec-item"><span>💾</span><span>12.1 MB (PDF)</span></div>
-                        <div class="meta-spec-item"><span>🕒</span><span>Updated 1 wk ago</span></div>
-                        <div class="meta-spec-item"><span>👁️</span><span>8,450 views</span></div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-easy">Easy</span></div>
+                        <div>Pages: <strong>10</strong></div>
+                        <div>Duration: <strong>2 Hours</strong></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        <span>✓ 3,120 downloads</span>
-                        <span class="class-badge" style="font-size: 0.65rem;">Official Marking</span>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 1,120 times</span>
+                        <span>89% Solved Accuracy</span>
                     </div>
                 </div>
+
                 <div class="card-action-footer">
-                    <a href="materials.html?id=math-board-papers" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Papers</a>
-                    <a href="materials.html?download=math-board-papers" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2024 SSC Science & Technology', 'Maharashtra SSC', 'Marathi / English', '10', 'Easy', 'Official board solutions for Part 1 physics/chemistry and Part 2 biology.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2024-ssc-science" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Card 4: Chemistry Chemical Reactions -->
-            <div class="study-material-card" data-subject="Science" data-standard="10" data-type="notes" data-tag="popular">
+            <!-- Card 4: 2024 SSC English Kumarbharati -->
+            <div class="exam-paper-card" data-year="2024" data-board="SSC" data-standard="10" data-subject="English" data-medium="English" data-difficulty="Medium" data-has-solution="true" data-attempts="980">
                 <div>
                     <div class="card-top-header">
-                        <div class="subject-badge-box">
-                            <div class="subject-icon-avatar">🧪</div>
-                            <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">🧪 Science (Chemistry)</span>
-                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • SSC / CBSE</small>
-                            </div>
+                        <div class="board-medium-tags">
+                            <span class="tag-board">Maharashtra SSC</span>
+                            <span class="tag-medium">English Medium</span>
                         </div>
-                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'chem-reactions')" title="Bookmark">🤍</button>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2024-ssc-english')" title="Save Paper">🤍</button>
                     </div>
-                    <div style="margin-top: 0.6rem;">
-                        <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">⭐ Popular</span>
+
+                    <h3 class="paper-year-subject-title">2024 SSC English</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">English Kumarbharati (First Language) • Standard 10</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (Prose, Poetry, Grammar)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (Full Writing Skills Key)</span>
+                        </div>
                     </div>
-                    <h3 class="card-title" onclick="openResource('chem-reactions')">Chemical Reactions &amp; Equations Concept Leaflet</h3>
-                    <p class="card-description">Every type of chemical reaction categorized with colour changes, precipitate formation, and oxidation states.</p>
-                    
-                    <div class="meta-specs-grid">
-                        <div class="meta-spec-item"><span>📄</span><span>14 Pages</span></div>
-                        <div class="meta-spec-item"><span>💾</span><span>2.1 MB (PDF)</span></div>
-                        <div class="meta-spec-item"><span>🕒</span><span>Updated 3 days ago</span></div>
-                        <div class="meta-spec-item"><span>👁️</span><span>5,120 views</span></div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-medium">Medium</span></div>
+                        <div>Pages: <strong>12</strong></div>
+                        <div>Duration: <strong>3 Hours</strong></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        <span>✓ 1,840 downloads</span>
-                        <span class="class-badge" style="font-size: 0.65rem;">Lab Notes</span>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 980 times</span>
+                        <span>96% Solved Accuracy</span>
                     </div>
                 </div>
+
                 <div class="card-action-footer">
-                    <a href="materials.html?id=chem-reactions" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
-                    <a href="materials.html?download=chem-reactions" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2024 SSC English', 'Maharashtra SSC', 'English', '12', 'Medium', 'Kumarbharati grammar, appreciation, and writing skills marking scheme.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2024-ssc-english" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Card 5: English First Flight -->
-            <div class="study-material-card" data-subject="English" data-standard="10" data-type="notes" data-tag="recent">
+            <!-- Card 5: 2024 CBSE Mathematics Standard -->
+            <div class="exam-paper-card" data-year="2024" data-board="CBSE" data-standard="10" data-subject="Mathematics" data-medium="English" data-difficulty="Hard" data-has-solution="true" data-attempts="1060">
                 <div>
                     <div class="card-top-header">
-                        <div class="subject-badge-box">
-                            <div class="subject-icon-avatar">📖</div>
-                            <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">📖 English (First Flight)</span>
-                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • CBSE</small>
-                            </div>
+                        <div class="board-medium-tags">
+                            <span class="tag-board">CBSE Central</span>
+                            <span class="tag-medium">English Medium</span>
                         </div>
-                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'english-firstflight')" title="Bookmark">🤍</button>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2024-cbse-maths')" title="Save Paper">🤍</button>
                     </div>
-                    <div style="margin-top: 0.6rem;">
-                        <span class="class-badge" style="font-size: 0.68rem;">🕒 Recent</span>
+
+                    <h3 class="paper-year-subject-title">2024 CBSE Mathematics</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">Mathematics Standard (041) • Class 10</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (Standard Code 30/1/1)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (CBSE Head Examiner Key)</span>
+                        </div>
                     </div>
-                    <h3 class="card-title" onclick="openResource('english-firstflight')">First Flight Prose &amp; Poetry Summary + Lexicon</h3>
-                    <p class="card-description">Chapter-by-chapter character sketches, central themes, critical appreciation, and vocabulary flashcard links.</p>
-                    
-                    <div class="meta-specs-grid">
-                        <div class="meta-spec-item"><span>📄</span><span>32 Pages</span></div>
-                        <div class="meta-spec-item"><span>💾</span><span>5.2 MB (PDF)</span></div>
-                        <div class="meta-spec-item"><span>🕒</span><span>Oct 14, 2025</span></div>
-                        <div class="meta-spec-item"><span>👁️</span><span>2,680 views</span></div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-hard">Hard</span></div>
+                        <div>Pages: <strong>18</strong></div>
+                        <div>Duration: <strong>3 Hours</strong></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        <span>✓ 740 downloads</span>
-                        <span class="class-badge" style="font-size: 0.65rem;">Key Lexicon</span>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 1,060 times</span>
+                        <span>84% Solved Accuracy</span>
                     </div>
                 </div>
+
                 <div class="card-action-footer">
-                    <a href="materials.html?id=english-firstflight" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
-                    <a href="materials.html?download=english-firstflight" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2024 CBSE Mathematics Standard', 'CBSE Board', 'English', '18', 'Hard', 'Official step-by-step marking rubrics for trigonometry, circles, and surface areas.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2024-cbse-maths" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Card 6: Science Solutions & Marking -->
-            <div class="study-material-card" data-subject="Science" data-standard="10" data-type="model_solutions" data-tag="recommended">
+            <!-- Card 6: 2023 SSC Social Science (मराठी माध्यम) -->
+            <div class="exam-paper-card" data-year="2023" data-board="SSC" data-standard="10" data-subject="Social Science" data-medium="Marathi" data-difficulty="Medium" data-has-solution="true" data-attempts="890">
                 <div>
                     <div class="card-top-header">
-                        <div class="subject-badge-box">
-                            <div class="subject-icon-avatar" style="background: var(--status-ok-bg); color: #059669;">💡</div>
-                            <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #059669;">💡 Solutions &amp; Marking</span>
-                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • SSC Board</small>
-                            </div>
+                        <div class="board-medium-tags">
+                            <span class="tag-board">Maharashtra SSC</span>
+                            <span class="tag-medium tag-marathi">मराठी माध्यम</span>
                         </div>
-                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'ssc-science-model')" title="Bookmark">🤍</button>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2023-ssc-history')" title="Save Paper">🤍</button>
                     </div>
-                    <div style="margin-top: 0.6rem;">
-                        <span class="class-badge" style="font-size: 0.68rem;">🎯 Recommended</span>
+
+                    <h3 class="paper-year-subject-title">2023 SSC Social Science</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">इतिहास व राज्यशास्त्र, भूगोल • इयत्ता १० वी</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (History &amp; Geography)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (मुद्देसूद उत्तरे)</span>
+                        </div>
                     </div>
-                    <h3 class="card-title" onclick="openResource('ssc-science-model')">Science &amp; Technology Part 1 &amp; 2 Model Answers</h3>
-                    <p class="card-description">Scoring blueprint detailing exact keyword weightage required by board examiners to award full marks.</p>
-                    
-                    <div class="meta-specs-grid">
-                        <div class="meta-spec-item"><span>📄</span><span>40 Pages</span></div>
-                        <div class="meta-spec-item"><span>💾</span><span>7.8 MB (PDF)</span></div>
-                        <div class="meta-spec-item"><span>🕒</span><span>Oct 12, 2025</span></div>
-                        <div class="meta-spec-item"><span>👁️</span><span>3,420 views</span></div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-medium">Medium</span></div>
+                        <div>Pages: <strong>14</strong></div>
+                        <div>Duration: <strong>2 Hours</strong></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
-                        <span>✓ 1,150 downloads</span>
-                        <span class="class-badge" style="font-size: 0.65rem;">Examiner Rubric</span>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 890 times</span>
+                        <span>92% Solved Accuracy</span>
                     </div>
                 </div>
+
                 <div class="card-action-footer">
-                    <a href="materials.html?id=ssc-science-model" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Solutions</a>
-                    <a href="materials.html?download=ssc-science-model" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2023 SSC Social Science', 'Maharashtra SSC', 'Marathi', '14', 'Medium', 'Maharashtra State Board marking scheme for history concepts and maps.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2023-ssc-history" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 7: 2023 CBSE Social Science -->
+            <div class="exam-paper-card" data-year="2023" data-board="CBSE" data-standard="10" data-subject="Social Science" data-medium="English" data-difficulty="Medium" data-has-solution="true" data-attempts="850">
+                <div>
+                    <div class="card-top-header">
+                        <div class="board-medium-tags">
+                            <span class="tag-board">CBSE Central</span>
+                            <span class="tag-medium">English Medium</span>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2023-cbse-sst')" title="Save Paper">🤍</button>
+                    </div>
+
+                    <h3 class="paper-year-subject-title">2023 CBSE Social Science</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">History, Civics, Geography &amp; Economics • Class 10</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (Set 1 &amp; 2)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (Official Model Answer)</span>
+                        </div>
+                    </div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-medium">Medium</span></div>
+                        <div>Pages: <strong>16</strong></div>
+                        <div>Duration: <strong>3 Hours</strong></div>
+                    </div>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 850 times</span>
+                        <span>90% Solved Accuracy</span>
+                    </div>
+                </div>
+
+                <div class="card-action-footer">
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2023 CBSE Social Science', 'CBSE Board', 'English', '16', 'Medium', 'Complete model answers with map work marking criteria.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2023-cbse-sst" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 8: 2025 SSC Marathi Aksharbharati -->
+            <div class="exam-paper-card" data-year="2025" data-board="SSC" data-standard="10" data-subject="Marathi" data-medium="Marathi" data-difficulty="Medium" data-has-solution="true" data-attempts="1320">
+                <div>
+                    <div class="card-top-header">
+                        <div class="board-medium-tags">
+                            <span class="tag-board">Maharashtra SSC</span>
+                            <span class="tag-medium tag-marathi">मराठी माध्यम</span>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, '2025-ssc-marathi')" title="Save Paper">🤍</button>
+                    </div>
+
+                    <h3 class="paper-year-subject-title">2025 SSC Marathi</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 0.75rem;">मराठी अक्षरभारती (द्वितीय भाषा) • इयत्ता १० वी</p>
+
+                    <div class="paper-contents-box">
+                        <div class="content-item">
+                            <span>📄</span>
+                            <span>Question Paper (गद्य, पद्य, व्याकरण)</span>
+                        </div>
+                        <div class="content-item highlight-sol">
+                            <span>📖</span>
+                            <span>Solution Available (उपयोजित लेखन गुणदान)</span>
+                        </div>
+                    </div>
+
+                    <div class="paper-specs-row">
+                        <div>Difficulty: <span class="difficulty-badge diff-medium">Medium</span></div>
+                        <div>Pages: <strong>12</strong></div>
+                        <div>Duration: <strong>3 Hours</strong></div>
+                    </div>
+
+                    <div class="card-social-proof">
+                        <span style="color: #D97706; font-weight: 700;">🔥 Attempted 1,320 times</span>
+                        <span>95% Solved Accuracy</span>
+                    </div>
+                </div>
+
+                <div class="card-action-footer">
+                    <button class="btn btn-primary btn-sm btn-view" onclick="openExamViewer('2025 SSC Marathi Aksharbharati', 'Maharashtra SSC', 'Marathi', '12', 'Medium', 'Official grammar rules and essay/letter writing marking breakdown.')">
+                        <span>👁️</span>
+                        <span>View</span>
+                    </button>
+                    <a href="materials.html?download=2025-ssc-marathi" class="btn btn-ghost btn-sm" title="Download PDF">
+                        <span>⬇️ Download</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -955,28 +1323,28 @@
         <!-- Dynamic Backend Materials Container (For files uploaded live via Faculty Dashboard) -->
         <section id="materials-list" class="materials-list" style="display: none;"></section>
 
-        <!-- 5. Priority Faculty Support & Board Verification Seal -->
+        <!-- 6. Priority Faculty Support & Board Verification Seal -->
         <section class="bottom-support-banner">
             <!-- Left 2 Cols: Missing Chapter / Request from Faculty -->
             <div class="support-card split-action">
                 <div style="max-width: 540px;">
                     <span class="class-badge" style="font-size: 0.68rem; margin-bottom: 0.35rem;">Priority Faculty Support</span>
                     <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
-                        Can't find a specific chapter or formula note?
+                        Need a specific year or regional board paper?
                     </h3>
                     <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
-                        Submit your syllabus request directly to ShikshaMitr HODs. Our faculty team synthesizes and uploads board-vetted revision notes within 24 hours.
+                        Request past question papers or model solutions directly from ShikshaMitr examiners. Our faculty team synthesizes official answer keys within 24 hours.
                     </p>
                 </div>
-                <button class="btn btn-primary" onclick="alert('Faculty request logged! Our mentors will upload this chapter note shortly.')" style="white-space: nowrap; font-weight: 700;">
-                    📨 Request a Chapter Note
+                <button class="btn btn-primary" onclick="alert('Board paper request logged! Our faculty examiners will source and publish this paper shortly.')" style="white-space: nowrap; font-weight: 700;">
+                    📨 Request a Board Paper
                 </button>
             </div>
 
             <!-- Right Col: Board Verification Seal -->
             <div class="support-card">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--status-ok-bg); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; shrink-0;">
+                    <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--status-ok-bg); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
                         🛡️
                     </div>
                     <div>
@@ -985,7 +1353,7 @@
                     </div>
                 </div>
                 <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; margin: 0;">
-                    All curriculum resources and step-wise marking schemes are verified by Senior Faculty against official circulars from CBSE and State Boards.
+                    All curriculum resources and step-wise marking schemes are verified by Senior Faculty against official circulars from CBSE and Maharashtra SSC State Board.
                 </p>
                 <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
                     <span>Verified by Dr. R. Sharma</span>
@@ -994,6 +1362,63 @@
             </div>
         </section>
     </main>
+
+    <!-- Interactive Paper & Solution Modal -->
+    <div id="exam-modal" class="exam-modal-backdrop" onclick="if(event.target===this) closeExamViewer()">
+        <div class="exam-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <span class="class-badge" style="font-size: 0.7rem;" id="modal-board-tag">Maharashtra SSC</span>
+                    <h2 id="modal-paper-title" style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0 0.2rem;">2025 SSC Mathematics</h2>
+                    <p id="modal-paper-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;"></p>
+                </div>
+                <button onclick="closeExamViewer()" class="btn btn-ghost btn-sm" style="font-size: 1.2rem; padding: 0.25rem 0.6rem; border-radius: 50%;">✕</button>
+            </div>
+
+            <!-- Modal Segmented Mode Tabs (Question Paper vs Model Solution) -->
+            <div style="display: flex; gap: 0.5rem; background: var(--bg-surface); padding: 0.4rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; border: 1px solid var(--border-subtle);">
+                <button class="btn btn-sm btn-primary" id="tab-qp-btn" onclick="switchModalTab('qp')" style="flex: 1;">
+                    📄 1. Question Paper
+                </button>
+                <button class="btn btn-sm btn-ghost" id="tab-sol-btn" onclick="switchModalTab('sol')" style="flex: 1;">
+                    📖 2. Verified Model Solution &amp; Marking
+                </button>
+            </div>
+
+            <!-- Modal Content View -->
+            <div id="modal-tab-qp" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.5rem; font-size: 0.9rem; line-height: 1.6;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; margin-bottom: 1rem; font-weight: 700;">
+                    <span>Time Allowed: 2 Hours</span>
+                    <span>Maximum Marks: 40</span>
+                </div>
+                <h4 style="margin: 0 0 0.5rem;">Section A: Multiple Choice Questions (4 Marks)</h4>
+                <p><strong>Q1 (A):</strong> Solve the quadratic equation: <em>2x² - 5x + 3 = 0</em>. Find the value of discriminant (Δ).</p>
+                <p><strong>Q2 (A):</strong> For an Arithmetic Progression, if <em>a = 3.5</em>, <em>d = 0</em>, find <em>t₁₀₁</em>.</p>
+                <p><strong>Q3:</strong> State the Pythagoras theorem and solve for hypotenuse when base = 6 cm and height = 8 cm.</p>
+            </div>
+
+            <div id="modal-tab-sol" style="display: none; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-lg); padding: 1.5rem; font-size: 0.9rem; line-height: 1.6;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 0.75rem; margin-bottom: 1rem; font-weight: 700; color: #059669;">
+                    <span>Official Step-wise Marking Scheme</span>
+                    <span>Examiner Verified ✓</span>
+                </div>
+                <h4 style="margin: 0 0 0.5rem; color: #059669;">Solution &amp; Step Marks Breakdown:</h4>
+                <p><strong>Ans 1 (A):</strong> For <em>2x² - 5x + 3 = 0</em>, comparing with <em>ax² + bx + c = 0</em>:<br>
+                <em>a = 2, b = -5, c = 3</em> <span style="float: right; color: var(--text-muted); font-size: 0.75rem;">[0.5 Mark]</span><br>
+                Discriminant <em>Δ = b² - 4ac = (-5)² - 4(2)(3) = 25 - 24 = 1</em>. <span style="float: right; color: var(--text-muted); font-size: 0.75rem;">[0.5 Mark]</span></p>
+                <hr style="border: none; border-top: 1px dashed var(--border-subtle); margin: 0.75rem 0;">
+                <p><strong>Ans 2 (A):</strong> Formula <em>tₙ = a + (n - 1)d</em>.<br>
+                <em>t₁₀₁ = 3.5 + (101 - 1)(0) = 3.5</em>. <span style="float: right; color: var(--text-muted); font-size: 0.75rem;">[1 Mark]</span></p>
+            </div>
+
+            <div style="margin-top: 1.25rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+                <button class="btn btn-ghost btn-sm" onclick="closeExamViewer()">Close</button>
+                <button class="btn btn-primary btn-sm" onclick="alert('Downloading complete question paper & official marking PDF!')">
+                    ⬇️ Download Official PDF
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="container text-center text-muted" style="padding-top: 1rem; padding-bottom: 2rem;">
@@ -1029,38 +1454,42 @@
     <script src="js/ws-client.js"></script>
     <script src="js/materials.js"></script>
     <script>
-        // Client-side interactions for search, discovery filters, view toggling & bookmarking
+        // Multi-dimensional Exam Platform Filtering (Board, Year, Class, Subject, Medium)
         let currentDiscoveryTag = 'all';
 
         function filterMaterials() {
             const query = (document.getElementById('global-search-input')?.value || '').toLowerCase().trim();
+            const boardVal = document.getElementById('board-filter')?.value || '';
+            const yearVal = document.getElementById('year-filter')?.value || '';
             const stdVal = document.getElementById('standard-filter')?.value || '';
             const subVal = (document.getElementById('subject-filter')?.value || '').toLowerCase();
-            const chapVal = (document.getElementById('chapter-filter')?.value || '').toLowerCase();
+            const mediumVal = (document.getElementById('medium-filter')?.value || '').toLowerCase();
 
-            const cards = document.querySelectorAll('.study-material-card');
+            const cards = document.querySelectorAll('.exam-paper-card');
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const title = (card.querySelector('.card-title')?.textContent || '').toLowerCase();
-                const desc = (card.querySelector('.card-description')?.textContent || '').toLowerCase();
-                const cardSub = (card.getAttribute('data-subject') || '').toLowerCase();
+                const title = (card.querySelector('.paper-year-subject-title')?.textContent || '').toLowerCase();
+                const cardBoard = card.getAttribute('data-board') || '';
+                const cardYear = card.getAttribute('data-year') || '';
                 const cardStd = card.getAttribute('data-standard') || '';
-                const cardTag = card.getAttribute('data-tag') || '';
+                const cardSub = (card.getAttribute('data-subject') || '').toLowerCase();
+                const cardMedium = (card.getAttribute('data-medium') || '').toLowerCase();
                 const isBookmarked = card.querySelector('.bookmark-btn')?.classList.contains('bookmarked');
 
-                let matchQuery = !query || title.includes(query) || desc.includes(query) || cardSub.includes(query);
+                let matchQuery = !query || title.includes(query) || cardSub.includes(query) || cardBoard.toLowerCase().includes(query) || cardYear.includes(query);
+                let matchBoard = !boardVal || cardBoard === boardVal;
+                let matchYear = !yearVal || cardYear === yearVal;
                 let matchStd = !stdVal || cardStd === stdVal;
                 let matchSub = !subVal || cardSub.includes(subVal);
-                let matchChap = !chapVal || title.includes(chapVal) || desc.includes(chapVal);
+                let matchMedium = !mediumVal || cardMedium.includes(mediumVal);
                 
                 let matchDiscovery = true;
-                if (currentDiscoveryTag === 'popular') matchDiscovery = cardTag === 'popular';
-                else if (currentDiscoveryTag === 'recent') matchDiscovery = cardTag === 'recent';
-                else if (currentDiscoveryTag === 'recommended') matchDiscovery = cardTag === 'recommended';
+                if (currentDiscoveryTag === 'marathi') matchDiscovery = cardMedium.includes('marathi');
+                else if (currentDiscoveryTag === 'solved') matchDiscovery = card.getAttribute('data-has-solution') === 'true';
                 else if (currentDiscoveryTag === 'bookmarked') matchDiscovery = isBookmarked;
 
-                if (matchQuery && matchStd && matchSub && matchChap && matchDiscovery) {
+                if (matchQuery && matchBoard && matchYear && matchStd && matchSub && matchMedium && matchDiscovery) {
                     card.style.display = 'flex';
                     visibleCount++;
                 } else {
@@ -1069,7 +1498,7 @@
             });
 
             const counter = document.getElementById('results-counter');
-            if (counter) counter.textContent = `Showing ${visibleCount} verified curriculum resources`;
+            if (counter) counter.textContent = `Showing ${visibleCount} board question papers with solutions`;
         }
 
         function clearSearch() {
@@ -1084,6 +1513,21 @@
                 input.value = term;
                 filterMaterials();
             }
+        }
+
+        function filterByPractice(year, subject, board) {
+            const ySelect = document.getElementById('year-filter');
+            const sSelect = document.getElementById('subject-filter');
+            const bSelect = document.getElementById('board-filter');
+
+            if (ySelect) ySelect.value = year;
+            if (sSelect) sSelect.value = subject;
+            if (bSelect) bSelect.value = board;
+
+            filterMaterials();
+
+            // Scroll smoothly to the cards grid
+            document.getElementById('materials-card-grid')?.scrollIntoView({ behavior: 'smooth' });
         }
 
         function applyDiscoveryFilter(tag, btn) {
@@ -1110,6 +1554,28 @@
             }
         }
 
+        function sortMaterials() {
+            const sortVal = document.getElementById('sort-filter')?.value || 'popular';
+            const grid = document.getElementById('materials-card-grid');
+            if (!grid) return;
+
+            const cards = Array.from(grid.querySelectorAll('.exam-paper-card'));
+            cards.sort((a, b) => {
+                if (sortVal === 'popular') {
+                    const aAtt = parseInt(a.getAttribute('data-attempts') || '0', 10);
+                    const bAtt = parseInt(b.getAttribute('data-attempts') || '0', 10);
+                    return bAtt - aAtt;
+                } else if (sortVal === 'recent') {
+                    const aYear = parseInt(a.getAttribute('data-year') || '0', 10);
+                    const bYear = parseInt(b.getAttribute('data-year') || '0', 10);
+                    return bYear - aYear;
+                }
+                return 0;
+            });
+
+            cards.forEach(card => grid.appendChild(card));
+        }
+
         function toggleCardBookmark(btn, resourceId) {
             btn.classList.toggle('bookmarked');
             const isMarked = btn.classList.contains('bookmarked');
@@ -1129,8 +1595,47 @@
             if (counter) counter.textContent = saved.length;
         }
 
-        function openResource(id) {
-            alert(`Opening verified NCERT board materials for: ${id}`);
+        // Exam Paper Viewer Modal Logic
+        function openExamViewer(title, board, medium, pages, difficulty, desc) {
+            const modal = document.getElementById('exam-modal');
+            const titleEl = document.getElementById('modal-paper-title');
+            const boardEl = document.getElementById('modal-board-tag');
+            const descEl = document.getElementById('modal-paper-desc');
+
+            if (titleEl) titleEl.textContent = title;
+            if (boardEl) boardEl.textContent = `${board} • ${medium} • ${pages} Pages (${difficulty})`;
+            if (descEl) descEl.textContent = desc;
+
+            switchModalTab('qp');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeExamViewer() {
+            const modal = document.getElementById('exam-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function switchModalTab(tab) {
+            const qpTab = document.getElementById('modal-tab-qp');
+            const solTab = document.getElementById('modal-tab-sol');
+            const qpBtn = document.getElementById('tab-qp-btn');
+            const solBtn = document.getElementById('tab-sol-btn');
+
+            if (tab === 'qp') {
+                if (qpTab) qpTab.style.display = 'block';
+                if (solTab) solTab.style.display = 'none';
+                qpBtn?.classList.remove('btn-ghost');
+                qpBtn?.classList.add('btn-primary');
+                solBtn?.classList.remove('btn-primary');
+                solBtn?.classList.add('btn-ghost');
+            } else {
+                if (qpTab) qpTab.style.display = 'none';
+                if (solTab) solTab.style.display = 'block';
+                solBtn?.classList.remove('btn-ghost');
+                solBtn?.classList.add('btn-primary');
+                qpBtn?.classList.remove('btn-primary');
+                qpBtn?.classList.add('btn-ghost');
+            }
         }
 
         // Keyboard Shortcut Ctrl+K
@@ -1143,6 +1648,9 @@
                     search.select();
                 }
             }
+            if (e.key === 'Escape') {
+                closeExamViewer();
+            }
         });
 
         // Initialize bookmark state on load
@@ -1152,7 +1660,7 @@
             if (counter) counter.textContent = saved.length;
 
             saved.forEach(id => {
-                const card = document.querySelector(`.study-material-card [onclick*="${id}"]`)?.closest('.study-material-card');
+                const card = document.querySelector(`.exam-paper-card [onclick*="${id}"]`)?.closest('.exam-paper-card');
                 if (card) {
                     const btn = card.querySelector('.bookmark-btn');
                     if (btn) {
@@ -1161,6 +1669,9 @@
                     }
                 }
             });
+
+            // Run initial filter to apply defaults
+            filterMaterials();
         });
     </script>
 </body>
