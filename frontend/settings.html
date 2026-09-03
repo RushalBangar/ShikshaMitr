@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Prevent dark mode flash -->
+    <script src="js/theme.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2N8TR3HLN2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Settings - ShikshaMitr. Manage account, learning preferences, notifications, and appearance.">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Settings - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .settings-page-wrapper {
+            flex: 1;
+            padding: 1.5rem 0 4rem;
+            max-width: 740px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Top Page Header */
+        .settings-header-banner {
+            margin-bottom: 2rem;
+        }
+
+        .settings-header-banner h1 {
+            font-size: clamp(1.8rem, 4vw, 2.2rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+            margin: 0.25rem 0 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .settings-header-banner p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Settings Card Section */
+        .settings-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .settings-card:hover {
+            border-color: var(--primary);
+        }
+
+        .settings-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.85rem;
+        }
+
+        .settings-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: var(--primary-glow);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .settings-card-header h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        /* Avatar Picker */
+        .avatar-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .current-avatar-preview {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--gradient-btn);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 4px 16px var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .avatar-presets-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .preset-avatar-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--border-subtle);
+            background: var(--bg-surface);
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-avatar-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .preset-avatar-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        /* Form Row & Groups */
+        .form-row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .setting-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+        }
+
+        .setting-field-label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .setting-text-input {
+            width: 100%;
+            height: 46px;
+            padding: 0.5rem 0.85rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .setting-text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: var(--bg-card);
+        }
+
+        /* Subjects Multi-Select Pills */
+        .subject-pills-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.25rem;
+        }
+
+        .subject-chip {
+            padding: 0.4rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .subject-chip:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        .subject-chip.active {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Notifications Toggle Switch Rows */
+        .notif-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            gap: 1rem;
+        }
+
+        .notif-toggle-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .notif-text-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .notif-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .notif-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* iOS-style toggle switch */
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border-subtle);
+            transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 34px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .switch-toggle input:checked + .switch-slider {
+            background-color: var(--primary);
+        }
+
+        .switch-toggle input:checked + .switch-slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Appearance Theme Cards */
+        .theme-choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .theme-choice-card {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.15rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .theme-choice-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-choice-card.active {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .theme-choice-icon {
+            font-size: 1.8rem;
+        }
+
+        .theme-choice-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Save Feedback Floating Toast */
+        .toast-banner {
+            position: fixed;
+            bottom: 85px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--status-ok-bg);
+            border: 1px solid #10B981;
+            color: #059669;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast-banner.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Action Buttons Row */
+        .settings-actions-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .settings-page-wrapper {
+                padding: 1rem 1rem 5rem;
+            }
+
+            .settings-card {
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .form-row-2col {
+                grid-template-columns: 1fr;
+            }
+
+            .setting-text-input,
+            .filter-select {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
+            </a>
+            <nav class="nav-links">
+                <a href="materials.html?type=notes" class="nav-link">Notes</a>
+                <a href="materials.html?type=board_paper" class="nav-link">Papers</a>
+                <a href="quiz.html" class="nav-link">Quizzes</a>
+                <a href="reading.html" class="nav-link">Reading</a>
+                <a href="forum.html" class="nav-link">Forum</a>
+                <a href="flashcards.html" class="nav-link">Flashcards</a>
+                <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
+                <a href="student-dashboard.html" class="btn btn-primary btn-sm">Dashboard</a>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container settings-page-wrapper">
+        <!-- Top Breadcrumbs & Header -->
+        <section class="settings-header-banner">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                <a href="student-dashboard.html" class="back-link" style="margin: 0; color: var(--primary);">← Back to Dashboard</a>
+                <span>/</span>
+                <span style="color: var(--text-muted);">Account</span>
+                <span>/</span>
+                <span class="class-badge" style="font-size: 0.68rem;">Settings</span>
+            </div>
+            <h1><span>⚙️</span> Settings</h1>
+            <p>Simple, student-friendly control over your account, learning preferences, and notifications.</p>
+        </section>
+
+        <!-- 1. ACCOUNT SECTION -->
+        <section class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-card-icon">👤</div>
+                <h2>Account</h2>
+            </div>
+
+            <!-- Profile Picture Picker -->
+            <div class="setting-field-group">
+                <label class="setting-field-label">Profile Picture</label>
+                <div class="avatar-picker-row">
+                    <div class="current-avatar-preview" id="current-avatar-display">👨‍🎓</div>
+                    <div class="avatar-presets-group">
+                        <button type="button" class="preset-avatar-btn selected" onclick="selectAvatar('👨‍🎓', this)">👨‍🎓</button>
+                        <button type="button" class="preset-avatar-btn" onclick="selectAvatar('👩‍🎓', this)">👩‍🎓</button>
+                        <button type="button" class="preset-avatar-btn" onclick="selectAvatar('🧑‍💻', this)">🧑‍💻</button>
+                        <button type="button" class="preset-avatar-btn" onclick="selectAvatar('🦊', this)">🦊</button>
+                        <button type="button" class="preset-avatar-btn" onclick="selectAvatar('🚀', this)">🚀</button>
+                        <button type="button" class="preset-avatar-btn" onclick="selectAvatar('📚', this)">📚</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Name & Email Inputs -->
+            <div class="form-row-2col">
+                <div class="setting-field-group">
+                    <label class="setting-field-label" for="setting-name">Full Name</label>
+                    <input type="text" id="setting-name" class="setting-text-input" placeholder="e.g. Aarav Sharma" value="Aarav Sharma">
+                </div>
+                <div class="setting-field-group">
+                    <label class="setting-field-label" for="setting-email">Email Address</label>
+                    <input type="email" id="setting-email" class="setting-text-input" placeholder="e.g. aarav.sharma@gmail.com" value="aarav.sharma@gmail.com">
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LEARNING SECTION -->
+        <section class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-card-icon">📚</div>
+                <h2>Learning Preferences</h2>
+            </div>
+
+            <!-- Class & Board Row -->
+            <div class="form-row-2col">
+                <div class="setting-field-group">
+                    <label class="setting-field-label" for="setting-class">Class / Standard</label>
+                    <select id="setting-class" class="filter-select" style="width: 100%; height: 46px;">
+                        <option value="10" selected>Class 10 (Board Target 2026)</option>
+                        <option value="9">Class 9 (Foundations)</option>
+                        <option value="8">Class 8</option>
+                        <option value="7">Class 7</option>
+                        <option value="6">Class 6</option>
+                        <option value="5">Class 5</option>
+                    </select>
+                </div>
+
+                <div class="setting-field-group">
+                    <label class="setting-field-label" for="setting-board">Curriculum Board</label>
+                    <select id="setting-board" class="filter-select" style="width: 100%; height: 46px;">
+                        <option value="SSC" selected>Maharashtra State Board (SSC)</option>
+                        <option value="CBSE">Central Board (CBSE)</option>
+                        <option value="ICSE">ICSE Council</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Language / Medium -->
+            <div class="setting-field-group">
+                <label class="setting-field-label" for="setting-language">Medium &amp; Language</label>
+                <select id="setting-language" class="filter-select" style="width: 100%; height: 46px;">
+                    <option value="English" selected>English Medium</option>
+                    <option value="Marathi">Marathi Medium (मराठी माध्यम)</option>
+                    <option value="Semi-English">Semi-English Medium</option>
+                    <option value="Hindi">Hindi Medium</option>
+                </select>
+            </div>
+
+            <!-- Subjects (Multi-select Chips) -->
+            <div class="setting-field-group" style="margin-bottom: 0;">
+                <label class="setting-field-label">Target Subjects</label>
+                <div class="subject-pills-selector">
+                    <div class="subject-chip active" onclick="toggleSubjectChip(this)">📐 Mathematics</div>
+                    <div class="subject-chip active" onclick="toggleSubjectChip(this)">🔬 Science &amp; Tech</div>
+                    <div class="subject-chip active" onclick="toggleSubjectChip(this)">📖 English</div>
+                    <div class="subject-chip active" onclick="toggleSubjectChip(this)">🏛️ Social Science</div>
+                    <div class="subject-chip" onclick="toggleSubjectChip(this)">🚩 Marathi (अक्षरभारती)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. NOTIFICATIONS SECTION -->
+        <section class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-card-icon">🔔</div>
+                <h2>Notifications</h2>
+            </div>
+
+            <!-- Daily Study Reminder -->
+            <div class="notif-toggle-row">
+                <div class="notif-text-info">
+                    <span class="notif-title">Daily Study Reminder</span>
+                    <p class="notif-desc">Receive a calm daily ping at 7:00 PM to maintain your study streak.</p>
+                </div>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="notif-daily" checked>
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+
+            <!-- Quiz Reminders -->
+            <div class="notif-toggle-row">
+                <div class="notif-text-info">
+                    <span class="notif-title">Quiz Reminders</span>
+                    <p class="notif-desc">Alerts when new weekly mock tests or faculty questions are published.</p>
+                </div>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="notif-quiz" checked>
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+
+            <!-- Forum Replies -->
+            <div class="notif-toggle-row">
+                <div class="notif-text-info">
+                    <span class="notif-title">Forum Replies</span>
+                    <p class="notif-desc">Get notified immediately when a teacher or peer answers your doubt.</p>
+                </div>
+                <label class="switch-toggle">
+                    <input type="checkbox" id="notif-forum" checked>
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 4. APPEARANCE SECTION -->
+        <section class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-card-icon">🎨</div>
+                <h2>Appearance</h2>
+            </div>
+
+            <div class="theme-choices-grid">
+                <!-- Light Mode -->
+                <div class="theme-choice-card" id="theme-btn-light" onclick="chooseThemeMode('light')">
+                    <span class="theme-choice-icon">☀️</span>
+                    <span class="theme-choice-label">Light</span>
+                </div>
+
+                <!-- Dark Mode -->
+                <div class="theme-choice-card" id="theme-btn-dark" onclick="chooseThemeMode('dark')">
+                    <span class="theme-choice-icon">🌙</span>
+                    <span class="theme-choice-label">Dark</span>
+                </div>
+
+                <!-- System Default -->
+                <div class="theme-choice-card" id="theme-btn-system" onclick="chooseThemeMode('system')">
+                    <span class="theme-choice-icon">💻</span>
+                    <span class="theme-choice-label">System</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Save Actions Footer -->
+        <div class="settings-actions-footer">
+            <button type="button" class="btn btn-ghost" onclick="resetSettings()">
+                Reset to Defaults
+            </button>
+            <button type="button" class="btn btn-primary" onclick="saveSettings()" style="font-weight: 700; padding: 0.75rem 2rem;">
+                💾 Save Settings
+            </button>
+        </div>
+    </main>
+
+    <!-- Save Confirmation Toast -->
+    <div id="save-toast" class="toast-banner">
+        <span>✓</span>
+        <span>Settings saved successfully!</span>
+    </div>
+
+    <footer>
+        <div class="container text-center text-muted" style="padding-top: 1rem; padding-bottom: 2rem;">
+            <p>&copy; 2026 ShikshaMitr. All rights reserved. Personalized student preferences.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="faculty.html" style="color: inherit; text-decoration: underline;">Faculty Portal</a></p>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-link">
+            <span class="bnav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="materials.html" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            <span>Study</span>
+        </a>
+        <a href="quiz.html" class="bottom-nav-link">
+            <span class="bnav-icon">🎯</span>
+            <span>Quiz</span>
+        </a>
+        <a href="forum.html" class="bottom-nav-link">
+            <span class="bnav-icon">💬</span>
+            <span>Forum</span>
+        </a>
+        <a href="student-dashboard.html" class="bottom-nav-link active">
+            <span class="bnav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Settings State Manager
+        let selectedAvatar = '👨‍🎓';
+
+        function selectAvatar(avatarEmoji, btn) {
+            selectedAvatar = avatarEmoji;
+            document.querySelectorAll('.preset-avatar-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            const display = document.getElementById('current-avatar-display');
+            if (display) display.textContent = avatarEmoji;
+        }
+
+        function toggleSubjectChip(chip) {
+            chip.classList.toggle('active');
+        }
+
+        // Appearance Theme Controller
+        function chooseThemeMode(mode) {
+            document.querySelectorAll('.theme-choice-card').forEach(c => c.classList.remove('active'));
+            const activeCard = document.getElementById(`theme-btn-${mode}`);
+            if (activeCard) activeCard.classList.add('active');
+
+            if (window.shikshaTheme && typeof window.shikshaTheme.setMode === 'function') {
+                window.shikshaTheme.setMode(mode);
+            } else {
+                localStorage.setItem('shikshamitr-theme-pref', mode);
+                document.documentElement.setAttribute('data-theme', mode === 'system' ? 'light' : mode);
+            }
+        }
+
+        function showSaveToast() {
+            const toast = document.getElementById('save-toast');
+            if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2500);
+            }
+        }
+
+        function saveSettings() {
+            const name = document.getElementById('setting-name')?.value || 'Aarav Sharma';
+            const email = document.getElementById('setting-email')?.value || 'aarav.sharma@gmail.com';
+            const cls = document.getElementById('setting-class')?.value || '10';
+            const board = document.getElementById('setting-board')?.value || 'SSC';
+            const lang = document.getElementById('setting-language')?.value || 'English';
+
+            const activeSubjects = Array.from(document.querySelectorAll('.subject-chip.active')).map(c => c.textContent.trim());
+
+            const dailyRem = document.getElementById('notif-daily')?.checked ?? true;
+            const quizRem = document.getElementById('notif-quiz')?.checked ?? true;
+            const forumRem = document.getElementById('notif-forum')?.checked ?? true;
+
+            const settings = {
+                account: { name, email, avatar: selectedAvatar },
+                learning: { class: cls, board, language: lang, subjects: activeSubjects },
+                notifications: { daily: dailyRem, quiz: quizRem, forum: forumRem }
+            };
+
+            localStorage.setItem('shikshamitr_user_settings', JSON.stringify(settings));
+            localStorage.setItem('shikshamitr_student_name', name);
+
+            showSaveToast();
+        }
+
+        function resetSettings() {
+            if (confirm('Reset all settings to default values?')) {
+                localStorage.removeItem('shikshamitr_user_settings');
+                location.reload();
+            }
+        }
+
+        // Initialize state on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Highlight Theme Mode
+            const currentMode = window.shikshaTheme ? window.shikshaTheme.getMode() : (localStorage.getItem('shikshamitr-theme-pref') || 'system');
+            const themeCard = document.getElementById(`theme-btn-${currentMode}`);
+            if (themeCard) themeCard.classList.add('active');
+
+            // 2. Load stored settings
+            const raw = localStorage.getItem('shikshamitr_user_settings');
+            if (raw) {
+                try {
+                    const s = JSON.parse(raw);
+                    if (s.account) {
+                        if (s.account.name) document.getElementById('setting-name').value = s.account.name;
+                        if (s.account.email) document.getElementById('setting-email').value = s.account.email;
+                        if (s.account.avatar) {
+                            selectedAvatar = s.account.avatar;
+                            document.getElementById('current-avatar-display').textContent = s.account.avatar;
+                            document.querySelectorAll('.preset-avatar-btn').forEach(btn => {
+                                if (btn.textContent.trim() === s.account.avatar) {
+                                    btn.classList.add('selected');
+                                } else {
+                                    btn.classList.remove('selected');
+                                }
+                            });
+                        }
+                    }
+                    if (s.learning) {
+                        if (s.learning.class) document.getElementById('setting-class').value = s.learning.class;
+                        if (s.learning.board) document.getElementById('setting-board').value = s.learning.board;
+                        if (s.learning.language) document.getElementById('setting-language').value = s.learning.language;
+                    }
+                    if (s.notifications) {
+                        document.getElementById('notif-daily').checked = !!s.notifications.daily;
+                        document.getElementById('notif-quiz').checked = !!s.notifications.quiz;
+                        document.getElementById('notif-forum').checked = !!s.notifications.forum;
+                    }
+                } catch (e) {
+                    console.error('Failed to parse settings:', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

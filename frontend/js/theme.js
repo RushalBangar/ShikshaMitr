@@ -47,8 +47,33 @@
         updateIcons(theme);
     }
 
+    // Expose theme controller to window
+    window.shikshaTheme = {
+        applyTheme: applyTheme,
+        getPreferredTheme: getPreferredTheme,
+        setMode: function (mode) {
+            if (mode === 'system') {
+                localStorage.setItem('shikshamitr-theme-pref', 'system');
+                const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(sysDark ? 'dark' : 'light');
+            } else {
+                localStorage.setItem('shikshamitr-theme-pref', mode);
+                applyTheme(mode);
+            }
+        },
+        getMode: function () {
+            return localStorage.getItem('shikshamitr-theme-pref') || 'system';
+        }
+    };
+
     // Apply immediately (before DOM ready) to prevent flash
-    applyTheme(getPreferredTheme());
+    const savedPref = localStorage.getItem('shikshamitr-theme-pref');
+    if (savedPref === 'system') {
+        const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(sysDark ? 'dark' : 'light');
+    } else {
+        applyTheme(getPreferredTheme());
+    }
 
     // Once DOM is ready, wire up both toggle buttons
     document.addEventListener('DOMContentLoaded', () => {
