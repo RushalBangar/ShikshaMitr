@@ -1,8 +1,9 @@
-const CACHE_NAME = 'shikshamitr-v7';
+const CACHE_NAME = 'shikshamitr-v8';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/materials.html',
+  '/quiz.html',
   '/reading.html',
   '/flashcards.html',
   '/forum.html',
@@ -14,6 +15,7 @@ const STATIC_ASSETS = [
   '/js/theme.js',
   '/js/app.js',
   '/js/materials.js',
+  '/js/quiz.js',
   '/js/reading.js',
   '/js/flashcards.js',
   '/js/forum.js',
