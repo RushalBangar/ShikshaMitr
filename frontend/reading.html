@@ -551,35 +551,234 @@
             background: var(--primary-glow);
         }
 
-        /* Mobile Adjustments */
+        /* Mobile-First Responsive Adjustments */
         @media (max-width: 768px) {
-            .reading-page-wrapper {
-                padding: 1rem 0 5rem;
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
             }
 
+            .reading-page-wrapper {
+                padding: 0.75rem 0 5rem;
+            }
+
+            /* Breadcrumb */
+            .breadcrumb-row {
+                margin-bottom: 1rem;
+            }
+
+            /* Daily Workout Banner */
             .workout-banner {
-                padding: 1.25rem;
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+                margin-bottom: 1.25rem;
+            }
+
+            .workout-banner-inner {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .workout-progress-box {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            /* Selector Card */
+            .selector-card {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 1.25rem 1rem;
+                gap: 1rem;
+                border-radius: var(--radius-md);
+                margin-bottom: 1.25rem;
+            }
+
+            .selector-left {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .selector-left select, 
+            .filter-select {
+                width: 100% !important;
+                font-size: 16px !important; /* Prevents auto-zoom in iOS Safari */
+                min-height: 46px;
+            }
+
+            #start-lesson-btn {
+                width: 100%;
+                min-height: 46px;
+            }
+
+            /* Stepper Navigation: Horizontal Scroll */
+            .stepper-nav {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                padding: 0.35rem;
+                gap: 0.35rem;
+                border-radius: var(--radius-md);
+                margin-bottom: 1.25rem;
+            }
+
+            .stepper-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .stepper-item {
+                flex: 0 0 auto;
+                min-width: 110px;
+                font-size: 0.78rem;
+                padding: 0.5rem 0.65rem;
+                min-height: 42px;
+            }
+
+            /* Learning Grid */
+            .learning-grid {
+                gap: 1.5rem;
+            }
+
+            /* Primary Learning Card */
+            .primary-learning-card {
+                border-radius: var(--radius-lg);
+            }
+
+            .card-top-bar {
+                padding: 0.85rem 1rem;
+                font-size: 0.75rem;
             }
 
             .card-body-content {
-                padding: 1.25rem;
+                padding: 1.25rem 1rem;
+            }
+
+            .word-showcase-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+                margin-bottom: 1.25rem;
             }
 
             .word-main-title {
                 font-size: 2.2rem;
+                word-break: break-word;
             }
 
+            .phonetic-chip {
+                font-size: 0.95rem;
+            }
+
+            /* Audio Controls Widget */
             .audio-widget {
-                padding: 1rem;
-            }
-
-            .card-footer-nav {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 0.75rem;
+                padding: 1rem;
+                border-radius: var(--radius-md);
+                margin-bottom: 1.25rem;
+            }
+
+            .audio-widget > div {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                gap: 0.5rem;
+            }
+
+            .audio-widget button {
+                flex: 1;
+                min-height: 44px;
+                font-size: 0.85rem;
+            }
+
+            .soundwave-box {
+                flex: 1;
+                justify-content: center;
+                height: 42px;
+            }
+
+            /* Definitions & Sentences */
+            .definition-box, 
+            .sentence-box, 
+            .speech-practice-card {
+                padding: 1rem;
+                border-radius: var(--radius-md);
+            }
+
+            .def-body-text {
+                font-size: 0.92rem;
+            }
+
+            .marathi-box .def-body-text {
+                font-size: 1.05rem;
+            }
+
+            .sentence-pill {
+                padding: 0.75rem 0.85rem;
+            }
+
+            /* Speech Practice */
+            .mic-button {
+                min-height: 48px;
+                font-size: 0.9rem;
+            }
+
+            /* Quiz Step */
+            #quiz-options-container {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .quiz-option-btn {
+                width: 100%;
+                min-height: 46px;
+                font-size: 0.95rem;
+            }
+
+            /* Footer Card Navigation */
+            .card-footer-nav {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .card-footer-nav > div {
+                width: 100%;
             }
 
             .card-footer-nav button {
                 width: 100%;
+                min-height: 44px;
+                font-size: 0.92rem;
+            }
+
+            /* Sidebar Cards */
+            .sidebar-card {
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+            }
+        }
+
+        /* Extra small phones (< 380px) */
+        @media (max-width: 380px) {
+            .word-main-title {
+                font-size: 1.85rem;
+            }
+
+            .workout-icon-box {
+                width: 44px;
+                height: 44px;
+                font-size: 1.4rem;
+            }
+
+            .stepper-item {
+                min-width: 95px;
+                font-size: 0.72rem;
             }
         }
     </style>
