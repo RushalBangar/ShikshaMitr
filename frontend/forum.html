@@ -3,26 +3,52 @@
 <head>
     <!-- Prevent dark mode flash -->
     <script src="js/theme.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2N8TR3HLN2');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Peer-to-Peer Forums - ShikshaMitr</title>
+    <meta name="description" content="Peer-to-Peer Doubt Forums - ShikshaMitr. Ask questions, get verified faculty answers, earn Community Karma, and prepare together for CBSE Board Exams.">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Peer-to-Peer Doubt Forums - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-        <style>
-        .forum-container { max-width: 800px; margin: 2rem auto; padding: 1rem; }
-        
-        .forum-compose-card {
-            background: var(--bg-glass);
-            border-radius: var(--radius-xl);
-            padding: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: var(--shadow-card-hover);
-            border: 1px solid var(--border-card);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .forum-compose-card::before {
+        .forum-page-wrapper {
+            flex: 1;
+            padding: 1.5rem 0 4rem;
+        }
+
+        /* Hero Banner */
+        .forum-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem 2.25rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .forum-hero::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -30,108 +56,963 @@
             background: var(--gradient-btn);
         }
 
-        .post-card {
-            background: var(--bg-glass);
+        .hero-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-title-group h1 {
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+            margin: 0.35rem 0 0.25rem;
+        }
+
+        .hero-title-group p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 650px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Stats Ribbon */
+        .stats-ribbon {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1.75rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .stat-ribbon-card {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--bg-surface);
+            padding: 0.85rem 1.15rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            transition: var(--transition-fast);
+        }
+
+        .stat-ribbon-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .ribbon-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .ribbon-val {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: block;
+            line-height: 1.2;
+        }
+
+        .ribbon-label {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Search & Filter Bar Card */
+        .controls-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
             border-radius: var(--radius-lg);
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-input-wrapper .search-icon {
+            position: absolute;
+            left: 1rem;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .forum-search-input {
+            width: 100%;
+            height: 48px;
+            padding: 0.5rem 6.5rem 0.5rem 2.8rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: var(--transition-fast);
+        }
+
+        .forum-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .search-shortcut-badge {
+            position: absolute;
+            right: 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            .search-shortcut-badge { display: flex; align-items: center; gap: 2px; }
+        }
+
+        /* Subject Pills Row */
+        .subject-pills-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.25rem;
+            scrollbar-width: none;
+        }
+
+        .subject-pills-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .subject-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1rem;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-fast);
+        }
+
+        .subject-pill:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        .subject-pill.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        /* Filter Tabs & Sort Row */
+        .tabs-sort-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .tab-buttons-group {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Main Workspace 2-Column Grid */
+        .forum-main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .forum-main-grid {
+                grid-template-columns: 8fr 4fr;
+            }
+        }
+
+        /* Post Card */
+        .post-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.6rem 1.85rem;
             margin-bottom: 1.5rem;
             box-shadow: var(--shadow-card);
-            border: 1px solid var(--border-card);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
         }
 
         .post-card:hover {
             transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
             box-shadow: var(--shadow-card-hover);
-            border-color: rgba(99, 102, 241, 0.2);
         }
 
-        .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .post-title { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-        .post-title:hover { color: var(--primary); }
-        .post-meta { font-size: 0.85rem; color: var(--text-secondary); }
-        
-        .badge {
+        .post-card.unanswered-card {
+            border-left: 4px solid #F59E0B;
+        }
+
+        .post-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .post-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 0.5rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+
+        .post-card-title:hover {
+            color: var(--primary);
+        }
+
+        .post-body-snippet {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .author-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .user-mini-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
             background: var(--primary-glow);
             color: var(--primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 700;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .reply-section { margin-top: 1.5rem; border-top: 1px solid var(--border-card); padding-top: 1.5rem; display: none; }
-        .reply-card { background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 0.8rem; border: 1px solid var(--border-subtle); border-left: 4px solid var(--text-secondary); }
-        .reply-card.verified { border-left-color: #10B981; background: var(--status-ok-bg); }
-        .verified-badge { color: #10B981; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; margin-top: 0.5rem; }
-        .btn-verify { background: var(--status-ok-bg); color: var(--status-ok-text); border: 1px solid #10B981; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; margin-top: 0.5rem; transition: all 0.2s; }
-        .btn-verify:hover { background: #10B981; color: white; transform: scale(1.05); }
-        
-        .reply-input-group { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
-        .reply-input { flex-grow: 1; }
+        /* Verified Faculty Answer Box inside Card */
+        .verified-solution-box {
+            background: var(--bg-surface);
+            border-left: 4px solid #10B981;
+            border-radius: var(--radius-md);
+            padding: 1.15rem 1.25rem;
+            margin-bottom: 1.25rem;
+            border-top: 1px solid var(--border-subtle);
+            border-right: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .verified-solution-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .verified-solution-body {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.55;
+        }
+
+        /* Post Action Footer */
+        .post-action-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .upvote-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .upvote-btn:hover, .upvote-btn.voted {
+            background: var(--primary-glow);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Replies Accordion Section */
+        .reply-section {
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border-subtle);
+            display: none;
+        }
+
+        .reply-card {
+            background: var(--bg-surface);
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .reply-card.verified {
+            border-left: 4px solid #10B981;
+            background: var(--status-ok-bg);
+        }
+
+        .reply-input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .reply-input-group input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Sidebar Cards */
+        .sidebar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-card-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Leaderboard helper items */
+        .leader-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 0.85rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            margin-bottom: 0.5rem;
+            font-size: 0.82rem;
+        }
+
+        .leader-item.highlight-me {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .forum-page-wrapper {
+                padding: 1rem 0 5rem;
+            }
+
+            .forum-hero {
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+                margin-bottom: 1.25rem;
+            }
+
+            .stats-ribbon {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .controls-card {
+                padding: 1rem;
+                border-radius: var(--radius-lg);
+                margin-bottom: 1.25rem;
+            }
+
+            .post-card {
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .post-card-title {
+                font-size: 1.1rem;
+            }
+
+            .sidebar-card {
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .forum-search-input, 
+            .form-control {
+                font-size: 16px !important; /* Prevents auto-zoom on iOS */
+            }
+
+            .reply-input-group button {
+                width: 100%;
+                min-height: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-ribbon {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo-link">
-                <h1>ShikshaMitr</h1>
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
             </a>
             <nav class="nav-links">
-                <a href="student-dashboard.html">Dashboard</a>
-                <a href="materials.html">Materials</a>
-                <a href="quiz.html">Quizzes</a>
-                <a href="forum.html" class="active">Forum</a>
-                <a href="flashcards.html">Flashcards</a>
+                <a href="materials.html?type=notes" class="nav-link">Notes</a>
+                <a href="materials.html?type=board_paper" class="nav-link">Papers</a>
+                <a href="quiz.html" class="nav-link">Quizzes</a>
+                <a href="reading.html" class="nav-link">Reading</a>
+                <a href="forum.html" class="nav-link active">Forum</a>
+                <a href="flashcards.html" class="nav-link">Flashcards</a>
+                <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
+                <a href="student-login.html" class="btn btn-primary btn-sm">Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm">Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
     </header>
 
-    <main class="container forum-container">
-        <h2>Peer-to-Peer Doubt Forums</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Ask questions, help peers, and earn Community Points!</p>
-        
-        <div class="forum-compose-card">
-            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 1.8rem;">✍️</span> Ask a Question
-            </h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Get help from peers and faculty instantly.</p>
-            
-            <form id="new-post-form">
-                <div class="form-group">
-                    <label>Question Title</label>
-                    <input type="text" id="post-title" placeholder="e.g. How to solve quadratic equations?" required class="form-control">
+    <main class="container forum-page-wrapper">
+        <!-- Community Hero Banner & Metrics -->
+        <section class="forum-hero">
+            <div class="hero-top-row">
+                <div class="hero-title-group">
+                    <span class="class-badge">CBSE Class 10 Academic Forum</span>
+                    <h1>Peer-to-Peer Doubt Forums</h1>
+                    <p>Ask questions, get verified faculty answers, earn Community Karma, and prepare together for CBSE Board Exams with confidence.</p>
                 </div>
-                
-                <div class="form-group">
-                    <label>Subject</label>
-                    <select id="post-subject" required class="form-control">
-                        <option value="" disabled selected>Select Subject...</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Science">Science</option>
-                        <option value="English">English</option>
+                <button id="trigger-ask-btn" class="btn btn-accent" style="padding: 0.8rem 1.4rem; font-size: 0.95rem;">
+                    <span>✍️ + Ask Question</span>
+                    <span class="class-badge" style="background: rgba(255,255,255,0.25); color: #fff; margin-left: 0.4rem;">+10 XP</span>
+                </button>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="stats-ribbon">
+                <div class="stat-ribbon-card">
+                    <div class="ribbon-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #D97706;">🔥</div>
+                    <div>
+                        <span class="ribbon-val">48 Active</span>
+                        <span class="ribbon-label">Discussions Today</span>
+                    </div>
+                </div>
+
+                <div class="stat-ribbon-card">
+                    <div class="ribbon-icon-box" style="background: var(--status-ok-bg); color: #059669;">✓</div>
+                    <div>
+                        <span class="ribbon-val">89% Solved</span>
+                        <span class="ribbon-label">Faculty Answer Rate</span>
+                    </div>
+                </div>
+
+                <div class="stat-ribbon-card">
+                    <div class="ribbon-icon-box" style="background: var(--primary-glow); color: var(--primary);">👨‍🏫</div>
+                    <div>
+                        <span class="ribbon-val">14 Online</span>
+                        <span class="ribbon-label">Faculty Mentors</span>
+                    </div>
+                </div>
+
+                <div class="stat-ribbon-card">
+                    <div class="ribbon-icon-box" style="background: var(--gradient-card-2); color: #D97706;">⭐</div>
+                    <div>
+                        <span class="ribbon-val">+240 XP</span>
+                        <span class="ribbon-label">Top Contributor Karma</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search, Filter & Controls Bar -->
+        <section class="controls-card">
+            <!-- Search Bar -->
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="forum-search-input" class="forum-search-input" placeholder="Search questions, formulas, NCERT topics (e.g. Quadratic equations, Ohm's law, Lead nitrate)...">
+                <div class="search-shortcut-badge">
+                    <span>Ctrl</span>
+                    <span>+</span>
+                    <span>K</span>
+                </div>
+            </div>
+
+            <!-- Subject Filter Pills -->
+            <div class="subject-pills-row" id="subject-filters">
+                <button class="subject-pill active" data-subject="all" type="button">All Subjects</button>
+                <button class="subject-pill" data-subject="Mathematics" type="button">📐 Mathematics</button>
+                <button class="subject-pill" data-subject="Science" type="button">🧪 Science</button>
+                <button class="subject-pill" data-subject="English" type="button">📖 English</button>
+                <button class="subject-pill" data-subject="Coding" type="button">💻 Programming</button>
+                <button class="subject-pill" data-subject="Exams" type="button">📝 Board Exams</button>
+            </div>
+
+            <!-- Filter Tabs & Sort Row -->
+            <div class="tabs-sort-row">
+                <div class="tab-buttons-group">
+                    <button class="tab-btn active" data-tab="trending" type="button">🔥 Trending</button>
+                    <button class="tab-btn" data-tab="latest" type="button">⏱️ Latest</button>
+                    <button class="tab-btn" data-tab="unanswered" type="button">❓ Unanswered</button>
+                    <button class="tab-btn" data-tab="faculty" type="button">✓ Faculty Solved</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+                    <span>Sort:</span>
+                    <select id="forum-sort-select" class="filter-select" style="padding: 0.25rem 1.8rem 0.25rem 0.65rem; font-size: 0.8rem;">
+                        <option value="upvotes">Most Upvotes</option>
+                        <option value="recent">Recently Active</option>
+                        <option value="views">Most Viewed</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label>Details</label>
-                    <textarea id="post-content" placeholder="Provide more context or where you are stuck..." rows="4" required class="form-control"></textarea>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem; font-size: 1.05rem;">
-                    Post to Community 🚀
-                </button>
-            </form>
-        </div>
+            </div>
+        </section>
 
-        <div id="posts-list">
-            <!-- Posts injected by JS -->
+        <!-- Main Workspace 2-Column Grid -->
+        <div class="forum-main-grid">
+            <!-- ================= LEFT / FEED COLUMN (8 cols) ================= -->
+            <div class="feed-column">
+                <!-- Feed of Discussions (Dynamic Backend Posts + Curated Questions) -->
+                <div id="posts-list">
+                    <!-- Post Card 1: Mathematics with Verified Faculty Answer -->
+                    <article class="post-card" data-subject="Mathematics" data-status="solved">
+                        <div class="post-top-meta">
+                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                <span class="badge badge-standard">📐 Mathematics • Class 10 CBSE</span>
+                                <span class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text);">✓ Accepted Solution</span>
+                            </div>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">2 hours ago</span>
+                        </div>
+                        <h2 class="post-card-title" onclick="toggleReplies('sample-post-1')">
+                            How do I determine whether roots of a quadratic equation are real, equal, or imaginary without full factoring?
+                        </h2>
+                        <p class="post-body-snippet">
+                            In <code style="background: var(--bg-surface); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--primary);">ax² + bx + c = 0</code>, I get confused when the discriminant <code style="background: var(--bg-surface); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--primary);">D = b² − 4ac</code> is zero versus negative in state board sample papers. Can someone explain step-by-step with an example?
+                        </p>
+                        <div class="author-badge-row">
+                            <span class="user-mini-avatar">AK</span>
+                            <strong style="color: var(--text-primary);">Aman K.</strong>
+                            <span>• Class 10B (St. Xavier's)</span>
+                            <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">⭐ 420 Karma</span>
+                        </div>
+
+                        <!-- Verified Faculty Solution Box -->
+                        <div class="verified-solution-box">
+                            <div class="verified-solution-header">
+                                <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                    <span>👨‍🏫 Verified Faculty Answer by Dr. R. Sharma</span>
+                                    <span class="class-badge" style="font-size: 0.65rem;">Senior Math Faculty</span>
+                                </span>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Verified 1 hr ago</span>
+                            </div>
+                            <div class="verified-solution-body">
+                                Remember the three discriminant rules:
+                                <ul style="margin: 0.4rem 0 0.4rem 1.2rem; padding: 0;">
+                                    <li><strong>D &gt; 0</strong>: Roots are real and distinct.</li>
+                                    <li><strong>D = 0</strong>: Roots are real and equal (x = −b / 2a).</li>
+                                    <li><strong>D &lt; 0</strong>: No real roots (complex).</li>
+                                </ul>
+                                <div style="background: var(--bg-card); padding: 0.65rem 0.85rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; margin-top: 0.4rem; border: 1px solid var(--border-subtle);">
+                                    Example: For x² − 6x + 9 = 0: a=1, b=−6, c=9<br>
+                                    D = (−6)² − 4(1)(9) = 36 − 36 = 0 ⇒ Twin roots: x = −(−6)/(2×1) = 3.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post Actions Footer -->
+                        <div class="post-action-footer">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <button class="upvote-btn" onclick="upvotePost(this)" type="button">
+                                    <span>▲</span>
+                                    <span class="vote-count">28</span>
+                                    <span>Upvotes</span>
+                                </button>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;" onclick="toggleReplies('sample-post-1')">
+                                    💬 9 Answers
+                                </span>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);" class="hidden sm:inline">
+                                    👁️ 342 Views
+                                </span>
+                            </div>
+                            <button class="btn btn-ghost btn-sm" onclick="toggleReplies('sample-post-1')">View Discussion ↓</button>
+                        </div>
+
+                        <!-- Reply Drawer -->
+                        <div id="replies-sample-post-1" class="reply-section">
+                            <div class="reply-card">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                                    <strong style="color: var(--text-primary);">Priya S.</strong> • 1 hour ago
+                                </div>
+                                <p style="margin: 0; font-size: 0.88rem; color: var(--text-secondary);">
+                                    Also remember that if D is a perfect square, the roots are rational! That was asked in the 2024 board question paper.
+                                </p>
+                            </div>
+                            <div class="reply-input-group">
+                                <input type="text" id="reply-input-sample-post-1" class="form-control" placeholder="Write an answer or reply..." style="font-size: 16px;">
+                                <button class="btn btn-primary btn-sm" onclick="submitSampleReply('sample-post-1')">Reply</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post Card 2: Science Physics Resistors in Series vs Parallel -->
+                    <article class="post-card" data-subject="Science" data-status="solved">
+                        <div class="post-top-meta">
+                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                <span class="badge badge-standard">🧪 Science • Physics Class 10</span>
+                                <span class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text);">✓ Accepted Solution</span>
+                            </div>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">4 hours ago</span>
+                        </div>
+                        <h2 class="post-card-title" onclick="toggleReplies('sample-post-2')">
+                            Why does electric resistance increase when resistors are connected in series, but decrease in parallel?
+                        </h2>
+                        <p class="post-body-snippet">
+                            We did the lab experiment with Ohm's law today. Intuitively, adding more components should increase resistance, but our teacher said the total resistance is lower than the smallest resistor in parallel. What is the best physical analogy?
+                        </p>
+                        <div class="author-badge-row">
+                            <span class="user-mini-avatar">PS</span>
+                            <strong style="color: var(--text-primary);">Priya S.</strong>
+                            <span>• Class 10A</span>
+                            <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">🥈 390 Karma</span>
+                        </div>
+
+                        <!-- Verified Faculty Snippet -->
+                        <div class="verified-solution-box">
+                            <div class="verified-solution-header">
+                                <span>👨‍🏫 Verified Faculty Answer by Prof. Verma</span>
+                            </div>
+                            <div class="verified-solution-body">
+                                Think of highway toll booths: In series, cars pass through consecutive booths one after another (effective length increases: <code>Req = R₁ + R₂</code>). In parallel, new lanes open side-by-side (effective cross-sectional area increases: <code>1/Req = 1/R₁ + 1/R₂</code>), allowing more total charges to flow per second.
+                            </div>
+                        </div>
+
+                        <div class="post-action-footer">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <button class="upvote-btn" onclick="upvotePost(this)" type="button">
+                                    <span>▲</span>
+                                    <span class="vote-count">19</span>
+                                    <span>Upvotes</span>
+                                </button>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;" onclick="toggleReplies('sample-post-2')">
+                                    💬 6 Answers
+                                </span>
+                            </div>
+                            <button class="btn btn-ghost btn-sm" onclick="toggleReplies('sample-post-2')">View Discussion ↓</button>
+                        </div>
+
+                        <div id="replies-sample-post-2" class="reply-section">
+                            <div class="reply-input-group">
+                                <input type="text" id="reply-input-sample-post-2" class="form-control" placeholder="Write a reply..." style="font-size: 16px;">
+                                <button class="btn btn-primary btn-sm" onclick="submitSampleReply('sample-post-2')">Reply</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Post Card 3: Unanswered / High Bounty Doubt -->
+                    <article class="post-card unanswered-card" data-subject="Science" data-status="unanswered">
+                        <div class="post-top-meta">
+                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                <span class="badge badge-standard">🧪 Science • Chemistry</span>
+                                <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706;">⏳ Needs Answers (+15 XP)</span>
+                            </div>
+                            <span style="font-size: 0.78rem; color: var(--text-muted);">35 mins ago</span>
+                        </div>
+                        <h2 class="post-card-title" onclick="toggleReplies('sample-post-3')">
+                            Can anyone provide the balanced chemical equation for the thermal decomposition of lead nitrate?
+                        </h2>
+                        <p class="post-body-snippet">
+                            When heating solid lead nitrate <code>Pb(NO₃)₂</code> in a dry test tube, brown fumes of nitrogen dioxide evolve. I need the full stoichiometric balancing steps and the colour of the residue left behind.
+                        </p>
+                        <div class="author-badge-row">
+                            <span class="user-mini-avatar">SP</span>
+                            <strong style="color: var(--text-primary);">Sneha Patil</strong>
+                            <span>• 35 mins ago</span>
+                        </div>
+
+                        <div class="post-action-footer">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <button class="upvote-btn" onclick="upvotePost(this)" type="button">
+                                    <span>▲</span>
+                                    <span class="vote-count">5</span>
+                                    <span>Upvotes</span>
+                                </button>
+                                <span style="font-size: 0.8rem; color: #D97706; font-weight: 700;">
+                                    0 Answers • First to answer gets double karma!
+                                </span>
+                            </div>
+                            <button class="btn btn-accent btn-sm" onclick="toggleReplies('sample-post-3')">✍️ Write Answer</button>
+                        </div>
+
+                        <div id="replies-sample-post-3" class="reply-section">
+                            <div class="reply-input-group">
+                                <input type="text" id="reply-input-sample-post-3" class="form-control" placeholder="Write balanced equation..." style="font-size: 16px;">
+                                <button class="btn btn-primary btn-sm" onclick="submitSampleReply('sample-post-3')">Submit Answer</button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- ================= RIGHT / SIDEBAR COLUMN (4 cols) ================= -->
+            <aside class="sidebar-column">
+                <!-- 1. Quick 'Ask a Question' Form Card -->
+                <div class="sidebar-card" id="ask-drawer">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                        <h3 class="sidebar-card-title" style="margin: 0;">
+                            <span>✍️</span>
+                            <span>Ask a Question</span>
+                        </h3>
+                        <span class="class-badge" style="font-size: 0.7rem;">+10 Karma</span>
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 1rem; line-height: 1.4;">
+                        Stuck on a problem? Share formulas or questions to get rapid peer and faculty feedback.
+                    </p>
+
+                    <form id="new-post-form" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Question Title</label>
+                            <input type="text" id="post-title" placeholder="e.g. How to balance Redox reactions?" required class="form-control" style="font-size: 16px;">
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Subject</label>
+                            <select id="post-subject" required class="form-control" style="font-size: 16px;">
+                                <option value="" disabled selected>Select Subject...</option>
+                                <option value="Mathematics">📐 Mathematics</option>
+                                <option value="Science">🧪 Science (Phy/Chem/Bio)</option>
+                                <option value="English">📖 English &amp; Literature</option>
+                                <option value="Coding">💻 Computer Applications</option>
+                                <option value="Exams">📝 Board Exam Strategy</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Details &amp; Formula</label>
+                            <textarea id="post-content" placeholder="Provide context, textbook page, or equation..." rows="3" required class="form-control" style="font-size: 16px; resize: none;"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.25rem; font-weight: 700;">
+                            Post to Community 🚀
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 2. Community Standards & Verification -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-card-title">
+                        <span>🛡️</span>
+                        <span>Community Standards</span>
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <span style="font-size: 1.2rem;">✓</span>
+                            <div>
+                                <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Faculty-Reviewed Answers</strong>
+                                <small style="color: var(--text-secondary); font-size: 0.75rem;">All board exam answers are verified against official CBSE mark schemes.</small>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <span style="font-size: 1.2rem;">🤝</span>
+                            <div>
+                                <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Be Helpful &amp; Polite</strong>
+                                <small style="color: var(--text-secondary); font-size: 0.75rem;">Earn reputation badges for step-by-step explanations and constructive reviews.</small>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <span style="font-size: 1.2rem;">📐</span>
+                            <div>
+                                <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Formula Support</strong>
+                                <small style="color: var(--text-secondary); font-size: 0.75rem;">Supports mathematical formulas, equations, and textbook excerpts.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Top Helpers This Week (Leaderboard) -->
+                <div class="sidebar-card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                        <h3 class="sidebar-card-title" style="margin: 0;">
+                            <span>🏆</span>
+                            <span>Top Helpers This Week</span>
+                        </h3>
+                    </div>
+
+                    <div class="leader-item">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.1rem;">🥇</span>
+                            <span class="user-mini-avatar">AK</span>
+                            <div>
+                                <strong style="color: var(--text-primary); display: block;">Aman K.</strong>
+                                <small style="color: var(--text-muted); font-size: 0.7rem;">Class 10B • 18 Solved</small>
+                            </div>
+                        </div>
+                        <span style="font-weight: 800; color: #D97706;">420 Karma</span>
+                    </div>
+
+                    <div class="leader-item">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.1rem;">🥈</span>
+                            <span class="user-mini-avatar">PS</span>
+                            <div>
+                                <strong style="color: var(--text-primary); display: block;">Priya S.</strong>
+                                <small style="color: var(--text-muted); font-size: 0.7rem;">Class 10A • 15 Solved</small>
+                            </div>
+                        </div>
+                        <span style="font-weight: 800; color: var(--text-secondary);">390 Karma</span>
+                    </div>
+
+                    <div class="leader-item highlight-me">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.1rem;">🥉</span>
+                            <span class="user-mini-avatar" style="background: var(--primary); color: #fff;">YOU</span>
+                            <div>
+                                <strong style="color: var(--primary); display: block;">You (Student)</strong>
+                                <small style="color: var(--primary); font-size: 0.7rem;">Rank #7 • 4 Solved</small>
+                            </div>
+                        </div>
+                        <span style="font-weight: 800; color: var(--primary);">120 Karma</span>
+                    </div>
+
+                    <div style="margin-top: 0.75rem; padding: 0.6rem; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
+                        Answer 2 more doubts today to climb to <strong>Rank #5</strong>!
+                    </div>
+                </div>
+
+                <!-- 4. Class 10 Live Doubt Room Callout -->
+                <div class="sidebar-card" style="background: var(--gradient-card-1);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary); font-weight: 800; font-size: 1rem; margin-bottom: 0.4rem;">
+                        <span>👥</span>
+                        <span>Class 10 Live Doubt Room</span>
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 0.85rem; line-height: 1.5;">
+                        Faculty-led lightning resolution sessions start daily at 6:00 PM IST. Join your peers!
+                    </p>
+                    <button class="btn btn-primary btn-sm" style="width: 100%;" onclick="alert('Connecting to live batch session room...')">Enter Live Study Room →</button>
+                </div>
+            </aside>
         </div>
     </main>
+
+    <footer>
+        <div class="container text-center text-muted" style="padding-top: 1rem; padding-bottom: 2rem;">
+            <p>&copy; 2026 ShikshaMitr. All rights reserved. Designed for student academic excellence.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="faculty.html" style="color: inherit; text-decoration: underline;">Faculty Portal</a></p>
+        </div>
+    </footer>
 
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
@@ -151,13 +1032,17 @@
             <span class="bnav-icon">💬</span>
             Forum
         </a>
+        <a href="flashcards.html" class="bottom-nav-link">
+            <span class="bnav-icon">🧠</span>
+            Flashcards
+        </a>
         <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
             <span class="bnav-icon">🌙</span>
             Theme
         </button>
     </nav>
 
-    <script src="js/app.js"></script>
+    <script src="js/ws-client.js"></script>
     <script src="js/forum.js"></script>
 </body>
 </html>
