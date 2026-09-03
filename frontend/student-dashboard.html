@@ -14,7 +14,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Student Dashboard - ShikshaMitr">
+    <meta name="description" content="Student Dashboard - ShikshaMitr. Track your learning streaks, quizzes, and board preparation.">
     <meta name="theme-color" content="#6366F1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -23,33 +23,33 @@
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-        <style>
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+    <style>
+        body {
+            background-color: var(--bg-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr 2fr;
-            }
+        .dashboard-wrapper {
+            flex: 1;
+            padding: 2rem 0 4rem;
         }
 
-        .profile-card {
+        /* Profile Banner */
+        .student-banner {
             background: var(--bg-card);
             border: 1px solid var(--border-card);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
+            border-radius: var(--radius-xl);
+            padding: 2rem 2.25rem;
             box-shadow: var(--shadow-card);
-            text-align: center;
             position: relative;
             overflow: hidden;
-            height: fit-content;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .profile-card::before {
+        .student-banner::before {
             content: '';
             position: absolute;
             top: 0;
@@ -59,120 +59,577 @@
             background: var(--gradient-btn);
         }
 
+        .student-banner-glow {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .banner-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .student-info-group {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
         .avatar-circle {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
+            width: 72px;
+            height: 72px;
+            border-radius: var(--radius-lg);
             background: var(--gradient-btn);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1rem;
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+            font-size: 2.2rem;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.28);
+            flex-shrink: 0;
         }
 
-        .streak-container {
+        .student-name-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: var(--gradient-card-2);
-            padding: 0.75rem 1.25rem;
-            border-radius: 50px;
-            margin: 1.25rem 0;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            font-weight: 700;
-            color: var(--accent-dark);
-            font-size: 1.1rem;
-        }
-
-        [data-theme="dark"] .streak-container {
-            color: var(--accent-light);
-        }
-
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
             gap: 0.75rem;
-            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .student-name-row h1 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .class-badge {
+            background: var(--primary-glow);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.65rem;
+            border-radius: 50px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .student-bio-text {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-top: 0.35rem;
+        }
+
+        /* Pill Stats Group */
+        .stats-pills-row {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.15rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            transition: var(--transition-fast);
+        }
+
+        .stat-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-pill-streak {
+            background: var(--gradient-card-2);
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+
+        .stat-pill-points {
+            background: var(--gradient-card-1);
+            border-color: rgba(99, 102, 241, 0.25);
+        }
+
+        .stat-pill-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .stat-pill-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .stat-pill-val {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: block;
+        }
+
+        .stat-pill-sub {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        /* Badges Container */
+        .badge-grid {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .badge-card {
             background: var(--bg-glass);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 0.8rem 0.5rem;
-            text-align: center;
-            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            padding: 0.35rem 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
         .badge-icon {
-            font-size: 1.6rem;
-            display: block;
-            margin-bottom: 0.3rem;
+            font-size: 1rem;
+            line-height: 1;
         }
 
-        .activity-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-card);
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
+        /* Weekly Goal Progress Bar */
+        .weekly-goal-bar {
             margin-top: 1.5rem;
-        }
-
-        @media (min-width: 600px) {
-            .quick-actions {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .action-tile {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
-            gap: 1rem;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: var(--transition-fast);
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
 
-        .action-tile:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-card-hover);
+        .goal-text-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
         }
 
-        .action-icon {
-            font-size: 2.2rem;
+        .goal-pill-status {
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border: 1px solid var(--status-ok-border);
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.72rem;
         }
 
         .progress-bar-container {
+            flex: 1;
+            max-width: 320px;
+            min-width: 180px;
             background: var(--bg-surface);
             border-radius: 50px;
-            height: 10px;
+            height: 8px;
             overflow: hidden;
-            margin-top: 0.5rem;
             border: 1px solid var(--border-subtle);
         }
 
         .progress-bar-fill {
             background: var(--gradient-btn);
             height: 100%;
-            width: 35%;
             border-radius: 50px;
-            transition: width 0.5s ease-in-out;
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 2-Column Dashboard Grid */
+        .dashboard-main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-main-grid {
+                grid-template-columns: 8fr 4fr;
+            }
+        }
+
+        .dash-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .dash-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .dash-card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .dash-card-title-group .icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .dash-card-title-group h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .dash-card-subtitle {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        /* Subject Readiness 4-Grid */
+        .readiness-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .readiness-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .readiness-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.15rem 1.25rem;
+            transition: var(--transition-fast);
+        }
+
+        .readiness-item:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .readiness-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.65rem;
+        }
+
+        .readiness-subject {
+            font-weight: 700;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .subject-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .readiness-score-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .subject-track-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border-card);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-bottom: 0.6rem;
+        }
+
+        .subject-fill-bar {
+            height: 100%;
+            border-radius: 50px;
+        }
+
+        .readiness-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        /* Timeline / Exam Schedule Cards */
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .timeline-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .timeline-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.15rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.75rem;
+            transition: var(--transition-fast);
+        }
+
+        .timeline-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .timeline-date-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .timeline-card h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0.35rem 0 0.2rem;
+        }
+
+        .timeline-card p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .timeline-link {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+
+        .timeline-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Quick Resume Tiles */
+        .resume-tile {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.15rem;
+            margin-bottom: 0.85rem;
+            transition: var(--transition-fast);
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .resume-tile:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .resume-tile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 0.35rem;
+        }
+
+        .resume-tile h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 0.2rem;
+        }
+
+        .resume-tile p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Leaderboard Items */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.82rem;
+            transition: var(--transition-fast);
+        }
+
+        .leaderboard-item.highlight-user {
+            background: var(--primary-glow);
+            border-color: rgba(99, 102, 241, 0.35);
+            font-weight: 700;
+        }
+
+        .leaderboard-rank {
+            width: 22px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .leaderboard-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .leaderboard-pts {
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* Study Tip Card */
+        .study-tip-card {
+            background: var(--gradient-card-2);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .study-tip-card blockquote {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+            margin: 0.65rem 0;
+            font-style: italic;
+        }
+
+        /* Status Pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 1.15rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border: 1px solid var(--status-ok-border);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                padding: 1.25rem 0 5rem;
+            }
+
+            .student-banner {
+                padding: 1.5rem 1.25rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .dash-card {
+                padding: 1.25rem 1.25rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .avatar-circle {
+                width: 58px;
+                height: 58px;
+                font-size: 1.8rem;
+            }
+
+            .student-name-row h1 {
+                font-size: 1.35rem;
+            }
+
+            .stats-pills-row {
+                width: 100%;
+            }
+
+            .stat-pill {
+                flex: 1;
+                min-width: 140px;
+            }
+
+            .timeline-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -190,107 +647,397 @@
         </div>
     </header>
 
-    <main class="container" style="padding-top: 2rem;">
-        <div class="dashboard-grid">
-            <!-- Left Column: Student Profile & Streaks -->
-            <div class="profile-card">
-                <div class="avatar-circle" id="student-avatar">🎓</div>
-                <h2 id="student-name" style="font-size: 1.4rem; margin-bottom: 0.2rem;">Student</h2>
-                <p id="student-username" style="color: var(--text-secondary); font-size: 0.9rem;">@student</p>
-
-                <div class="streak-container">
-                    <span>🔥</span>
-                    <span id="streak-count">1 Day Streak!</span>
-                </div>
-
-                <div style="margin-top: 1.5rem; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
-                        <span>Community Points</span>
-                        <span id="community-points">0 pts</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="points-bar" style="width: 0%;"></div>
+    <main class="container dashboard-wrapper">
+        <!-- Student Profile Banner -->
+        <section class="student-banner">
+            <div class="student-banner-glow"></div>
+            
+            <div class="banner-top-row">
+                <!-- User Bio & Greeting -->
+                <div class="student-info-group">
+                    <div class="avatar-circle" id="student-avatar">🎓</div>
+                    <div>
+                        <div class="student-name-row">
+                            <h1 id="student-name">Student</h1>
+                            <span class="class-badge">Class 10th CBSE</span>
+                        </div>
+                        <p class="student-bio-text">
+                            <span id="student-username">@student</span> • Welcome back to your learning desk! Ready for today's revision?
+                        </p>
                     </div>
                 </div>
 
-                <h4 style="margin-top: 1.8rem; font-size: 0.95rem; text-align: left;">Earned Badges</h4>
-                <div class="badge-grid" id="badge-grid">
-                    <!-- Badges injected by JS -->
+                <!-- Badges, Streak, and Points Row -->
+                <div class="stats-pills-row">
+                    <!-- Daily Streak Pill -->
+                    <div class="stat-pill stat-pill-streak">
+                        <span class="stat-pill-icon">🔥</span>
+                        <div>
+                            <span class="stat-pill-label">Daily Streak</span>
+                            <span class="stat-pill-val" id="streak-count">1 Day Active</span>
+                            <span class="stat-pill-sub">Keep learning daily!</span>
+                        </div>
+                    </div>
+
+                    <!-- Karma Points Pill -->
+                    <div class="stat-pill stat-pill-points">
+                        <span class="stat-pill-icon">⭐</span>
+                        <div>
+                            <span class="stat-pill-label">Karma Points</span>
+                            <span class="stat-pill-val" id="community-points">0 pts</span>
+                            <span class="stat-pill-sub">Quizzes &amp; Doubts</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Column: Learning Hub -->
-            <div class="activity-card">
-                <h2 style="font-size: 1.5rem; margin-bottom: 0.4rem;">🎯 Your Learning Hub</h2>
-                <p style="color: var(--text-secondary); font-size: 0.95rem;">Pick up right where you left off!</p>
+            <!-- Earned Badges Row -->
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);">Badges:</span>
+                <div class="badge-grid" id="badge-grid">
+                    <!-- Dynamic badges populated by student.js -->
+                    <div class="badge-card"><span>☀️</span> Early Riser</div>
+                    <div class="badge-card"><span>🎯</span> Quiz Master I</div>
+                    <div class="badge-card" style="opacity: 0.7;"><span>🔒</span> Speed Reader</div>
+                </div>
+            </div>
 
-                <div class="quick-actions">
-                    <a href="reading.html" class="action-tile">
-                        <span class="action-icon">🔤</span>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">English Reading</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Practice speech & sentence reading</p>
+            <!-- Weekly Study Goal Progress Bar -->
+            <div class="weekly-goal-bar">
+                <div class="goal-text-group">
+                    <span>🎯</span>
+                    <span style="font-weight: 700; color: var(--text-primary);">Weekly Goal:</span>
+                    <span style="color: var(--text-secondary);">4 of 7 Study Hours completed</span>
+                    <span class="goal-pill-status">57% on track</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="points-bar" style="width: 57%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2-Column Dashboard Grid -->
+        <div class="dashboard-main-grid">
+            <!-- ================= LEFT / MAIN COLUMN (8 cols) ================= -->
+            <div class="main-column">
+                <!-- SECTION 1: Active Faculty Quizzes -->
+                <section class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title-group">
+                            <span class="icon">📝</span>
+                            <div>
+                                <h2>Active Faculty Quizzes &amp; Assignments</h2>
+                                <p class="dash-card-subtitle">Assigned tests from your Class 10th teachers</p>
+                            </div>
                         </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <a href="quiz.html" class="btn btn-sm btn-ghost" style="font-size: 0.8rem;">All Quizzes →</a>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Quiz List populated by student.js -->
+                    <div id="dashboard-quizzes-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 1.5rem 0;">Checking for active faculty quizzes...</p>
+                    </div>
+
+                    <!-- Live Sync Indicator -->
+                    <div style="margin-top: 1.25rem; padding: 0.75rem 1rem; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-secondary);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                            <span>Live sync enabled. New assignments from faculty sync automatically.</span>
+                        </div>
+                        <a href="quiz.html" style="color: var(--primary); font-weight: 700; text-decoration: none;">View All →</a>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: Subject Readiness & Progress -->
+                <section class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title-group">
+                            <span class="icon">📊</span>
+                            <div>
+                                <h2>Subject Readiness &amp; Board Exam Progress</h2>
+                                <p class="dash-card-subtitle">Class 10 CBSE syllabus tracking based on your quiz &amp; reading activity</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="readiness-grid">
+                        <!-- Mathematics -->
+                        <div class="readiness-item">
+                            <div class="readiness-top">
+                                <span class="readiness-subject">
+                                    <span class="subject-dot" style="background: #3B82F6;"></span> Mathematics
+                                </span>
+                                <span class="readiness-score-tag" style="background: rgba(59, 130, 246, 0.12); color: #2563EB;">78% Revised</span>
+                            </div>
+                            <div class="subject-track-bar">
+                                <div class="subject-fill-bar" style="width: 78%; background: #3B82F6;"></div>
+                            </div>
+                            <div class="readiness-meta">
+                                <span>Last quiz score: <strong style="color: var(--text-primary);">85%</strong></span>
+                                <span style="color: #10B981; font-weight: 600;">Strong in Algebra</span>
+                            </div>
+                        </div>
+
+                        <!-- Science -->
+                        <div class="readiness-item">
+                            <div class="readiness-top">
+                                <span class="readiness-subject">
+                                    <span class="subject-dot" style="background: #10B981;"></span> Science
+                                </span>
+                                <span class="readiness-score-tag" style="background: rgba(16, 185, 129, 0.12); color: #059669;">84% Revised</span>
+                            </div>
+                            <div class="subject-track-bar">
+                                <div class="subject-fill-bar" style="width: 84%; background: #10B981;"></div>
+                            </div>
+                            <div class="readiness-meta">
+                                <span>Last quiz score: <strong style="color: var(--text-primary);">90%</strong></span>
+                                <span style="color: #10B981; font-weight: 600;">Physics &amp; Chem strong</span>
+                            </div>
+                        </div>
+
+                        <!-- Social Science -->
+                        <div class="readiness-item">
+                            <div class="readiness-top">
+                                <span class="readiness-subject">
+                                    <span class="subject-dot" style="background: #F59E0B;"></span> Social Science
+                                </span>
+                                <span class="readiness-score-tag" style="background: rgba(245, 158, 11, 0.12); color: #D97706;">62% Revised</span>
+                            </div>
+                            <div class="subject-track-bar">
+                                <div class="subject-fill-bar" style="width: 62%; background: #F59E0B;"></div>
+                            </div>
+                            <div class="readiness-meta">
+                                <span>Last quiz score: <strong style="color: var(--text-primary);">68%</strong></span>
+                                <span style="color: #D97706; font-weight: 600;">History revision recommended</span>
+                            </div>
+                        </div>
+
+                        <!-- English Language -->
+                        <div class="readiness-item">
+                            <div class="readiness-top">
+                                <span class="readiness-subject">
+                                    <span class="subject-dot" style="background: #8B5CF6;"></span> English Language
+                                </span>
+                                <span class="readiness-score-tag" style="background: rgba(139, 92, 246, 0.12); color: #7C3AED;">90% Revised</span>
+                            </div>
+                            <div class="subject-track-bar">
+                                <div class="subject-fill-bar" style="width: 90%; background: #8B5CF6;"></div>
+                            </div>
+                            <div class="readiness-meta">
+                                <span>Last quiz score: <strong style="color: var(--text-primary);">92%</strong></span>
+                                <span style="color: #10B981; font-weight: 600;">Grammar &amp; Lit ready</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Test Submissions -->
+                    <div style="margin-top: 1.5rem;">
+                        <h4 style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.75rem;">Recent Test Submissions</h4>
+                        <div style="border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; font-size: 0.82rem;">
+                            <div style="padding: 0.75rem 1rem; background: var(--bg-surface); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle);">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-weight: 600; color: var(--text-primary);">English: First Flight Chapter Review</span>
+                                    <span style="color: var(--text-muted); font-size: 0.75rem;">• Yesterday</span>
+                                </div>
+                                <span style="font-weight: 700; color: #10B981; background: var(--status-ok-bg); padding: 0.15rem 0.5rem; border-radius: 4px;">92% (14/15)</span>
+                            </div>
+                            <div style="padding: 0.75rem 1rem; background: var(--bg-surface); display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-weight: 600; color: var(--text-primary);">Science: Chemical Reactions &amp; Equations</span>
+                                    <span style="color: var(--text-muted); font-size: 0.75rem;">• 3 days ago</span>
+                                </div>
+                                <span style="font-weight: 700; color: var(--primary); background: var(--primary-glow); padding: 0.15rem 0.5rem; border-radius: 4px;">85% (17/20)</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 3: Upcoming Board Exam Timeline -->
+                <section class="dash-card" style="margin-bottom: 0;">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title-group">
+                            <span class="icon">📅</span>
+                            <div>
+                                <h2>Upcoming Board Exam Timeline &amp; Revision</h2>
+                                <p class="dash-card-subtitle">Live doubt sessions and key milestone calendar for this week</p>
+                            </div>
+                        </div>
+                        <span class="class-badge" style="background: var(--primary-glow); color: var(--primary);">Week 12</span>
+                    </div>
+
+                    <div class="timeline-grid">
+                        <!-- Event 1 -->
+                        <div class="timeline-card">
+                            <div>
+                                <span class="timeline-date-tag" style="background: rgba(239, 68, 68, 0.12); color: #DC2626;">Tomorrow, 5 PM</span>
+                                <h4>Science Doubt Clearing</h4>
+                                <p>Faculty: Dr. R. Sharma covering Ray Diagrams &amp; Carbon compounds.</p>
+                            </div>
+                            <a href="forum.html" class="timeline-link">Join Doubt Room →</a>
+                        </div>
+
+                        <!-- Event 2 -->
+                        <div class="timeline-card">
+                            <div>
+                                <span class="timeline-date-tag" style="background: rgba(99, 102, 241, 0.12); color: var(--primary);">Friday, 4 PM</span>
+                                <h4>Maths: Triangles &amp; Geo</h4>
+                                <p>Faculty: Prof. Verma with previous 5 years' sample board questions.</p>
+                            </div>
+                            <a href="materials.html?type=board_paper" class="timeline-link">View Papers →</a>
+                        </div>
+
+                        <!-- Event 3 -->
+                        <div class="timeline-card">
+                            <div>
+                                <span class="timeline-date-tag" style="background: rgba(16, 185, 129, 0.12); color: #059669;">Sunday, 10 AM</span>
+                                <h4>Pre-Board Full Mock</h4>
+                                <p>Full syllabus 80-mark standard question paper test.</p>
+                            </div>
+                            <a href="quiz.html" class="timeline-link">Take Mock Quiz →</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ================= RIGHT / SIDEBAR COLUMN (4 cols) ================= -->
+            <div class="sidebar-column">
+                <!-- 1. Daily Study Tip -->
+                <div class="study-tip-card">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--accent-dark); font-size: 1rem;">
+                        <span>💡</span>
+                        <span>Daily Study Tip</span>
+                    </div>
+                    <blockquote>
+                        “Solving chapter quizzes right after reading revision notes increases concept recall by up to <strong>65%</strong>! Review your notes before tonight's quiz.”
+                    </blockquote>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem; padding: 0.65rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <strong style="color: var(--text-primary);">Pro tip:</strong> Create 3 flashcards for each formula you forget today.
+                    </div>
+                    <div style="margin-top: 0.85rem; text-align: right;">
+                        <a href="materials.html?type=notes" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none;">Open Revision Notes →</a>
+                    </div>
+                </div>
+
+                <!-- 2. Quick Resume -->
+                <div class="dash-card">
+                    <div class="dash-card-header" style="margin-bottom: 1rem; padding-bottom: 0.75rem;">
+                        <div class="dash-card-title-group">
+                            <span class="icon">⚡</span>
+                            <h2>Quick Resume</h2>
+                        </div>
+                    </div>
+
+                    <!-- Resume Reading -->
+                    <a href="reading.html" class="resume-tile">
+                        <div class="resume-tile-header">
+                            <span>Last Read Note</span>
+                            <span style="color: var(--text-muted);">Step 2 of 5</span>
+                        </div>
+                        <h4>English Reading Practice</h4>
+                        <p>Speech pronunciation &amp; vocabulary builder</p>
                     </a>
 
-                    <a href="materials.html?type=notes" class="action-tile">
-                        <span class="action-icon">📚</span>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Subject Notes</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Class 5 to 10 revision notes</p>
+                    <!-- Resume Forum -->
+                    <a href="forum.html" class="resume-tile">
+                        <div class="resume-tile-header">
+                            <span>Bookmarked Doubts</span>
+                            <span style="color: var(--primary);">8 Replies</span>
                         </div>
+                        <h4>“Why does resistance increase in series?”</h4>
+                        <p>Faculty answered with circuit diagram</p>
                     </a>
 
-                    <a href="forum.html" class="action-tile">
-                        <span class="action-icon">💬</span>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Peer Forums</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Ask doubts & earn points</p>
+                    <!-- Resume Flashcards -->
+                    <a href="flashcards.html" class="resume-tile" style="margin-bottom: 0; border-style: dashed;">
+                        <div class="resume-tile-header" style="color: var(--accent-dark);">
+                            <span>Flashcard Drill</span>
+                            <span>SRS Ready</span>
                         </div>
-                    </a>
-
-                    <a href="flashcards.html" class="action-tile">
-                        <span class="action-icon">🧠</span>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Flashcards</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Interactive SRS study tool</p>
-                        </div>
-                    </a>
-
-                    <a href="materials.html?type=board_paper" class="action-tile">
-                        <span class="action-icon">📝</span>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">Board Papers</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Previous years question papers</p>
-                        </div>
-                    </a>
-
-                    <a href="quiz.html" class="action-tile" style="border-color: var(--primary); background: var(--gradient-card-1);">
-                        <span class="action-icon">🎯</span>
-                        <div>
-                            <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem; color: var(--primary);">Live Quizzes</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Take tests published by faculty</p>
-                        </div>
+                        <h4>🗂️ Practice 10 Formulas</h4>
+                        <p>Quick 3-minute spaced repetition review</p>
                     </a>
                 </div>
 
-                <!-- Live Quizzes Feed from Faculty -->
-                <div style="margin-top: 2rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h3 style="font-size: 1.25rem;">📝 Active Faculty Quizzes</h3>
-                        <a href="quiz.html" class="btn btn-sm btn-ghost" style="font-size: 0.85rem;">View All →</a>
+                <!-- 3. Class 10 Leaderboard -->
+                <div class="dash-card" style="margin-bottom: 0;">
+                    <div class="dash-card-header" style="margin-bottom: 1rem; padding-bottom: 0.75rem;">
+                        <div class="dash-card-title-group">
+                            <span class="icon">🏆</span>
+                            <h2>Class 10 Leaderboard</h2>
+                        </div>
+                        <span class="class-badge" style="background: var(--bg-surface); color: var(--text-secondary);">This Week</span>
                     </div>
-                    <div id="dashboard-quizzes-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
-                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Checking for available quizzes...</p>
-                    </div>
-                </div>
 
-                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--gradient-card-2); border-radius: var(--radius-md); border: 1px solid rgba(245, 158, 11, 0.2);">
-                    <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--accent-dark);">💡 Daily Study Tip</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                        Solving chapter quizzes right after reading notes increases concept recall by 65%!
+                    <div class="leaderboard-list">
+                        <!-- Rank 1 -->
+                        <div class="leaderboard-item">
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <span class="leaderboard-rank" style="color: #D97706;">1</span>
+                                <span class="leaderboard-avatar">🥇</span>
+                                <div>
+                                    <strong style="color: var(--text-primary); display: block;">Priya S.</strong>
+                                    <small style="color: var(--text-muted); font-size: 0.7rem;">Class 10A • 7 Quizzes</small>
+                                </div>
+                            </div>
+                            <span class="leaderboard-pts" style="color: #D97706;">450 pts</span>
+                        </div>
+
+                        <!-- Rank 2 -->
+                        <div class="leaderboard-item">
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <span class="leaderboard-rank" style="color: #64748B;">2</span>
+                                <span class="leaderboard-avatar">🥈</span>
+                                <div>
+                                    <strong style="color: var(--text-primary); display: block;">Aman K.</strong>
+                                    <small style="color: var(--text-muted); font-size: 0.7rem;">Class 10B • 6 Quizzes</small>
+                                </div>
+                            </div>
+                            <span class="leaderboard-pts" style="color: var(--text-secondary);">410 pts</span>
+                        </div>
+
+                        <!-- Rank 3 (Current Student) -->
+                        <div class="leaderboard-item highlight-user">
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <span class="leaderboard-rank" style="color: var(--primary);">3</span>
+                                <span class="leaderboard-avatar" style="background: var(--primary); color: white;">🥉</span>
+                                <div>
+                                    <strong style="color: var(--primary); display: block;">You (Student)</strong>
+                                    <small style="color: var(--primary); font-size: 0.7rem;">Just 30 pts to 2nd rank!</small>
+                                </div>
+                            </div>
+                            <span class="leaderboard-pts">380 pts</span>
+                        </div>
+
+                        <!-- Rank 4 -->
+                        <div class="leaderboard-item">
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <span class="leaderboard-rank" style="color: var(--text-muted);">4</span>
+                                <span class="leaderboard-avatar">🌟</span>
+                                <div>
+                                    <strong style="color: var(--text-primary); display: block;">Rohan Mehta</strong>
+                                    <small style="color: var(--text-muted); font-size: 0.7rem;">Class 10A • 5 Quizzes</small>
+                                </div>
+                            </div>
+                            <span class="leaderboard-pts" style="color: var(--text-muted);">340 pts</span>
+                        </div>
+                    </div>
+
+                    <p style="text-align: center; font-size: 0.72rem; color: var(--text-muted); margin-top: 1rem; margin-bottom: 0;">
+                        Earn karma points by completing chapter quizzes and helping peers on forums!
                     </p>
                 </div>
+            </div>
+        </div>
+
+        <!-- System Status Indicator -->
+        <div style="text-align: center; margin-top: 3rem;">
+            <div class="status-pill">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
+                <span>Backend Online</span>
+                <span style="opacity: 0.4;">|</span>
+                <span>✓ MongoDB Connected</span>
             </div>
         </div>
     </main>
