@@ -14,7 +14,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Improve your English reading skills step-by-step with ShikshaMitr's interactive reading tool.">
+    <meta name="description" content="Improve English reading and pronunciation step-by-step with ShikshaMitr's interactive dual-language phonetics, listening, and speech tool.">
     <meta name="theme-color" content="#6366F1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -23,7 +23,567 @@
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-    </head>
+    <!-- Devanagari font support for bilingual Marathi assistance -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .reading-page-wrapper {
+            flex: 1;
+            padding: 1.5rem 0 4rem;
+        }
+
+        .marathi-text {
+            font-family: 'Noto Sans Devanagari', 'Outfit', sans-serif;
+        }
+
+        /* Top Breadcrumb */
+        .breadcrumb-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .module-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+        }
+
+        /* Daily Workout Banner */
+        .workout-banner {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #1e1b4b 100%);
+            color: #ffffff;
+            border-radius: var(--radius-xl);
+            padding: 1.5rem 1.75rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .workout-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .workout-banner-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .workout-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .workout-icon-box {
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .workout-pills {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.25rem;
+        }
+
+        .pill-streak {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            color: #FCD34D;
+            padding: 0.15rem 0.55rem;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .pill-xp {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            color: #6EE7B7;
+            padding: 0.15rem 0.55rem;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .workout-progress-box {
+            width: 100%;
+            max-width: 260px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .workout-bar-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            overflow: hidden;
+            margin: 0.4rem 0 0.3rem;
+        }
+
+        .workout-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #F59E0B, #10B981);
+            border-radius: 50px;
+            width: 70%;
+            transition: width 0.4s ease;
+        }
+
+        /* Top Controls Card */
+        .selector-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .selector-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .selector-left label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        /* 4-Step Stepper */
+        .stepper-nav {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 0.5rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .stepper-item {
+            flex: 1;
+            min-width: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 0.85rem;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            background: transparent;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .stepper-item .num-badge {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .stepper-item.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            border-color: rgba(99, 102, 241, 0.3);
+            font-weight: 700;
+        }
+
+        .stepper-item.active .num-badge {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .stepper-item.completed {
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border-color: var(--status-ok-border);
+        }
+
+        .stepper-item.completed .num-badge {
+            background: var(--status-ok-text);
+            color: #ffffff;
+        }
+
+        /* 2-Column Learning Grid */
+        .learning-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .learning-grid {
+                grid-template-columns: 8fr 4fr;
+            }
+        }
+
+        /* Primary Learning Card */
+        .primary-learning-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-top-bar {
+            padding: 1rem 1.75rem;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .card-body-content {
+            padding: 2rem 2rem 2.25rem;
+        }
+
+        /* Main Word Showcase */
+        .word-showcase-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .word-main-title {
+            font-size: clamp(2.4rem, 5vw, 3.4rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+            margin: 0;
+            line-height: 1.15;
+        }
+
+        .phonetic-chip {
+            font-family: monospace;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-glow);
+            padding: 0.3rem 0.85rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        /* Audio Controls Widget */
+        .audio-widget {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.75rem;
+        }
+
+        /* Waveform Animation */
+        .soundwave-box {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 28px;
+            padding: 0 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            height: 8px;
+        }
+
+        .playing .wave-bar:nth-child(1) { animation: wave 0.8s infinite 0.1s; }
+        .playing .wave-bar:nth-child(2) { animation: wave 0.8s infinite 0.3s; }
+        .playing .wave-bar:nth-child(3) { animation: wave 0.8s infinite 0.5s; }
+        .playing .wave-bar:nth-child(4) { animation: wave 0.8s infinite 0.2s; }
+        .playing .wave-bar:nth-child(5) { animation: wave 0.8s infinite 0.4s; }
+
+        @keyframes wave {
+            0%, 100% { height: 6px; }
+            50% { height: 22px; }
+        }
+
+        /* Definition Boxes */
+        .definition-box {
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.4rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+        }
+
+        .definition-box.marathi-box {
+            background: var(--gradient-card-2);
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+
+        .def-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .def-body-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Example Sentence Box */
+        .sentence-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sentence-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Reading Aloud / Speech AI Section */
+        .speech-practice-card {
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-surface);
+            margin-bottom: 1.5rem;
+        }
+
+        .mic-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            padding: 0.95rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.95rem;
+            background: var(--primary-glow);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .mic-button:hover {
+            background: var(--primary);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .mic-button.recording {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #EF4444;
+            color: #DC2626;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Footer Card Navigation */
+        .card-footer-nav {
+            padding: 1.15rem 1.75rem;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Companion Sidebar */
+        .sidebar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 1.5rem;
+        }
+
+        .word-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .word-check-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 0.85rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.82rem;
+            transition: var(--transition-fast);
+        }
+
+        .word-check-item.active-item {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .word-check-item.done-item {
+            background: var(--status-ok-bg);
+            border-color: var(--status-ok-border);
+            color: var(--status-ok-text);
+        }
+
+        /* Quiz Options */
+        .quiz-option-btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-card);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .quiz-option-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .reading-page-wrapper {
+                padding: 1rem 0 5rem;
+            }
+
+            .workout-banner {
+                padding: 1.25rem;
+            }
+
+            .card-body-content {
+                padding: 1.25rem;
+            }
+
+            .word-main-title {
+                font-size: 2.2rem;
+            }
+
+            .audio-widget {
+                padding: 1rem;
+            }
+
+            .card-footer-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .card-footer-nav button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
 <body>
     <header>
         <div class="container header-container">
@@ -51,61 +611,306 @@
                     <span>Flashcards</span>
                 </a>
                 <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
-                <a href="student-login.html" class="btn btn-primary btn-sm">
-                    Student Portal</a>
-                <a href="faculty.html" class="btn btn-ghost btn-sm">
-                    Faculty</a>
+                <a href="student-login.html" class="btn btn-primary btn-sm">Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm">Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        <section class="reading-header">
-            <a href="index.html" class="back-link">← Back to Home</a>
-            <h1>🔊 Easy English Reading</h1>
-            <p>Follow the steps to improve your reading skills.</p>
+    <main class="container reading-page-wrapper">
+        <!-- Breadcrumb Row -->
+        <div class="breadcrumb-row">
+            <a href="index.html" class="back-link" style="margin-bottom: 0;">← Back to Home</a>
+            <div class="module-badge">
+                <span class="dot"></span>
+                <span>Interactive English &amp; Phonetics Module</span>
+            </div>
+        </div>
+
+        <!-- Daily Vocabulary Workout Banner -->
+        <section class="workout-banner">
+            <div class="workout-banner-inner">
+                <div class="workout-title-group">
+                    <div class="workout-icon-box">🎯</div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0; letter-spacing: -0.01em;">Daily Vocabulary Workout</h2>
+                            <div class="workout-pills">
+                                <span class="pill-streak">🔥 Day 4 Streak</span>
+                                <span class="pill-xp">+35 XP Today</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.35rem;">
+                            10 Words a Day to Master English Fluency with Marathi translations &amp; speech AI
+                        </p>
+                    </div>
+                </div>
+
+                <div class="workout-progress-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700;">
+                        <span>Daily Target</span>
+                        <span id="daily-target-stat">7 / 10 words (70%)</span>
+                    </div>
+                    <div class="workout-bar-track">
+                        <div class="workout-bar-fill" id="daily-target-bar"></div>
+                    </div>
+                    <small style="font-size: 0.7rem; opacity: 0.8; display: block; text-align: right;">3 words left to complete streak goal</small>
+                </div>
+            </div>
         </section>
 
-        <section class="reading-workspace">
-            <div class="controls">
-                <div>
-                    <label for="level-select">Select Level:</label>
-                    <select id="level-select" class="filter-select">
-                        <option value="1">Level 1 — Beginner</option>
-                        <option value="2">Level 2 — Intermediate</option>
-                        <option value="3">Level 3 — Advanced</option>
-                    </select>
-                </div>
+        <!-- Top Level Selector Card -->
+        <section class="selector-card">
+            <div class="selector-left">
+                <label for="level-select">Select Level:</label>
+                <select id="level-select" class="filter-select" style="min-width: 260px;">
+                    <option value="1">Level 1 — Essential Daily Vocab (A1)</option>
+                    <option value="2">Level 2 — Intermediate Conversational (B1)</option>
+                    <option value="3">Level 3 — Academic &amp; Advanced (C1)</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
                 <button id="start-lesson-btn" class="btn btn-accent">▶ Start Lesson</button>
             </div>
-
-            <div id="lesson-area" class="lesson-area hidden">
-                <div class="progress-bar">
-                    <div class="step active" id="step-word">1. Word</div>
-                    <div class="step" id="step-pronunciation">2. Listen</div>
-                    <div class="step" id="step-reading">3. Read</div>
-                    <div class="step" id="step-quiz">4. Quiz</div>
-                </div>
-
-                <div class="lesson-content">
-                    <div id="display-text" class="display-text" style="position: relative;">
-                        <span id="lesson-main-text">Word</span>
-                        <div id="lesson-meaning" style="font-size: 1.2rem; color: var(--text-secondary); margin-top: 1rem; display: none;">Meaning</div>
-                    </div>
-                    
-                    <div id="quiz-area" style="display: none; margin-top: 1rem;">
-                        <!-- Options injected by JS -->
-                    </div>
-
-                    <div class="action-buttons" style="margin-top: 2rem;">
-                        <button id="save-flashcard-btn" class="btn btn-ghost" style="display: none;">🧠 Save to Flashcards</button>
-                        <button id="listen-btn" class="btn btn-ghost">🔊 Listen</button>
-                        <button id="next-step-btn" class="btn">Next Step →</button>
-                    </div>
-                </div>
-            </div>
         </section>
+
+        <!-- Interactive 4-Step Stepper Navigation -->
+        <div class="stepper-nav">
+            <button class="stepper-item active" id="step-word" type="button">
+                <span class="num-badge">1</span>
+                <span>1. Word</span>
+            </button>
+            <button class="stepper-item" id="step-pronunciation" type="button">
+                <span class="num-badge">2</span>
+                <span>2. Listen &amp; Pronounce</span>
+            </button>
+            <button class="stepper-item" id="step-reading" type="button">
+                <span class="num-badge">3</span>
+                <span>3. Read (मराठी)</span>
+            </button>
+            <button class="stepper-item" id="step-quiz" type="button">
+                <span class="num-badge">4</span>
+                <span>4. Quick Quiz</span>
+            </button>
+        </div>
+
+        <!-- Main Workspace Grid -->
+        <div class="learning-grid">
+            <!-- ================= PRIMARY LEARNING CARD (8 cols) ================= -->
+            <section class="primary-learning-card" id="lesson-area">
+                <!-- Card Top Bar -->
+                <div class="card-top-bar">
+                    <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                        <span id="current-step-badge" class="badge badge-standard">Step 1: Word Overview</span>
+                        <span id="difficulty-badge" class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text);">Beginner (A1)</span>
+                    </div>
+                    <span id="lesson-counter-tag" style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">Word 1 of 5</span>
+                </div>
+
+                <!-- Card Body Content -->
+                <div class="card-body-content">
+                    <!-- Word Heading & Phonetics -->
+                    <div class="word-showcase-row">
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <h2 class="word-main-title" id="lesson-main-text">Beautiful</h2>
+                            <button id="quick-speak-btn" class="btn btn-ghost btn-sm" style="font-size: 1.2rem; padding: 0.4rem 0.6rem;" title="Instant Pronounce">🔊</button>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="phonetic-chip" id="lesson-phonetic">/ˈbjuːtɪfəl/</span>
+                            <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); background: var(--bg-surface); padding: 0.25rem 0.5rem; border-radius: 4px;">UK / US</span>
+                        </div>
+                    </div>
+
+                    <!-- Audio Pronunciation Widget -->
+                    <div class="audio-widget">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                            <button id="listen-btn" class="btn btn-primary btn-sm">🔊 Listen (1.0x)</button>
+                            <button id="slow-listen-btn" class="btn btn-ghost btn-sm" title="Hear each phoneme clearly">🐢 Slow (0.7x)</button>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div class="soundwave-box" id="soundwave-graphic">
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-left: 4px;">Audio</span>
+                            </div>
+                            <button id="save-flashcard-btn" class="btn btn-sm btn-accent">⭐ Save Word</button>
+                        </div>
+                    </div>
+
+                    <!-- Dual Language Meanings -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <!-- English Meaning -->
+                        <div class="definition-box" id="english-meaning-box">
+                            <div class="def-header">
+                                <span>📖 English Definition</span>
+                                <span>Standard Dictionary</span>
+                            </div>
+                            <p class="def-body-text" id="lesson-meaning">
+                                Pleasing to the senses or to the mind aesthetically; having qualities that delight the eyes or ears.
+                            </p>
+                        </div>
+
+                        <!-- Marathi Meaning -->
+                        <div class="definition-box marathi-box" id="marathi-meaning-box">
+                            <div class="def-header" style="color: var(--accent-dark);">
+                                <span>🇮🇳 मराठी अर्थ (Marathi Meaning)</span>
+                                <span style="font-weight: 700;">मराठी अनुवाद</span>
+                            </div>
+                            <p class="def-body-text marathi-text" id="lesson-marathi-meaning" style="font-size: 1.15rem;">
+                                सुंदर, देखणा / मनाला किंवा डोळ्यांना आनंद देणारा.
+                            </p>
+                            <small class="marathi-text" id="lesson-marathi-hint" style="display: block; margin-top: 0.35rem; color: var(--text-secondary); font-size: 0.8rem;">
+                                उदा. "ती एक सुंदर कलाकृती आहे."
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Context Sentence & Translation -->
+                    <div class="sentence-box" id="sentence-container">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.04em;">💬 Context Sentence</span>
+                            <button id="sentence-audio-btn" class="btn btn-sm btn-ghost" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">🔊 Play Sentence</button>
+                        </div>
+                        <div class="sentence-pill">
+                            <p id="lesson-sentence" style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin: 0; line-height: 1.5;">
+                                "It is a beautiful sunny morning in the village."
+                            </p>
+                            <p id="lesson-sentence-marathi" class="marathi-text" style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.4rem 0 0; line-height: 1.4;">
+                                "गावात सकाळचे सुंदर आणि प्रसन्न ऊन पडले आहे."
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Speech Practice / Reading Aloud Section -->
+                    <div class="speech-practice-card">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.04em;">🎙️ Practice Reading Aloud (Speech AI)</span>
+                            <span id="speech-feedback-pill" class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text); font-size: 0.72rem;">✓ Ready for input</span>
+                        </div>
+                        <p id="speech-target-sentence" style="font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; padding: 0.75rem 1rem; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            Tap record and speak the word or sentence into your microphone.
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <button id="mic-practice-btn" class="mic-button" type="button">
+                                <span>🎙️</span>
+                                <span id="mic-btn-text">Tap to Practice Speaking</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Area (Injected during Step 4) -->
+                    <div id="quiz-area" style="display: none; margin-top: 1.5rem; text-align: center;">
+                        <h4 id="quiz-question-text" style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);"></h4>
+                        <div id="quiz-options-container" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;"></div>
+                    </div>
+                </div>
+
+                <!-- Footer Card Navigation Controls -->
+                <div class="card-footer-nav">
+                    <button id="prev-step-btn" class="btn btn-ghost btn-sm" type="button">← Previous Step</button>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 0.78rem; color: var(--text-muted);" class="hidden sm:inline">Spacebar to Listen • Enter for Next</span>
+                        <button id="next-step-btn" class="btn btn-primary" type="button">Next Step →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SIDEBAR COMPANION (4 cols) ================= -->
+            <aside class="learning-sidebar">
+                <!-- Today's 10 Words Checklist -->
+                <div class="sidebar-card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div>
+                            <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-primary); margin: 0;">Today's 10 Words</h3>
+                            <small style="color: var(--text-muted); font-size: 0.72rem;">Daily habit checklist</small>
+                        </div>
+                        <span id="checklist-counter" class="class-badge">7 / 10 Done</span>
+                    </div>
+
+                    <div class="word-checklist" id="words-checklist-container">
+                        <div class="word-check-item done-item">
+                            <span>✓ 1. Serene</span>
+                            <span class="marathi-text">शांत</span>
+                        </div>
+                        <div class="word-check-item done-item">
+                            <span>✓ 2. Diligent</span>
+                            <span class="marathi-text">कष्टाळू</span>
+                        </div>
+                        <div class="word-check-item done-item">
+                            <span>✓ 3. Cheerful</span>
+                            <span class="marathi-text">आनंदी</span>
+                        </div>
+                        <div class="word-check-item done-item">
+                            <span>✓ 4. Courage</span>
+                            <span class="marathi-text">धैर्य</span>
+                        </div>
+                        <div class="word-check-item done-item">
+                            <span>✓ 5. Generous</span>
+                            <span class="marathi-text">उदार</span>
+                        </div>
+                        <div class="word-check-item done-item">
+                            <span>✓ 6. Grateful</span>
+                            <span class="marathi-text">कृतज्ञ</span>
+                        </div>
+                        <div class="word-check-item active-item">
+                            <span>▶ 7. Beautiful</span>
+                            <span class="marathi-text">सुंदर</span>
+                        </div>
+                        <div class="word-check-item">
+                            <span>8. Inspiring</span>
+                            <span class="marathi-text">प्रेरणादायी</span>
+                        </div>
+                        <div class="word-check-item" style="opacity: 0.6;">
+                            <span>🔒 9. Patient</span>
+                            <span class="marathi-text">संयमी</span>
+                        </div>
+                        <div class="word-check-item" style="opacity: 0.6;">
+                            <span>🔒 10. Wisdom</span>
+                            <span class="marathi-text">शहाणपण</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Words & Flashcards Review Box -->
+                <div class="sidebar-card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <span style="font-size: 1.4rem;">⭐</span>
+                            <div>
+                                <h4 style="font-size: 0.88rem; font-weight: 700; margin: 0; color: var(--text-primary);">Saved Words</h4>
+                                <span style="font-size: 0.75rem; color: var(--accent-dark); font-weight: 700;">24 Saved in Deck</span>
+                            </div>
+                        </div>
+                        <a href="flashcards.html" style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-decoration: none;">Review →</a>
+                    </div>
+                    <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0.5rem 0 0.85rem; line-height: 1.4;">
+                        Saved words are automatically queued for Spaced Repetition (SRS) revision.
+                    </p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <span class="badge" style="background: var(--status-ok-bg); color: var(--status-ok-text); font-size: 0.7rem;">18 Mastered</span>
+                        <span class="badge badge-standard" style="font-size: 0.7rem;">6 In Learning</span>
+                    </div>
+                </div>
+
+                <!-- Bilingual Quick Tip Card -->
+                <div class="sidebar-card" style="background: var(--gradient-card-1);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--primary); font-size: 0.88rem; margin-bottom: 0.5rem;">
+                        <span>💡</span>
+                        <span>Bilingual Grammar Tip</span>
+                    </div>
+                    <p class="marathi-text" style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                        In Marathi, adjectives normally precede the noun (उदा. <em>"सुंदर गाव"</em>). In English, they also come before nouns (<em>"beautiful village"</em>), but can also follow linking verbs like <em>is / was</em> (e.g. <em>"The village is beautiful"</em>).
+                    </p>
+                    <div style="margin-top: 0.75rem; font-size: 0.72rem; font-weight: 700; color: var(--primary); text-align: right;">
+                        <span>Grammar Note #14</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </main>
 
     <footer>
@@ -114,9 +919,6 @@
             <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="faculty.html" style="color: inherit; text-decoration: underline;">Faculty Portal</a></p>
         </div>
     </footer>
-
-    <script src="js/ws-client.js"></script>
-    <script src="js/reading.js"></script>
 
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
@@ -145,5 +947,8 @@
             Theme
         </button>
     </nav>
+
+    <script src="js/ws-client.js"></script>
+    <script src="js/reading.js"></script>
 </body>
 </html>
