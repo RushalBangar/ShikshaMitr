@@ -14,41 +14,47 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Faculty Dashboard for ShikshaMitr.">
+    <meta name="description" content="Faculty Login - ShikshaMitr">
     <meta name="theme-color" content="#6366F1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Faculty Dashboard - ShikshaMitr</title>
+    <title>Faculty Login - ShikshaMitr</title>
     <link rel="icon" type="image/png" href="images/logo-icon.png">
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-        <style>
-        .page-header {
-            text-align: center;
-            padding: 3rem 0 1rem;
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .page-header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
         }
 
-        .dashboard-container {
-            max-width: 650px;
-            margin: 0 auto 3rem;
+        .auth-container {
+            max-width: 420px;
+            width: 100%;
             background: var(--bg-card);
             padding: 2.5rem;
             border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
             box-shadow: var(--shadow-card);
-            border: 1px solid var(--border-card);
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.5s ease-out;
         }
-        
-        .dashboard-container::before {
+
+        /* Gradient accent bar at the top */
+        .auth-container::before {
             content: '';
             position: absolute;
             top: 0;
@@ -57,343 +63,332 @@
             height: 4px;
             background: var(--gradient-btn);
         }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius-sm);
-            background: var(--bg-glass);
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-family: 'Outfit', sans-serif;
-            transition: var(--transition-fast);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-            background: var(--bg-card);
-        }
-        
-        .dashboard-nav {
-            display: flex;
-            background: var(--bg-glass);
-            padding: 0.5rem;
-            border-radius: var(--radius-md);
-            margin-bottom: 2rem;
+
+        .auth-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 1.25rem;
+            background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
-        }
-        
-        .dashboard-tab {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            border-radius: var(--radius-sm);
-            transition: var(--transition-fast);
-            font-size: 0.95rem;
-        }
-        
-        .dashboard-tab:hover {
-            color: var(--text-primary);
-        }
-        
-        .dashboard-tab.active {
-            background: var(--bg-card-hover);
-            color: var(--primary);
-            box-shadow: var(--shadow-card);
-        }
-        
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s ease-out;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .alert {
-            padding: 1rem;
             border-radius: var(--radius-md);
-            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-icon svg {
+            width: 26px;
+            height: 26px;
+            stroke: var(--text-primary);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+            letter-spacing: -0.02em;
+        }
+
+        .auth-header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.25rem;
             display: none;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             border: 1px solid;
-            animation: fadeIn 0.3s ease-out;
+            text-align: center;
         }
-        
+
         .alert.success {
             background: var(--status-ok-bg);
             color: var(--status-ok-text);
             border-color: var(--status-ok-border);
             display: block;
         }
-        
+
         .alert.error {
             background: var(--status-error-bg);
             color: var(--status-error-text);
             border-color: var(--status-error-border);
             display: block;
         }
-        
-        .header-actions {
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .input-wrapper {
+            position: relative;
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
-        
-        .login-icon {
-            font-size: 3rem;
-            text-align: center;
-            display: block;
-            margin-bottom: 1rem;
+
+        .input-icon {
+            position: absolute;
+            left: 0.85rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+            line-height: 1;
         }
-        
-        select.form-control {
-            appearance: none;
-            background-image: var(--select-arrow);
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-        }
-        select.form-control option {
-            background: var(--select-option-bg);
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            background: transparent;
             color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            background: var(--bg-card);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.85rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px;
+            font-size: 1.1rem;
+            line-height: 1;
+            transition: color 0.15s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        /* Password row */
+        .password-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+
+        .forgot-link {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .forgot-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Remember me */
+        .remember-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            margin-top: -0.25rem;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .remember-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Submit */
+        .btn-auth {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--text-primary);
+            color: var(--bg-body);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 0.5rem;
+        }
+
+        .btn-auth:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-auth:active {
+            transform: scale(0.98);
+            transition-duration: 0.08s;
+        }
+
+        .btn-auth:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Restricted note */
+        .restricted-note {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Status Pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border: 1px solid var(--status-ok-border);
+        }
+
+        .status-pill .sep {
+            opacity: 0.5;
+        }
+
+        /* Dark mode input focus override */
+        [data-theme="dark"] .form-control:focus {
+            border-color: #818CF8;
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.25);
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem 1.25rem;
+                border-radius: var(--radius-md);
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-container">
+    <header style="border-bottom: 1px solid var(--border-subtle); background: var(--bg-card);">
+        <div class="container header-container" style="padding: 1rem 0;">
             <a href="index.html" class="logo-link">
                 <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
                 <span class="logo-text">ShikshaMitr</span>
             </a>
-            <div class="header-actions" style="gap: 1rem; display: flex; align-items: center;">
-                <button id="logout-btn" class="btn btn-ghost btn-sm" style="display: none;">Logout</button>
-                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="student-login.html" class="btn btn-ghost btn-sm" style="font-size: 0.85rem;">Student Portal</a>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme" style="background: transparent; border: none; font-size: 1.1rem; cursor: pointer;">🌙</button>
             </div>
         </div>
     </header>
 
-    <main class="container" style="padding-bottom: 100px;">
-        
-        <div class="page-header" id="page-header">
-            <h1>Faculty Portal</h1>
-            <p>Upload materials and manage reading exercises.</p>
+    <main class="container auth-wrapper">
+        <div class="auth-container">
+            <!-- Faculty Icon -->
+            <div class="auth-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+
+            <!-- Header -->
+            <div class="auth-header">
+                <h1>Faculty Access</h1>
+                <p>Sign in to manage curriculum and content.</p>
+            </div>
+
+            <!-- Alert -->
+            <div id="login-alert" class="alert" style="display: none;"></div>
+
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" class="form-control" placeholder="Enter faculty ID" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="password-label-row">
+                        <label for="password" style="margin-bottom: 0;">Password</label>
+                        <a href="#" class="forgot-link" onclick="alert('Contact administrator to reset your password.'); return false;">Forgot?</a>
+                    </div>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Toggle password visibility">👁</button>
+                    </div>
+                </div>
+
+                <div class="remember-row">
+                    <label class="remember-label">
+                        <input type="checkbox" checked>
+                        <span>Remember this terminal</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-auth" id="login-submit-btn">Sign in</button>
+            </form>
+
+            <p class="restricted-note">Restricted system. Authorized teaching staff and administrators only.</p>
         </div>
 
-        <!-- Login Section -->
-        <section id="login-section" style="max-width: 400px; width: 100%; margin: 2rem auto; background: var(--bg-card); padding: 2.5rem; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <h2 style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Faculty Access</h2>
-                <p style="font-size: 0.9rem; color: var(--text-secondary);">Sign in to manage curriculum and content.</p>
-            </div>
-            
-            <div id="login-alert" class="alert error" style="display: none; text-align: center; padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.85rem; font-weight: 500;"></div>
-            
-            <form id="login-form">
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="username" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary); font-size: 0.85rem;">Username</label>
-                    <input type="text" id="username" class="form-control" placeholder="Enter faculty ID" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-card); border-radius: var(--radius-sm); background: transparent; color: var(--text-primary); font-size: 0.95rem;">
-                </div>
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary); font-size: 0.85rem;">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="••••••••" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-card); border-radius: var(--radius-sm); background: transparent; color: var(--text-primary); font-size: 0.95rem;">
-                </div>
-                <button type="submit" style="width: 100%; padding: 0.85rem; background: var(--text-primary); color: var(--bg-body); border: none; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s ease; margin-top: 0.5rem;">
-                    Sign in
-                </button>
-            </form>
-        </section>
-
-        <!-- Dashboard Section -->
-        <section id="dashboard-section" class="dashboard-container" style="display: none;">
-            <div class="header-actions" style="margin-bottom: 1rem;">
-                <h2>Faculty Dashboard</h2>
-            </div>
-            
-            <div class="dashboard-nav">
-                <button class="dashboard-tab active" data-target="upload-material">Upload Material</button>
-                <button class="dashboard-tab" data-target="create-quiz">Create Quiz</button>
-                <button class="dashboard-tab" data-target="upload-reading">Add Reading</button>
-                <button class="dashboard-tab" data-target="manage-materials">Manage</button>
-                <button class="dashboard-tab" data-target="analytics-dashboard">Analytics</button>
-            </div>
-            
-            <!-- Upload Material Tab -->
-            <div id="upload-material" class="tab-content active">
-                <div id="material-alert" class="alert"></div>
-                
-                <form id="material-form">
-                    <div class="form-group">
-                        <label for="mat-title">Title</label>
-                        <input type="text" id="mat-title" class="form-control" placeholder="e.g. Science Chapter 1 Notes" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mat-type">Material Type</label>
-                        <select id="mat-type" class="form-control" required>
-                            <option value="notes">Notes</option>
-                            <option value="board_paper">Board Paper</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mat-standard">Standard (Class)</label>
-                        <select id="mat-standard" class="form-control" required>
-                            <option value="5">Class 5</option>
-                            <option value="6">Class 6</option>
-                            <option value="7">Class 7</option>
-                            <option value="8">Class 8</option>
-                            <option value="9">Class 9</option>
-                            <option value="10">Class 10</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mat-subject">Subject</label>
-                        <input list="subject-options" id="mat-subject" class="form-control" required placeholder="Select or type subject...">
-                        <datalist id="subject-options">
-                            <option value="Mathematics">
-                            <option value="Science">
-                            <option value="English">
-                            <option value="Social Studies">
-                            <option value="Hindi">
-                            <option value="Computer Science">
-                        </datalist>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mat-file">Upload PDF File</label>
-                        <input type="file" id="mat-file" class="form-control" accept=".pdf" required>
-                        <small class="text-muted" style="display:block; margin-top:0.5rem;">File will be securely stored in our cloud database.</small>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary" id="mat-submit-btn">Upload Material</button>
-                </form>
-            </div>
-            
-            <!-- Upload Reading Lesson Tab -->
-            <div id="upload-reading" class="tab-content">
-                <div id="reading-alert" class="alert"></div>
-                
-                <form id="reading-form">
-                    <div class="form-group">
-                        <label for="read-level">Difficulty Level</label>
-                        <select id="read-level" class="form-control" required>
-                            <option value="1">Level 1 (Beginner)</option>
-                            <option value="2">Level 2 (Intermediate)</option>
-                            <option value="3">Level 3 (Advanced)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="read-word">Vocabulary Word</label>
-                        <input type="text" id="read-word" class="form-control" placeholder="e.g. Enthusiastic" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="read-sentence">Practice Sentence (Include Emojis!)</label>
-                        <input type="text" id="read-sentence" class="form-control" placeholder="e.g. The students were enthusiastic! 🎉" required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-accent">Add Reading Lesson</button>
-                </form>
-            </div>
-
-            <!-- Create Quiz Tab -->
-            <div id="create-quiz" class="tab-content">
-                <div id="quiz-alert" class="alert"></div>
-                <form id="faculty-quiz-form">
-                    <div class="form-group">
-                        <label for="quiz-title">Quiz Title</label>
-                        <input type="text" id="quiz-title" class="form-control" placeholder="e.g. 10th Math - Quadratic Equations Test" required>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label for="quiz-standard">Standard (Class)</label>
-                            <select id="quiz-standard" class="form-control" required>
-                                <option value="10">Class 10</option>
-                                <option value="9">Class 9</option>
-                                <option value="8">Class 8</option>
-                                <option value="7">Class 7</option>
-                                <option value="6">Class 6</option>
-                                <option value="5">Class 5</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="quiz-subject">Subject</label>
-                            <input type="text" id="quiz-subject" class="form-control" placeholder="e.g. Mathematics" required>
-                        </div>
-                    </div>
-
-                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-subtle);">
-                    <h4 style="margin-bottom: 1rem;">Questions Builder</h4>
-                    <div id="quiz-questions-builder" style="display: flex; flex-direction: column; gap: 1.25rem;">
-                        <!-- Questions dynamically added here -->
-                    </div>
-
-                    <button type="button" id="add-question-btn" class="btn btn-ghost btn-sm" style="margin: 1rem 0 1.5rem; width: 100%;">+ Add Another Question</button>
-
-                    <button type="submit" class="btn btn-primary" id="save-quiz-btn" style="width: 100%;">Publish Quiz (Live Broadcast) 🚀</button>
-                </form>
-            </div>
-            
-            <!-- Manage Materials Tab -->
-            <div id="manage-materials" class="tab-content">
-                <div id="manage-alert" class="alert"></div>
-                <div id="materials-list-container" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <!-- Populated by JS -->
-                    <p style="text-align: center; color: var(--text-secondary);">Loading materials...</p>
-                </div>
-            </div>
-
-            <!-- Analytics Dashboard Tab -->
-            <div id="analytics-dashboard" class="tab-content">
-                <div id="analytics-alert" class="alert"></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
-                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                        <h3 style="color: var(--text-secondary); font-size: 1rem;">Total Quizzes Taken</h3>
-                        <p id="stat-total-quizzes" style="font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--primary);">0</p>
-                    </div>
-                    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                        <h3 style="color: var(--text-secondary); font-size: 1rem;">Average Score</h3>
-                        <p id="stat-avg-score" style="font-size: 2.5rem; font-weight: 700; margin: 0; color: var(--status-ok-text);">0%</p>
-                    </div>
-                </div>
-
-                <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem; text-align: center;">Activity Trend (Last 7 Days)</h3>
-                    <canvas id="activityChart" style="width: 100%; height: 300px;"></canvas>
-                </div>
-            </div>
-        </section>
+        <!-- Status Pill -->
+        <div class="status-pill">
+            <span>Backend Online</span>
+            <span class="sep">|</span>
+            <span>✓ MongoDB Connected</span>
+        </div>
     </main>
 
     <!-- Bottom Navigation (Mobile) -->
@@ -423,7 +418,21 @@
             Theme
         </button>
     </nav>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Password visibility toggle
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+    </script>
+
     <script src="js/ws-client.js"></script>
     <script src="js/faculty.js"></script>
 </body>

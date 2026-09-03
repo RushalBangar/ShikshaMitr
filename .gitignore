@@ -15,3 +15,9 @@ env/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Scratch / local scripts
+check_db.py
+test_fastapi.py
+
+

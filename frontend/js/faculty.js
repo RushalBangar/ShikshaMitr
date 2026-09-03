@@ -2,14 +2,108 @@ document.addEventListener('DOMContentLoaded', () => {
     const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const RENDER_BACKEND_URL = 'https://shikshamitr.onrender.com';
     const BACKEND_BASE_URL = IS_LOCAL ? 'http://localhost:8000' : RENDER_BACKEND_URL;
-    
+
+    const isLoginPage = window.location.pathname.includes('faculty.html') && !window.location.pathname.includes('faculty-dashboard');
+    const isDashboardPage = window.location.pathname.includes('faculty-dashboard.html');
+
+    const token = localStorage.getItem('shikshamitr_token');
+
+    // Auto-redirect: if logged in and on login page, go to dashboard
+    if (token && isLoginPage) {
+        window.location.href = 'faculty-dashboard.html';
+        return;
+    }
+
+    // Auto-redirect: if not logged in and on dashboard page, go to login
+    if (!token && isDashboardPage) {
+        window.location.href = 'faculty.html';
+        return;
+    }
+
+    // ==========================================
+    // LOGIN PAGE LOGIC
+    // ==========================================
+    if (isLoginPage) {
+        const loginForm = document.getElementById('login-form');
+        const loginAlert = document.getElementById('login-alert');
+        const loginSubmitBtn = document.getElementById('login-submit-btn');
+
+        function showLoginAlert(message, type) {
+            if (!loginAlert) return;
+            loginAlert.textContent = message;
+            loginAlert.className = `alert ${type}`;
+            loginAlert.style.display = 'block';
+        }
+
+        function hideLoginAlert() {
+            if (!loginAlert) return;
+            loginAlert.style.display = 'none';
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                hideLoginAlert();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (loginSubmitBtn) {
+                    loginSubmitBtn.textContent = 'Signing in...';
+                    loginSubmitBtn.disabled = true;
+                }
+
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
+                
+                let timeoutId = setTimeout(() => {
+                    showLoginAlert('☁️ Waking up the server, please wait a few seconds...', 'success');
+                }, 2500);
+
+                try {
+                    const response = await fetch(`${BACKEND_BASE_URL}/api/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: formData
+                    });
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        localStorage.setItem('shikshamitr_token', data.access_token);
+                        // Clear student tokens to prevent session cross-pollination
+                        localStorage.removeItem('shikshamitr_student_token');
+                        localStorage.removeItem('shikshamitr_student_user');
+                        
+                        window.location.href = 'faculty-dashboard.html';
+                    } else {
+                        const error = await response.json();
+                        showLoginAlert(error.detail || 'Login failed', 'error');
+                    }
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    showLoginAlert('Network error. Please try again.', 'error');
+                } finally {
+                    if (loginSubmitBtn) {
+                        loginSubmitBtn.textContent = 'Sign in';
+                        loginSubmitBtn.disabled = false;
+                    }
+                }
+            });
+        }
+        return; // Don't run dashboard logic on login page
+    }
+
+    // ==========================================
+    // DASHBOARD PAGE LOGIC
+    // ==========================================
+    if (!isDashboardPage) return;
+
     // UI Elements
-    const loginSection = document.getElementById('login-section');
-    const dashboardSection = document.getElementById('dashboard-section');
     const logoutBtn = document.getElementById('logout-btn');
-    
-    const loginForm = document.getElementById('login-form');
-    const loginAlert = document.getElementById('login-alert');
     
     const materialForm = document.getElementById('material-form');
     const materialAlert = document.getElementById('material-alert');
@@ -17,12 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const readingForm = document.getElementById('reading-form');
     const readingAlert = document.getElementById('reading-alert');
-    
-    // Check if already logged in
-    const token = localStorage.getItem('shikshamitr_token');
-    if (token) {
-        showDashboard();
-    }
     
     function showAlert(element, message, type) {
         element.textContent = message;
@@ -41,22 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
         element.style.display = 'none';
     }
     
-    function showDashboard() {
-        loginSection.style.display = 'none';
-        dashboardSection.style.display = 'block';
-        logoutBtn.style.display = 'block';
-    }
-    
     function logout() {
         localStorage.removeItem('shikshamitr_token');
-        loginSection.style.display = 'block';
-        dashboardSection.style.display = 'none';
-        logoutBtn.style.display = 'none';
-        loginForm.reset();
-        hideAlert(loginAlert);
+        window.location.href = 'faculty.html';
     }
     
-    logoutBtn.addEventListener('click', logout);
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
     
     // Tabs Logic
     const tabs = document.querySelectorAll('.dashboard-tab');
@@ -78,50 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnalytics();
             }
         });
-    });
-    
-    // Login Form
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        hideAlert(loginAlert);
-        
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        const formData = new URLSearchParams();
-        formData.append('username', username);
-        formData.append('password', password);
-        
-        let timeoutId = setTimeout(() => {
-            showAlert(loginAlert, '☁️ Waking up the server, please wait a few seconds...', 'success');
-        }, 2500);
-
-        try {
-            const response = await fetch(`${BACKEND_BASE_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: formData
-            });
-            clearTimeout(timeoutId);
-            
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('shikshamitr_token', data.access_token);
-                // Clear student tokens to prevent session cross-pollination
-                localStorage.removeItem('shikshamitr_student_token');
-                localStorage.removeItem('shikshamitr_student_user');
-                
-                showDashboard();
-            } else {
-                const error = await response.json();
-                showAlert(loginAlert, error.detail || 'Login failed', 'error');
-            }
-        } catch (error) {
-            clearTimeout(timeoutId);
-            showAlert(loginAlert, 'Network error. Please try again.', 'error');
-        }
     });
     
     // Material Upload Form
@@ -201,6 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 showAlert(materialAlert, 'Material uploaded successfully!', 'success');
                 materialForm.reset();
+                // Reset file name display
+                const fileNameDisplay = document.getElementById('file-name-display');
+                if (fileNameDisplay) fileNameDisplay.style.display = 'none';
             } else {
                 if (response.status === 401) { logout(); return; }
                 const error = await response.json();

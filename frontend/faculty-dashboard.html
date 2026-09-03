@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Prevent dark mode flash -->
+    <script src="js/theme.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2N8TR3HLN2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-2N8TR3HLN2');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Faculty Dashboard - ShikshaMitr. Manage materials, quizzes and reading exercises.">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Faculty Dashboard - ShikshaMitr</title>
+    <link rel="icon" type="image/png" href="images/logo-icon.png">
+    <link rel="apple-touch-icon" href="images/logo-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-header {
+            text-align: center;
+            padding: 3rem 0 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+        }
+
+        .page-header .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border: 1px solid var(--status-ok-border);
+        }
+
+        .dashboard-container {
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-card);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        .dashboard-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-btn);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: var(--transition-fast);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: var(--bg-card);
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            background: var(--bg-glass);
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        
+        .dashboard-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 0.75rem 0.75rem;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+            font-family: 'Outfit', sans-serif;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+        
+        .dashboard-tab:hover {
+            color: var(--text-primary);
+        }
+        
+        .dashboard-tab.active {
+            background: var(--bg-card-hover);
+            color: var(--primary);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 1px solid;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .alert.success {
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border-color: var(--status-ok-border);
+            display: block;
+        }
+        
+        .alert.error {
+            background: var(--status-error-bg);
+            color: var(--status-error-text);
+            border-color: var(--status-error-border);
+            display: block;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: var(--select-arrow);
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+        select.form-control option {
+            background: var(--select-option-bg);
+            color: var(--text-primary);
+        }
+
+        /* File Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            cursor: pointer;
+            background: var(--bg-surface);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .upload-zone .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .upload-zone p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .upload-zone small {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Grid helper classes (so mobile can override) */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .grid-2col-wide {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ============================
+           Mobile Responsive
+           ============================ */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .page-header {
+                padding: 2rem 0 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header p {
+                font-size: 0.9rem;
+            }
+
+            .dashboard-container {
+                padding: 1.25rem 1rem !important;
+                margin-left: 0.5rem !important;
+                margin-right: 0.5rem !important;
+                border-radius: var(--radius-md) !important;
+            }
+
+            /* Horizontal scrollable tabs on mobile */
+            .dashboard-nav {
+                gap: 0.25rem;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                padding-bottom: 0.25rem;
+            }
+
+            .dashboard-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .dashboard-tab {
+                font-size: 0.78rem;
+                padding: 0.6rem 0.6rem;
+                min-height: 40px;
+                flex: 0 0 auto;
+            }
+
+            /* Collapse grids to single column */
+            .grid-2col,
+            .grid-2col-wide,
+            .grid-stats {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Prevent iOS auto-zoom on input focus (min 16px) */
+            .form-control,
+            select.form-control,
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                font-size: 16px !important;
+                min-height: 46px;
+            }
+
+            /* Larger touch targets for buttons */
+            .btn {
+                min-height: 44px;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .btn-sm {
+                min-height: 38px;
+            }
+
+            /* Upload zone */
+            .upload-zone {
+                padding: 1.5rem 1rem;
+            }
+
+            /* Form groups */
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.88rem;
+            }
+
+            /* Analytics stat cards */
+            .grid-stats > div {
+                padding: 1.25rem !important;
+            }
+
+            .grid-stats p {
+                font-size: 2rem !important;
+            }
+
+            /* Quiz builder cards */
+            .question-builder-card {
+                padding: 1rem !important;
+            }
+
+            /* Header section */
+            .header-actions h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 380px) {
+            .dashboard-container {
+                padding: 1rem 0.75rem !important;
+            }
+
+            .dashboard-tab {
+                font-size: 0.72rem;
+                padding: 0.5rem 0.5rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logo-icon.png" alt="ShikshaMitr" class="header-logo">
+                <span class="logo-text">ShikshaMitr</span>
+            </a>
+            <div class="header-actions" style="gap: 1rem; display: flex; align-items: center;">
+                <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+                <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-bottom: 100px;">
+        
+        <div class="page-header" id="page-header">
+            <h1>Faculty Dashboard</h1>
+            <p>Manage curriculum materials, interactive quizzes, and reading lessons.</p>
+            <div class="verified-badge">
+                <span>✓</span>
+                <span>Staff Verified</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="dashboard-container">
+            <div class="header-actions" style="margin-bottom: 1rem;">
+                <h2>Faculty Workspace</h2>
+            </div>
+            
+            <div class="dashboard-nav">
+                <button class="dashboard-tab active" data-target="upload-material">📄 Upload Material</button>
+                <button class="dashboard-tab" data-target="create-quiz">🎯 Create Quiz</button>
+                <button class="dashboard-tab" data-target="upload-reading">📖 Add Reading</button>
+                <button class="dashboard-tab" data-target="manage-materials">🗂 Manage</button>
+                <button class="dashboard-tab" data-target="analytics-dashboard">📊 Analytics</button>
+            </div>
+            
+            <!-- Upload Material Tab -->
+            <div id="upload-material" class="tab-content active">
+                <div id="material-alert" class="alert"></div>
+                
+                <form id="material-form">
+                    <div class="form-group">
+                        <label for="mat-title">Title</label>
+                        <input type="text" id="mat-title" class="form-control" placeholder="e.g. Chapter 4: Linear Equations Complete Revision" required>
+                    </div>
+
+                    <div class="grid-2col">
+                        <div class="form-group">
+                            <label for="mat-type">Material Type</label>
+                            <select id="mat-type" class="form-control" required>
+                                <option value="notes">Notes</option>
+                                <option value="board_paper">Board Paper</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mat-standard">Standard (Class)</label>
+                            <select id="mat-standard" class="form-control" required>
+                                <option value="10">Class 10</option>
+                                <option value="9">Class 9</option>
+                                <option value="8">Class 8</option>
+                                <option value="7">Class 7</option>
+                                <option value="6">Class 6</option>
+                                <option value="5">Class 5</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mat-subject">Subject</label>
+                        <input list="subject-options" id="mat-subject" class="form-control" required placeholder="e.g. Mathematics, Science, English...">
+                        <datalist id="subject-options">
+                            <option value="Mathematics">
+                            <option value="Science">
+                            <option value="English">
+                            <option value="Social Studies">
+                            <option value="Hindi">
+                            <option value="Computer Science">
+                        </datalist>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mat-file">Upload PDF File</label>
+                        <div class="upload-zone" onclick="document.getElementById('mat-file').click();">
+                            <span class="upload-icon">📑</span>
+                            <p>Click to browse or drop PDF document here</p>
+                            <small>File will be securely stored in our cloud database.</small>
+                        </div>
+                        <input type="file" id="mat-file" accept=".pdf" required style="display: none;">
+                        <p id="file-name-display" style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); display: none;"></p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="mat-submit-btn">Upload Material</button>
+                </form>
+            </div>
+            
+            <!-- Upload Reading Lesson Tab -->
+            <div id="upload-reading" class="tab-content">
+                <div id="reading-alert" class="alert"></div>
+                
+                <form id="reading-form">
+                    <div class="form-group">
+                        <label for="read-level">Difficulty Level</label>
+                        <select id="read-level" class="form-control" required>
+                            <option value="1">Level 1 (Beginner)</option>
+                            <option value="2">Level 2 (Intermediate)</option>
+                            <option value="3">Level 3 (Advanced)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="read-word">Vocabulary Word</label>
+                        <input type="text" id="read-word" class="form-control" placeholder="e.g. Perseverance" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="read-sentence">Practice Sentence (Include Emojis!)</label>
+                        <input type="text" id="read-sentence" class="form-control" placeholder="e.g. Through perseverance 🌟, Maya solved the hardest math riddle 📚!" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-accent">Add Reading Lesson</button>
+                </form>
+            </div>
+
+            <!-- Create Quiz Tab -->
+            <div id="create-quiz" class="tab-content">
+                <div id="quiz-alert" class="alert"></div>
+                <form id="faculty-quiz-form">
+                    <div class="grid-2col-wide">
+                        <div class="form-group">
+                            <label for="quiz-title">Quiz Title</label>
+                            <input type="text" id="quiz-title" class="form-control" placeholder="e.g. Periodic Table Mastery Test" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quiz-standard">Standard (Class)</label>
+                            <select id="quiz-standard" class="form-control" required>
+                                <option value="10">Class 10</option>
+                                <option value="9">Class 9</option>
+                                <option value="8">Class 8</option>
+                                <option value="7">Class 7</option>
+                                <option value="6">Class 6</option>
+                                <option value="5">Class 5</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quiz-subject">Subject</label>
+                        <input type="text" id="quiz-subject" class="form-control" placeholder="e.g. Science / Chemistry" required>
+                    </div>
+
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-subtle);">
+                    <h4 style="margin-bottom: 1rem;">Questions Builder</h4>
+                    <div id="quiz-questions-builder" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <!-- Questions dynamically added here -->
+                    </div>
+
+                    <button type="button" id="add-question-btn" class="btn btn-ghost btn-sm" style="margin: 1rem 0 1.5rem; width: 100%;">+ Add Another Question</button>
+
+                    <button type="submit" class="btn btn-primary" id="save-quiz-btn" style="width: 100%;">Publish Quiz (Live Broadcast) 🚀</button>
+                </form>
+            </div>
+            
+            <!-- Manage Materials Tab -->
+            <div id="manage-materials" class="tab-content">
+                <div id="manage-alert" class="alert"></div>
+                <div id="materials-list-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Populated by JS -->
+                    <p style="text-align: center; color: var(--text-secondary);">Loading materials...</p>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard Tab -->
+            <div id="analytics-dashboard" class="tab-content">
+                <div id="analytics-alert" class="alert"></div>
+                <div class="grid-stats">
+                    <div style="background: var(--bg-surface); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
+                        <h3 style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em;">Total Quizzes Taken</h3>
+                        <p id="stat-total-quizzes" style="font-size: 2.5rem; font-weight: 700; margin: 0.25rem 0; color: var(--primary);">0</p>
+                        <span style="font-size: 0.78rem; color: var(--status-ok-text); font-weight: 500;">↑ Tracking live</span>
+                    </div>
+                    <div style="background: var(--bg-surface); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
+                        <h3 style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em;">Average Score</h3>
+                        <p id="stat-avg-score" style="font-size: 2.5rem; font-weight: 700; margin: 0.25rem 0; color: var(--status-ok-text);">0%</p>
+                        <span style="font-size: 0.78rem; color: var(--primary); font-weight: 500;">All classes</span>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-surface); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary);">Activity Trend (Last 7 Days)</h3>
+                    <canvas id="activityChart" style="width: 100%; height: 300px;"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-link">
+            <span class="bnav-icon">🏠</span>
+            Home
+        </a>
+        <a href="materials.html?type=notes" class="bottom-nav-link">
+            <span class="bnav-icon">📚</span>
+            Notes
+        </a>
+        <a href="student-login.html" class="bottom-nav-link">
+            <span class="bnav-icon">🎓</span>
+            Student
+        </a>
+        <a href="reading.html" class="bottom-nav-link">
+            <span class="bnav-icon">🔤</span>
+            Reading
+        </a>
+        <a href="faculty.html" class="bottom-nav-link active">
+            <span class="bnav-icon">👨‍🏫</span>
+            Faculty
+        </a>
+        <button id="bottom-theme-toggle" class="bottom-nav-theme-btn" aria-label="Toggle theme">
+            <span class="bnav-icon">🌙</span>
+            Theme
+        </button>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/ws-client.js"></script>
+    <script src="js/faculty.js"></script>
+
+    <script>
+        // Show selected file name for upload zone
+        const matFileInput = document.getElementById('mat-file');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        if (matFileInput && fileNameDisplay) {
+            matFileInput.addEventListener('change', () => {
+                if (matFileInput.files.length > 0) {
+                    fileNameDisplay.textContent = '📎 ' + matFileInput.files[0].name;
+                    fileNameDisplay.style.display = 'block';
+                } else {
+                    fileNameDisplay.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

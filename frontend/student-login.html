@@ -24,32 +24,59 @@
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-        <style>
+    <style>
         body {
             background-color: var(--bg-body);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-        
+
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
         .auth-container {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
-            margin: 4rem auto;
             background: var(--bg-card);
             padding: 2.5rem;
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-card);
             animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        .auth-header {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+            letter-spacing: -0.02em;
+        }
+
+        .auth-header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Tab Switcher */
         .auth-nav {
             display: flex;
             background: var(--bg-surface);
             padding: 4px;
-            border-radius: 9999px; /* Pill shape */
-            margin-bottom: 2rem;
+            border-radius: 9999px;
+            margin-bottom: 1.75rem;
             border: 1px solid var(--border-subtle);
         }
 
@@ -73,60 +100,14 @@
             color: var(--text-primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid var(--border-subtle);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius-sm);
-            background: transparent;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--text-primary);
-            box-shadow: 0 0 0 1px var(--text-primary);
-        }
-
-        .btn-auth {
-            width: 100%;
-            padding: 0.85rem;
-            background: var(--text-primary);
-            color: var(--bg-body);
-            border: none;
-            border-radius: var(--radius-sm);
             font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-            margin-top: 0.5rem;
         }
 
-        .btn-auth:hover {
-            opacity: 0.9;
-        }
-
+        /* Alert */
         .alert {
             padding: 0.75rem 1rem;
             border-radius: var(--radius-sm);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             display: none;
             font-weight: 500;
             font-size: 0.85rem;
@@ -148,6 +129,152 @@
             display: block;
         }
 
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.85rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1.5px solid var(--border-card);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            background: var(--bg-card);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-control--no-icon {
+            padding-left: 1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.85rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px;
+            font-size: 1.1rem;
+            line-height: 1;
+            transition: color 0.15s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        /* Remember + Forgot Row */
+        .form-extras {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            margin-top: -0.25rem;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .remember-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .forgot-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Submit */
+        .btn-auth {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--gradient-btn);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, opacity 0.2s ease;
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-auth:active {
+            transform: translateY(0) scale(0.97);
+            transition-duration: 0.1s;
+        }
+
+        .btn-auth:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Divider */
         .divider-or {
             display: flex;
             align-items: center;
@@ -157,6 +284,7 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-weight: 500;
         }
 
         .divider-or::before,
@@ -167,26 +295,118 @@
             background: var(--border-card);
         }
 
-        /* Dark mode overrides for extreme high contrast */
-        [data-theme="dark"] .form-control:focus {
-            border-color: #fff;
-            box-shadow: 0 0 0 1px #fff;
-        }
-        
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-            text-align: center;
+        /* Social Login Buttons */
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
 
-        .page-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 44px;
+            padding: 0 1rem;
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.88rem;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-social:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-social:active {
+            transform: scale(0.97);
+            transition-duration: 0.08s;
+        }
+
+        .btn-social svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .btn-social .social-icon-text {
+            font-size: 1.15rem;
+        }
+
+        /* Switch Mode Text */
+        .auth-switch {
+            margin-top: 1.5rem;
             text-align: center;
-            margin-bottom: 2rem;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-switch button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-family: 'Outfit', sans-serif;
+            margin-left: 3px;
+            transition: opacity 0.15s;
+        }
+
+        .auth-switch button:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Status Pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            background: var(--status-ok-bg);
+            color: var(--status-ok-text);
+            border: 1px solid var(--status-ok-border);
+        }
+
+        .status-pill .sep {
+            opacity: 0.5;
+        }
+
+        /* Google sign-in button container override */
+        .g_id_signin {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Dark mode input focus override */
+        [data-theme="dark"] .form-control:focus {
+            border-color: #818CF8;
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.25);
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem 1.25rem;
+                border-radius: var(--radius-md);
+            }
+
+            .social-buttons {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -204,35 +424,56 @@
         </div>
     </header>
 
-    <main class="container" style="flex: 1; display: flex; align-items: center; justify-content: center;">
+    <main class="container auth-wrapper">
         <div class="auth-container">
-            <h1 class="page-title">Welcome back</h1>
-            <p class="page-subtitle">Enter your details to sign in to your account.</p>
+            <!-- Header -->
+            <div class="auth-header">
+                <h1 id="auth-title">Welcome back</h1>
+                <p id="auth-subtitle">Enter your details to sign in to your account.</p>
+            </div>
 
+            <!-- Tab Switcher -->
             <div class="auth-nav">
                 <button class="auth-tab active" id="tab-login-btn">Sign In</button>
                 <button class="auth-tab" id="tab-register-btn">Create Account</button>
             </div>
 
+            <!-- Alert -->
             <div id="auth-alert" class="alert"></div>
 
             <!-- Login Form -->
             <form id="student-login-form">
                 <div class="form-group">
                     <label for="login-username">Username or Email</label>
-                    <input type="text" id="login-username" class="form-control" placeholder="e.g. rahul_learner" required autocomplete="username">
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input type="text" id="login-username" class="form-control" placeholder="name@example.com" required autocomplete="username">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)" aria-label="Toggle password visibility">👁</button>
+                    </div>
                 </div>
+
+                <div class="form-extras">
+                    <label class="remember-label">
+                        <input type="checkbox" checked>
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="alert('Password reset instructions sent to your email.'); return false;">Forgot password?</a>
+                </div>
+
                 <button type="submit" class="btn-auth" id="login-submit-btn">
-                    Sign in
+                    Sign In
                 </button>
-                
+
                 <div class="divider-or">or continue with</div>
-                
-                <!-- Google Sign-In Container -->
+
+                <!-- Google Sign-In -->
                 <div id="g_id_onload"
                      data-client_id="439383601384-7iug08uoini9jphqdlg3a0tjefrn6su0.apps.googleusercontent.com"
                      data-context="signin"
@@ -240,14 +481,14 @@
                      data-callback="handleGoogleLogin"
                      data-auto_prompt="false">
                 </div>
-    
+
                 <div class="g_id_signin"
                      data-type="standard"
                      data-shape="rectangular"
                      data-theme="outline"
                      data-text="signin_with"
                      data-size="large"
-                     data-logo_alignment="center" style="display: flex; justify-content: center;">
+                     data-logo_alignment="center">
                 </div>
             </form>
 
@@ -255,24 +496,50 @@
             <form id="student-register-form" style="display: none;">
                 <div class="form-group">
                     <label for="reg-fullname">Full Name</label>
-                    <input type="text" id="reg-fullname" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="reg-fullname" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="reg-username">Username</label>
-                    <input type="text" id="reg-username" class="form-control" placeholder="e.g. rahul_learner" required autocomplete="username">
+                    <div class="input-wrapper">
+                        <span class="input-icon">@</span>
+                        <input type="text" id="reg-username" class="form-control" placeholder="e.g. rahul_learner" required autocomplete="username">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="reg-email">Email (Optional)</label>
-                    <input type="email" id="reg-email" class="form-control" placeholder="e.g. rahul@gmail.com" autocomplete="email">
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input type="email" id="reg-email" class="form-control" placeholder="e.g. rahul@gmail.com" autocomplete="email">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="reg-password">Password</label>
-                    <input type="password" id="reg-password" class="form-control" placeholder="••••••••" minlength="6" required autocomplete="new-password">
+                    <label for="reg-password">Create Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="reg-password" class="form-control" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('reg-password', this)" aria-label="Toggle password visibility">👁</button>
+                    </div>
                 </div>
                 <button type="submit" class="btn-auth" id="reg-submit-btn">
-                    Sign up
+                    Create Free Account ✨
                 </button>
             </form>
+
+            <!-- Switch Mode -->
+            <div class="auth-switch">
+                <span id="switch-prompt-text">Don't have an account?</span>
+                <button type="button" id="switch-action-btn">Create Account</button>
+            </div>
+        </div>
+
+        <!-- Status Pill -->
+        <div class="status-pill">
+            <span>Backend Online</span>
+            <span class="sep">|</span>
+            <span>✓ MongoDB Connected</span>
         </div>
     </main>
 
@@ -297,6 +564,61 @@
             Theme
         </button>
     </nav>
+
+    <script>
+        // Password visibility toggle
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+
+        // Tab switch alt-text handling
+        const switchPrompt = document.getElementById('switch-prompt-text');
+        const switchBtn = document.getElementById('switch-action-btn');
+        const authTitle = document.getElementById('auth-title');
+        const authSubtitle = document.getElementById('auth-subtitle');
+
+        if (switchBtn) {
+            switchBtn.addEventListener('click', () => {
+                const tabLogin = document.getElementById('tab-login-btn');
+                const tabRegister = document.getElementById('tab-register-btn');
+                if (tabLogin && tabLogin.classList.contains('active')) {
+                    tabRegister.click();
+                } else {
+                    tabLogin.click();
+                }
+            });
+        }
+
+        // Update switch text and title on tab change
+        const tabLoginBtn = document.getElementById('tab-login-btn');
+        const tabRegisterBtn = document.getElementById('tab-register-btn');
+
+        if (tabLoginBtn) {
+            const origClick = tabLoginBtn.onclick;
+            tabLoginBtn.addEventListener('click', () => {
+                if (authTitle) authTitle.textContent = 'Welcome back';
+                if (authSubtitle) authSubtitle.textContent = 'Enter your details to sign in to your account.';
+                if (switchPrompt) switchPrompt.textContent = "Don't have an account?";
+                if (switchBtn) switchBtn.textContent = 'Create Account';
+            });
+        }
+
+        if (tabRegisterBtn) {
+            tabRegisterBtn.addEventListener('click', () => {
+                if (authTitle) authTitle.textContent = 'Create account';
+                if (authSubtitle) authSubtitle.textContent = 'Start your learning journey with ShikshaMitr.';
+                if (switchPrompt) switchPrompt.textContent = 'Already have an account?';
+                if (switchBtn) switchBtn.textContent = 'Sign In';
+            });
+        }
+    </script>
 
     <script src="js/ws-client.js"></script>
     <script src="js/student.js"></script>
