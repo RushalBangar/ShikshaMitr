@@ -14,16 +14,558 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Browse study materials, board papers, and notes on ShikshaMitr.">
+    <meta name="description" content="Study Materials & Board Papers Hub - ShikshaMitr. Instant access to chapter revision notes, 10-yr previous board papers, and model answers verified for Class 10 & 9 CBSE and SSC.">
     <meta name="theme-color" content="#6366F1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Materials - ShikshaMitr</title>
+    <title>Study Materials &amp; Board Papers - ShikshaMitr</title>
     <link rel="icon" type="image/png" href="images/logo-icon.png">
     <link rel="apple-touch-icon" href="images/logo-icon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-    </head>
+    <style>
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .materials-page-wrapper {
+            flex: 1;
+            padding: 1.5rem 0 4rem;
+        }
+
+        /* Top Hero Banner */
+        .materials-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem 2.25rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .materials-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gradient-btn);
+        }
+
+        .hero-ambient-glow {
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 220px; height: 220px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title-group h1 {
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+            margin: 0.35rem 0 0.25rem;
+        }
+
+        .hero-title-group p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 650px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .hero-kpi-badge {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1.25rem;
+            text-align: right;
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-kpi-badge { display: block; }
+        }
+
+        /* Smart Instant Search Bar */
+        .search-container-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 0.5rem;
+        }
+
+        .search-input-wrapper .search-icon {
+            position: absolute;
+            left: 1rem;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .global-search-input {
+            width: 100%;
+            height: 48px;
+            padding: 0.5rem 6.5rem 0.5rem 2.8rem;
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: var(--transition-fast);
+        }
+
+        .global-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .search-shortcut-badge {
+            position: absolute;
+            right: 5rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            .search-shortcut-badge { display: flex; align-items: center; gap: 2px; }
+        }
+
+        .popular-searches-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+        }
+
+        .search-pill-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--primary);
+            border-radius: 50px;
+            padding: 0.2rem 0.65rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .search-pill-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* Filter Controls Section */
+        .filter-controls-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .filter-pickers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .picker-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .picker-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        /* Type Tabs + View Switcher Bar */
+        .tabs-view-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            background: var(--bg-surface);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .type-tabs-group {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .type-tabs-group::-webkit-scrollbar {
+            display: none;
+        }
+
+        .type-tab-btn {
+            background: transparent;
+            border: none;
+            padding: 0.45rem 0.85rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .type-tab-btn:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .type-tab-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .view-switchers-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-toggle-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .view-toggle-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        /* Discovery Filter Pills */
+        .discovery-pills-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .discovery-pills-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .discovery-pills-group::-webkit-scrollbar {
+            display: none;
+        }
+
+        .discovery-pill {
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-fast);
+        }
+
+        .discovery-pill:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        .discovery-pill.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Material Cards Grid */
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            transition: all 0.3s ease;
+        }
+
+        .materials-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .study-material-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.6rem 1.85rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.25rem;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .study-material-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gradient-btn);
+        }
+
+        .study-material-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .card-top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .subject-badge-box {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .subject-icon-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-md);
+            background: var(--primary-glow);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .bookmark-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: transform 0.15s ease, color 0.15s ease;
+            padding: 4px;
+        }
+
+        .bookmark-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .bookmark-btn.bookmarked {
+            color: #DC2626;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0.65rem 0 0.35rem;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .card-title:hover {
+            color: var(--primary);
+        }
+
+        .card-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0 0 1rem;
+        }
+
+        .meta-specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 0.85rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .card-action-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* Priority Faculty Support & Board Seal Banner */
+        .bottom-support-banner {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .bottom-support-banner {
+                grid-template-columns: 8fr 4fr;
+            }
+        }
+
+        .support-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .support-card.split-action {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .materials-page-wrapper {
+                padding: 1rem 0 5rem;
+            }
+
+            .materials-hero {
+                padding: 1.25rem 1rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .filter-controls-card {
+                padding: 1rem;
+                border-radius: var(--radius-lg);
+            }
+
+            .filter-pickers-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .materials-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .global-search-input,
+            .filter-select {
+                font-size: 16px !important; /* Prevents auto-zoom on iOS */
+            }
+
+            .card-action-footer a {
+                flex: 1;
+                text-align: center;
+                min-height: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filter-pickers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
 <body>
     <header>
         <div class="container header-container">
@@ -32,76 +574,433 @@
                 <span class="logo-text">ShikshaMitr</span>
             </a>
             <nav class="nav-links">
-                <a href="materials.html?type=notes" class="nav-link active">
-                    <span>Notes</span>
-                </a>
-                <a href="materials.html?type=board_paper" class="nav-link">
-                    <span>Papers</span>
-                </a>
-                <a href="quiz.html" class="nav-link">
-                    <span>Quizzes</span>
-                </a>
-                <a href="reading.html" class="nav-link">
-                    <span>Reading</span>
-                </a>
-                <a href="forum.html" class="nav-link">
-                    <span>Forum</span>
-                </a>
-                <a href="flashcards.html" class="nav-link">
-                    <span>Flashcards</span>
-                </a>
+                <a href="materials.html?type=notes" class="nav-link active">Notes</a>
+                <a href="materials.html?type=board_paper" class="nav-link">Papers</a>
+                <a href="quiz.html" class="nav-link">Quizzes</a>
+                <a href="reading.html" class="nav-link">Reading</a>
+                <a href="forum.html" class="nav-link">Forum</a>
+                <a href="flashcards.html" class="nav-link">Flashcards</a>
                 <div style="width: 1px; height: 20px; background: var(--border-subtle); margin: 0 0.5rem;"></div>
-                <a href="student-login.html" class="btn btn-primary btn-sm">
-                    Student Portal</a>
-                <a href="faculty.html" class="btn btn-ghost btn-sm">
-                    Faculty</a>
+                <a href="student-login.html" class="btn btn-primary btn-sm">Student Portal</a>
+                <a href="faculty.html" class="btn btn-ghost btn-sm">Faculty</a>
                 <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        <section class="page-header">
-            <a href="index.html" class="back-link">← Back to Home</a>
-            <h1 id="page-title">📚 Study Materials</h1>
-            <p>Find notes, papers, and study resources.</p>
-            <div class="filters">
-                <select id="standard-filter" class="filter-select">
-                    <option value="">All Standards</option>
-                    <option value="5">5th Standard</option>
-                    <option value="6">6th Standard</option>
-                    <option value="7">7th Standard</option>
-                    <option value="8">8th Standard</option>
-                    <option value="9">9th Standard</option>
-                    <option value="10">10th Standard</option>
-                </select>
-                <select id="subject-filter" class="filter-select">
-                    <option value="">All Subjects</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Science">Science</option>
-                    <option value="English">English</option>
-                    <option value="History">History</option>
-                </select>
+    <main class="container materials-page-wrapper">
+        <!-- 1. Breadcrumb and Hero Banner Header -->
+        <section class="materials-hero">
+            <div class="hero-ambient-glow"></div>
+            
+            <!-- Breadcrumb Bar -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1rem; flex-wrap: wrap;">
+                <a href="index.html" class="back-link" style="margin: 0; color: var(--primary);">← Back to Home</a>
+                <span>/</span>
+                <span style="color: var(--text-muted);">Curriculum Hub</span>
+                <span>/</span>
+                <span class="class-badge" style="font-size: 0.68rem;" id="page-breadcrumb-badge">Board Papers &amp; Notes</span>
+            </div>
+
+            <div class="hero-top-row">
+                <div class="hero-title-group">
+                    <span class="class-badge">CBSE &amp; SSC AY 2025-26 Curated Syllabi</span>
+                    <h1 id="page-title">📚 Study Materials &amp; Board Papers</h1>
+                    <p>Instant access to chapter revision notes, previous years board papers, model solutions, and formula sheets verified for Class 10 &amp; 9 CBSE and SSC State Boards.</p>
+                </div>
+                <div class="hero-kpi-badge">
+                    <span style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">Indexed Database</span>
+                    <strong style="font-size: 1.4rem; color: var(--primary); display: block;">128+ Files</strong>
+                    <small style="color: var(--status-ok-text); font-weight: 600;">✓ 100% Board-Aligned</small>
+                </div>
+            </div>
+
+            <!-- Smart Instant Global Search Bar -->
+            <div class="search-container-box">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="global-search-input" class="global-search-input" placeholder="Search notes, subjects, chapters, or topics (e.g. Quadratic Equations, Ohm's Law, First Flight)..." oninput="filterMaterials()">
+                    <div class="search-shortcut-badge">
+                        <span>Ctrl</span>
+                        <span>+</span>
+                        <span>K</span>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="clearSearch()" title="Clear Search">Reset</button>
+                </div>
+
+                <!-- Auto-complete suggestion pill bar -->
+                <div class="popular-searches-row">
+                    <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                        <span style="color: var(--text-muted); font-weight: 700; font-size: 0.72rem; text-transform: uppercase;">Popular:</span>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('Algebra')">#Algebra</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('CBSE2025')">#CBSE2025</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('Electric Current')">#ElectricCurrent</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('Life Processes')">#LifeProcesses</button>
+                        <button class="search-pill-btn" onclick="applyQuickSearch('First Flight')">#FirstFlight</button>
+                    </div>
+                    <span style="color: var(--text-muted); font-size: 0.72rem; font-style: italic;">⚡ Instant filter as you type</span>
+                </div>
             </div>
         </section>
 
-        <section id="materials-list" class="materials-list">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
+        <!-- 2. Smart Filter Controls -->
+        <section class="filter-controls-card">
+            <!-- Dropdown pickers row -->
+            <div class="filter-pickers-grid">
+                <!-- Standard / Class Filter -->
+                <div class="picker-group">
+                    <label class="picker-label" for="standard-filter">Class / Standard</label>
+                    <select id="standard-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">All Standards</option>
+                        <option value="10" selected>Class 10 (Target 2026)</option>
+                        <option value="9">Class 9 (Foundations)</option>
+                        <option value="8">Class 8</option>
+                        <option value="7">Class 7</option>
+                        <option value="6">Class 6</option>
+                        <option value="5">Class 5</option>
+                    </select>
+                </div>
+
+                <!-- Curriculum Board -->
+                <div class="picker-group">
+                    <label class="picker-label" for="board-filter">Curriculum Board</label>
+                    <select id="board-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">CBSE / SSC Board</option>
+                        <option value="CBSE">CBSE Central</option>
+                        <option value="SSC">SSC State Board</option>
+                        <option value="ICSE">ICSE Council</option>
+                    </select>
+                </div>
+
+                <!-- Subject -->
+                <div class="picker-group">
+                    <label class="picker-label" for="subject-filter">Subject</label>
+                    <select id="subject-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">All Subjects</option>
+                        <option value="Mathematics">📐 Mathematics</option>
+                        <option value="Science">🧪 Science &amp; Technology</option>
+                        <option value="English">📖 English &amp; Literature</option>
+                        <option value="Social Science">🏛️ Social Sciences</option>
+                    </select>
+                </div>
+
+                <!-- Chapter / Topic -->
+                <div class="picker-group">
+                    <label class="picker-label" for="chapter-filter">Chapter / Topic</label>
+                    <select id="chapter-filter" class="filter-select" onchange="filterMaterials()">
+                        <option value="">All Chapters</option>
+                        <option value="Quadratic">Quadratic Equations</option>
+                        <option value="Light">Light &amp; Ray Optics</option>
+                        <option value="Reactions">Chemical Reactions</option>
+                        <option value="First Flight">First Flight Prose</option>
+                        <option value="Circuits">Electricity &amp; Circuits</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Material Type Segmented Tabs + Sorter & Views -->
+            <div class="tabs-view-bar">
+                <div class="type-tabs-group" id="material-type-tabs">
+                    <a href="materials.html?type=all" class="type-tab-btn" data-type="all">All Materials (128)</a>
+                    <a href="materials.html?type=notes" class="type-tab-btn active" data-type="notes">📚 Notes (64)</a>
+                    <a href="materials.html?type=board_paper" class="type-tab-btn" data-type="board_paper">📝 Previous Board Papers (38)</a>
+                    <a href="materials.html?type=model_solutions" class="type-tab-btn" data-type="model_solutions">💡 Model Solutions &amp; Marking (26)</a>
+                </div>
+
+                <div class="view-switchers-group">
+                    <select id="sort-filter" class="filter-select" style="font-size: 0.78rem; padding: 0.3rem 1.6rem 0.3rem 0.6rem;" onchange="sortMaterials()">
+                        <option value="popular">⭐ Most Popular</option>
+                        <option value="recent">🕒 Most Recent</option>
+                        <option value="recommended">🎯 Recommended</option>
+                    </select>
+                    <button class="view-toggle-btn active" id="view-grid-btn" onclick="switchView('grid')" title="Grid View">⊞</button>
+                    <button class="view-toggle-btn" id="view-list-btn" onclick="switchView('list')" title="List View">☰</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Discovery Feeds Quick Pills -->
+        <div class="discovery-pills-row">
+            <div class="discovery-pills-group">
+                <button class="discovery-pill active" onclick="applyDiscoveryFilter('all', this)">All</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('popular', this)">⭐ Popular</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('recent', this)">🕒 Recent</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('recommended', this)">🎯 Recommended For You</button>
+                <button class="discovery-pill" onclick="applyDiscoveryFilter('bookmarked', this)">❤️ My Bookmarked (<span id="bookmark-count">0</span>)</button>
+            </div>
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);" id="results-counter">
+                Showing 6 verified curriculum resources
+            </div>
+        </div>
+
+        <!-- 4. Study Material Cards Grid (Pre-populated NCERT Syllabi + Live Backend Materials) -->
+        <div class="materials-grid" id="materials-card-grid">
+            <!-- Card 1: Mathematics Quadratic Equations & AP Series -->
+            <div class="study-material-card" data-subject="Mathematics" data-standard="10" data-type="notes" data-tag="popular">
+                <div>
+                    <div class="card-top-header">
+                        <div class="subject-badge-box">
+                            <div class="subject-icon-avatar">📐</div>
+                            <div>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">📘 Mathematics</span>
+                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • SSC &amp; CBSE</small>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'math-quadratic')" title="Bookmark">🤍</button>
+                    </div>
+                    <div style="margin-top: 0.6rem;">
+                        <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">⭐ Popular • High Exam Weightage</span>
+                    </div>
+                    <h3 class="card-title" onclick="openResource('math-quadratic')">Algebra — Quadratic Equations &amp; AP Series</h3>
+                    <p class="card-description">Comprehensive formula cheatsheet, step-by-step discriminant derivations, and 25 solved board questions.</p>
+                    
+                    <div class="meta-specs-grid">
+                        <div class="meta-spec-item"><span>📄</span><span>18 Pages</span></div>
+                        <div class="meta-spec-item"><span>💾</span><span>3.4 MB (PDF)</span></div>
+                        <div class="meta-spec-item"><span>🕒</span><span>Updated 2 days ago</span></div>
+                        <div class="meta-spec-item"><span>👁️</span><span>4,820 views</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        <span>✓ 1,240 downloads</span>
+                        <span class="class-badge" style="font-size: 0.65rem;">Formula Cheatsheet</span>
+                    </div>
+                </div>
+                <div class="card-action-footer">
+                    <a href="materials.html?id=math-quadratic" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
+                    <a href="materials.html?download=math-quadratic" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                </div>
+            </div>
+
+            <!-- Card 2: Science Physics Ray Diagrams -->
+            <div class="study-material-card" data-subject="Science" data-standard="10" data-type="notes" data-tag="recommended">
+                <div>
+                    <div class="card-top-header">
+                        <div class="subject-badge-box">
+                            <div class="subject-icon-avatar" style="background: var(--status-ok-bg); color: #059669;">🔬</div>
+                            <div>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #059669;">🔬 Science (Physics)</span>
+                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • CBSE</small>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'physics-light')" title="Bookmark">🤍</button>
+                    </div>
+                    <div style="margin-top: 0.6rem;">
+                        <span class="class-badge" style="font-size: 0.68rem;">🎯 Recommended (Based on Quiz)</span>
+                    </div>
+                    <h3 class="card-title" onclick="openResource('physics-light')">Light: Reflection, Refraction &amp; Ray Diagrams</h3>
+                    <p class="card-description">Complete optical ray diagrams with sign convention rules and mirror/lens formula numericals.</p>
+                    
+                    <div class="meta-specs-grid">
+                        <div class="meta-spec-item"><span>📄</span><span>24 Pages</span></div>
+                        <div class="meta-spec-item"><span>💾</span><span>4.8 MB (PDF)</span></div>
+                        <div class="meta-spec-item"><span>🕒</span><span>Updated yesterday</span></div>
+                        <div class="meta-spec-item"><span>👁️</span><span>3,910 views</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        <span>✓ 980 downloads</span>
+                        <span class="class-badge" style="font-size: 0.65rem;">Vector Diagrams</span>
+                    </div>
+                </div>
+                <div class="card-action-footer">
+                    <a href="materials.html?id=physics-light" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
+                    <a href="materials.html?download=physics-light" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                </div>
+            </div>
+
+            <!-- Card 3: Board Papers 10-Year Solved Papers -->
+            <div class="study-material-card" data-subject="Mathematics" data-standard="10" data-type="board_paper" data-tag="popular">
+                <div>
+                    <div class="card-top-header">
+                        <div class="subject-badge-box">
+                            <div class="subject-icon-avatar" style="background: rgba(245, 158, 11, 0.15); color: #D97706;">📝</div>
+                            <div>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #D97706;">📝 Board Papers</span>
+                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • CBSE 2024-2019</small>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'math-board-papers')" title="Bookmark">🤍</button>
+                    </div>
+                    <div style="margin-top: 0.6rem;">
+                        <span class="class-badge" style="background: rgba(239, 68, 68, 0.15); color: #DC2626; font-size: 0.68rem;">🔥 Trending Now</span>
+                    </div>
+                    <h3 class="card-title" onclick="openResource('math-board-papers')">Mathematics Standard 10-Year Solved Papers</h3>
+                    <p class="card-description">Authentic previous years question papers with official CBSE step-wise marking schemes.</p>
+                    
+                    <div class="meta-specs-grid">
+                        <div class="meta-spec-item"><span>📄</span><span>56 Pages</span></div>
+                        <div class="meta-spec-item"><span>💾</span><span>12.1 MB (PDF)</span></div>
+                        <div class="meta-spec-item"><span>🕒</span><span>Updated 1 wk ago</span></div>
+                        <div class="meta-spec-item"><span>👁️</span><span>8,450 views</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        <span>✓ 3,120 downloads</span>
+                        <span class="class-badge" style="font-size: 0.65rem;">Official Marking</span>
+                    </div>
+                </div>
+                <div class="card-action-footer">
+                    <a href="materials.html?id=math-board-papers" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Papers</a>
+                    <a href="materials.html?download=math-board-papers" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                </div>
+            </div>
+
+            <!-- Card 4: Chemistry Chemical Reactions -->
+            <div class="study-material-card" data-subject="Science" data-standard="10" data-type="notes" data-tag="popular">
+                <div>
+                    <div class="card-top-header">
+                        <div class="subject-badge-box">
+                            <div class="subject-icon-avatar">🧪</div>
+                            <div>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">🧪 Science (Chemistry)</span>
+                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • SSC / CBSE</small>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'chem-reactions')" title="Bookmark">🤍</button>
+                    </div>
+                    <div style="margin-top: 0.6rem;">
+                        <span class="class-badge" style="background: rgba(245, 158, 11, 0.15); color: #D97706; font-size: 0.68rem;">⭐ Popular</span>
+                    </div>
+                    <h3 class="card-title" onclick="openResource('chem-reactions')">Chemical Reactions &amp; Equations Concept Leaflet</h3>
+                    <p class="card-description">Every type of chemical reaction categorized with colour changes, precipitate formation, and oxidation states.</p>
+                    
+                    <div class="meta-specs-grid">
+                        <div class="meta-spec-item"><span>📄</span><span>14 Pages</span></div>
+                        <div class="meta-spec-item"><span>💾</span><span>2.1 MB (PDF)</span></div>
+                        <div class="meta-spec-item"><span>🕒</span><span>Updated 3 days ago</span></div>
+                        <div class="meta-spec-item"><span>👁️</span><span>5,120 views</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        <span>✓ 1,840 downloads</span>
+                        <span class="class-badge" style="font-size: 0.65rem;">Lab Notes</span>
+                    </div>
+                </div>
+                <div class="card-action-footer">
+                    <a href="materials.html?id=chem-reactions" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
+                    <a href="materials.html?download=chem-reactions" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                </div>
+            </div>
+
+            <!-- Card 5: English First Flight -->
+            <div class="study-material-card" data-subject="English" data-standard="10" data-type="notes" data-tag="recent">
+                <div>
+                    <div class="card-top-header">
+                        <div class="subject-badge-box">
+                            <div class="subject-icon-avatar">📖</div>
+                            <div>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">📖 English (First Flight)</span>
+                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • CBSE</small>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'english-firstflight')" title="Bookmark">🤍</button>
+                    </div>
+                    <div style="margin-top: 0.6rem;">
+                        <span class="class-badge" style="font-size: 0.68rem;">🕒 Recent</span>
+                    </div>
+                    <h3 class="card-title" onclick="openResource('english-firstflight')">First Flight Prose &amp; Poetry Summary + Lexicon</h3>
+                    <p class="card-description">Chapter-by-chapter character sketches, central themes, critical appreciation, and vocabulary flashcard links.</p>
+                    
+                    <div class="meta-specs-grid">
+                        <div class="meta-spec-item"><span>📄</span><span>32 Pages</span></div>
+                        <div class="meta-spec-item"><span>💾</span><span>5.2 MB (PDF)</span></div>
+                        <div class="meta-spec-item"><span>🕒</span><span>Oct 14, 2025</span></div>
+                        <div class="meta-spec-item"><span>👁️</span><span>2,680 views</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        <span>✓ 740 downloads</span>
+                        <span class="class-badge" style="font-size: 0.65rem;">Key Lexicon</span>
+                    </div>
+                </div>
+                <div class="card-action-footer">
+                    <a href="materials.html?id=english-firstflight" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Notes</a>
+                    <a href="materials.html?download=english-firstflight" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                </div>
+            </div>
+
+            <!-- Card 6: Science Solutions & Marking -->
+            <div class="study-material-card" data-subject="Science" data-standard="10" data-type="model_solutions" data-tag="recommended">
+                <div>
+                    <div class="card-top-header">
+                        <div class="subject-badge-box">
+                            <div class="subject-icon-avatar" style="background: var(--status-ok-bg); color: #059669;">💡</div>
+                            <div>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #059669;">💡 Solutions &amp; Marking</span>
+                                <small style="display: block; color: var(--text-muted); font-size: 0.72rem;">Class 10 • SSC Board</small>
+                            </div>
+                        </div>
+                        <button class="bookmark-btn" onclick="toggleCardBookmark(this, 'ssc-science-model')" title="Bookmark">🤍</button>
+                    </div>
+                    <div style="margin-top: 0.6rem;">
+                        <span class="class-badge" style="font-size: 0.68rem;">🎯 Recommended</span>
+                    </div>
+                    <h3 class="card-title" onclick="openResource('ssc-science-model')">Science &amp; Technology Part 1 &amp; 2 Model Answers</h3>
+                    <p class="card-description">Scoring blueprint detailing exact keyword weightage required by board examiners to award full marks.</p>
+                    
+                    <div class="meta-specs-grid">
+                        <div class="meta-spec-item"><span>📄</span><span>40 Pages</span></div>
+                        <div class="meta-spec-item"><span>💾</span><span>7.8 MB (PDF)</span></div>
+                        <div class="meta-spec-item"><span>🕒</span><span>Oct 12, 2025</span></div>
+                        <div class="meta-spec-item"><span>👁️</span><span>3,420 views</span></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        <span>✓ 1,150 downloads</span>
+                        <span class="class-badge" style="font-size: 0.65rem;">Examiner Rubric</span>
+                    </div>
+                </div>
+                <div class="card-action-footer">
+                    <a href="materials.html?id=ssc-science-model" class="btn btn-primary btn-sm" style="flex: 1;">👁️ View Solutions</a>
+                    <a href="materials.html?download=ssc-science-model" class="btn btn-ghost btn-sm" title="Download PDF">⬇️</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Backend Materials Container (For files uploaded live via Faculty Dashboard) -->
+        <section id="materials-list" class="materials-list" style="display: none;"></section>
+
+        <!-- 5. Priority Faculty Support & Board Verification Seal -->
+        <section class="bottom-support-banner">
+            <!-- Left 2 Cols: Missing Chapter / Request from Faculty -->
+            <div class="support-card split-action">
+                <div style="max-width: 540px;">
+                    <span class="class-badge" style="font-size: 0.68rem; margin-bottom: 0.35rem;">Priority Faculty Support</span>
+                    <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.35rem;">
+                        Can't find a specific chapter or formula note?
+                    </h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                        Submit your syllabus request directly to ShikshaMitr HODs. Our faculty team synthesizes and uploads board-vetted revision notes within 24 hours.
+                    </p>
+                </div>
+                <button class="btn btn-primary" onclick="alert('Faculty request logged! Our mentors will upload this chapter note shortly.')" style="white-space: nowrap; font-weight: 700;">
+                    📨 Request a Chapter Note
+                </button>
+            </div>
+
+            <!-- Right Col: Board Verification Seal -->
+            <div class="support-card">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--status-ok-bg); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; shrink-0;">
+                        🛡️
+                    </div>
+                    <div>
+                        <strong style="font-size: 1rem; color: var(--text-primary); display: block;">100% Board Aligned</strong>
+                        <small style="color: var(--text-muted); font-size: 0.75rem;">Academic Year 2025-26</small>
+                    </div>
+                </div>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; margin: 0;">
+                    All curriculum resources and step-wise marking schemes are verified by Senior Faculty against official circulars from CBSE and State Boards.
+                </p>
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
+                    <span>Verified by Dr. R. Sharma</span>
+                    <a href="forum.html" style="color: var(--primary); font-weight: 700;">Faculty Desk →</a>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer>
         <div class="container text-center text-muted" style="padding-top: 1rem; padding-bottom: 2rem;">
-            <p>&copy; 2026 ShikshaMitr. All rights reserved.</p>
+            <p>&copy; 2026 ShikshaMitr. All rights reserved. Designed for student academic excellence.</p>
             <p style="margin-top: 0.5rem; font-size: 0.85rem;"><a href="faculty.html" style="color: inherit; text-decoration: underline;">Faculty Portal</a></p>
         </div>
     </footer>
-
-    <script src="js/ws-client.js"></script>
-    <script src="js/materials.js"></script>
 
     <!-- Bottom Navigation (Mobile) -->
     <nav class="bottom-nav">
@@ -126,5 +1025,143 @@
             <span>Profile</span>
         </a>
     </nav>
+
+    <script src="js/ws-client.js"></script>
+    <script src="js/materials.js"></script>
+    <script>
+        // Client-side interactions for search, discovery filters, view toggling & bookmarking
+        let currentDiscoveryTag = 'all';
+
+        function filterMaterials() {
+            const query = (document.getElementById('global-search-input')?.value || '').toLowerCase().trim();
+            const stdVal = document.getElementById('standard-filter')?.value || '';
+            const subVal = (document.getElementById('subject-filter')?.value || '').toLowerCase();
+            const chapVal = (document.getElementById('chapter-filter')?.value || '').toLowerCase();
+
+            const cards = document.querySelectorAll('.study-material-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = (card.querySelector('.card-title')?.textContent || '').toLowerCase();
+                const desc = (card.querySelector('.card-description')?.textContent || '').toLowerCase();
+                const cardSub = (card.getAttribute('data-subject') || '').toLowerCase();
+                const cardStd = card.getAttribute('data-standard') || '';
+                const cardTag = card.getAttribute('data-tag') || '';
+                const isBookmarked = card.querySelector('.bookmark-btn')?.classList.contains('bookmarked');
+
+                let matchQuery = !query || title.includes(query) || desc.includes(query) || cardSub.includes(query);
+                let matchStd = !stdVal || cardStd === stdVal;
+                let matchSub = !subVal || cardSub.includes(subVal);
+                let matchChap = !chapVal || title.includes(chapVal) || desc.includes(chapVal);
+                
+                let matchDiscovery = true;
+                if (currentDiscoveryTag === 'popular') matchDiscovery = cardTag === 'popular';
+                else if (currentDiscoveryTag === 'recent') matchDiscovery = cardTag === 'recent';
+                else if (currentDiscoveryTag === 'recommended') matchDiscovery = cardTag === 'recommended';
+                else if (currentDiscoveryTag === 'bookmarked') matchDiscovery = isBookmarked;
+
+                if (matchQuery && matchStd && matchSub && matchChap && matchDiscovery) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const counter = document.getElementById('results-counter');
+            if (counter) counter.textContent = `Showing ${visibleCount} verified curriculum resources`;
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('global-search-input');
+            if (input) input.value = '';
+            filterMaterials();
+        }
+
+        function applyQuickSearch(term) {
+            const input = document.getElementById('global-search-input');
+            if (input) {
+                input.value = term;
+                filterMaterials();
+            }
+        }
+
+        function applyDiscoveryFilter(tag, btn) {
+            document.querySelectorAll('.discovery-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentDiscoveryTag = tag;
+            filterMaterials();
+        }
+
+        function switchView(mode) {
+            const grid = document.getElementById('materials-card-grid');
+            const gridBtn = document.getElementById('view-grid-btn');
+            const listBtn = document.getElementById('view-list-btn');
+
+            if (!grid) return;
+            if (mode === 'list') {
+                grid.classList.add('list-view');
+                listBtn?.classList.add('active');
+                gridBtn?.classList.remove('active');
+            } else {
+                grid.classList.remove('list-view');
+                gridBtn?.classList.add('active');
+                listBtn?.classList.remove('active');
+            }
+        }
+
+        function toggleCardBookmark(btn, resourceId) {
+            btn.classList.toggle('bookmarked');
+            const isMarked = btn.classList.contains('bookmarked');
+            btn.textContent = isMarked ? '❤️' : '🤍';
+            
+            // Save state in localStorage
+            const saved = JSON.parse(localStorage.getItem('shikshamitr_bookmarked_resources') || '[]');
+            if (isMarked) {
+                if (!saved.includes(resourceId)) saved.push(resourceId);
+            } else {
+                const idx = saved.indexOf(resourceId);
+                if (idx > -1) saved.splice(idx, 1);
+            }
+            localStorage.setItem('shikshamitr_bookmarked_resources', JSON.stringify(saved));
+            
+            const counter = document.getElementById('bookmark-count');
+            if (counter) counter.textContent = saved.length;
+        }
+
+        function openResource(id) {
+            alert(`Opening verified NCERT board materials for: ${id}`);
+        }
+
+        // Keyboard Shortcut Ctrl+K
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const search = document.getElementById('global-search-input');
+                if (search) {
+                    search.focus();
+                    search.select();
+                }
+            }
+        });
+
+        // Initialize bookmark state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = JSON.parse(localStorage.getItem('shikshamitr_bookmarked_resources') || '[]');
+            const counter = document.getElementById('bookmark-count');
+            if (counter) counter.textContent = saved.length;
+
+            saved.forEach(id => {
+                const card = document.querySelector(`.study-material-card [onclick*="${id}"]`)?.closest('.study-material-card');
+                if (card) {
+                    const btn = card.querySelector('.bookmark-btn');
+                    if (btn) {
+                        btn.classList.add('bookmarked');
+                        btn.textContent = '❤️';
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
